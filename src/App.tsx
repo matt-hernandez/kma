@@ -1,13 +1,23 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonPage, IonRouterOutlet, IonSplitPane } from '@ionic/react';
+import {
+  IonApp,
+  IonPage,
+  IonHeader,
+  IonButtons,
+  IonMenuButton,
+  IonTitle,
+  IonToolbar,
+  IonRouterOutlet,
+  IonSplitPane
+  } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
 import Home from './pages/Home';
 import List from './pages/List';
-import { home, list } from 'ionicons/icons';
+import { contacts, stats, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -28,16 +38,23 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import './overrides.css';
+
 const appPages: AppPage[] = [
   {
-    title: 'Home',
+    title: 'Agreements',
     url: '/home',
-    icon: home
+    icon: contacts
   },
   {
-    title: 'List',
-    url: '/home/list',
-    icon: list
+    title: 'Score',
+    url: '/score',
+    icon: stats
+  },
+  {
+    title: 'Settings',
+    url: '/score',
+    icon: settings
   }
 ];
 
@@ -47,9 +64,17 @@ const App: React.FunctionComponent = () => (
       <IonSplitPane contentId="main">
         <Menu appPages={appPages} />
         <IonPage id="main">
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonMenuButton />
+              </IonButtons>
+              <IonTitle>KMA</IonTitle>
+            </IonToolbar>
+          </IonHeader>
           <IonRouterOutlet>
-            <Route path="/:tab(home)" component={Home} exact={true} />
-            <Route path="/:tab(home)/list" component={List} exact={true} />
+            <Route path="/home" component={Home} exact={true} />
+            <Route path="/score" component={List} exact={true} />
             <Route exact path="/" render={() => <Redirect to="/home" />} />
           </IonRouterOutlet>
         </IonPage>

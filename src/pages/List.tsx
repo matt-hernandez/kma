@@ -1,19 +1,10 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonIcon, IonItem, IonList } from '@ionic/react';
 import { americanFootball, basketball, beer, bluetooth, boat, build, flask, football, paperPlane, wifi } from 'ionicons/icons';
 import React from 'react';
 
 const ListPage: React.FunctionComponent = () => {
   return (
     <>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle>List</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-
       <IonContent>
         <ListItems />
       </IonContent>

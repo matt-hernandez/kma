@@ -1,37 +1,33 @@
 import {
-  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
-  IonContent,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
-  IonMenuButton,
-  IonTitle,
-  IonToolbar
+  IonListHeader
   } from '@ionic/react';
+import styled from 'styled-components/macro';
 import { book, build, colorFill, grid } from 'ionicons/icons';
 import React from 'react';
 import './Home.css';
 
+const Main = styled.main`
+  position: absolute;
+  top: 56px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: scroll;
+`;
+
 const HomePage: React.FunctionComponent = () => {
   return (
     <>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
+      <Main>
         <IonCard className="welcome-card">
           <img src="/assets/shapes.svg" alt=""/>
           <IonCardHeader>
@@ -67,7 +63,7 @@ const HomePage: React.FunctionComponent = () => {
             <IonLabel>Theme Your App</IonLabel>
           </IonItem>
         </IonList>
-      </IonContent>
+      </Main>
     </>
   );
 };

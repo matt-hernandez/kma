@@ -1,0 +1,15 @@
+.split-pane-md.split-pane-visible > .split-pane-side {
+  min-width: inherit;
+  max-width: inherit;
+  width: 200px;
+  flex-grow: 0;
+  flex-basis: 250px;
+}
+
+ion-menu ion-icon {
+  margin-right: 20px;
+}
+
+.split-pane-main ion-title {
+  text-align: center;
+}
