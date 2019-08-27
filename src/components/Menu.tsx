@@ -1,5 +1,4 @@
 import {
-  IonContent,
   IonHeader,
   IonIcon,
   IonItem,
@@ -11,6 +10,7 @@ import {
   IonToolbar
 } from '@ionic/react';
 import React from 'react';
+import InflateContent from '../components/InflateContent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AppPage } from '../declarations';
 
@@ -25,7 +25,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, location }) => (
         <IonTitle>Menu</IonTitle>
       </IonToolbar>
     </IonHeader>
-    <IonContent>
+    <InflateContent top={56}>
       <IonList>
         {appPages.map((appPage, index) => {
           return (
@@ -38,7 +38,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, location }) => (
           );
         })}
       </IonList>
-    </IonContent>
+    </InflateContent>
   </IonMenu>
 );
 

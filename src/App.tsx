@@ -15,6 +15,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
+import InflateContent from './components/InflateContent';
+import MainPage from './components/MainPage';
 import Home from './pages/Home';
 import List from './pages/List';
 import { contacts, stats, settings } from 'ionicons/icons';
@@ -73,9 +75,13 @@ const App: React.FunctionComponent = () => (
             </IonToolbar>
           </IonHeader>
           <IonRouterOutlet>
-            <Route path="/home" component={Home} exact={true} />
-            <Route path="/score" component={List} exact={true} />
-            <Route exact path="/" render={() => <Redirect to="/home" />} />
+            <InflateContent top={56} as="main">
+              <MainPage>
+                <Route path="/home" component={Home} exact={true} />
+                <Route path="/score" component={List} exact={true} />
+                <Route exact path="/" render={() => <Redirect to="/home" />} />
+              </MainPage>
+            </InflateContent>
           </IonRouterOutlet>
         </IonPage>
       </IonSplitPane>

@@ -1,69 +1,26 @@
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader
-  } from '@ionic/react';
-import styled from 'styled-components/macro';
-import { book, build, colorFill, grid } from 'ionicons/icons';
 import React from 'react';
+import FlexRow from '../components/FlexRow';
+import Tab from '../components/Tab';
 import './Home.css';
+import { useStateHelper, listenerTypes } from '../util/use-state-helper';
 
-const Main = styled.main`
-  position: absolute;
-  top: 56px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  overflow: scroll;
-`;
+const tabs = [
+  'Open Agreements',
+  'My Agreements'
+];
 
 const HomePage: React.FunctionComponent = () => {
+  const [
+    activeTab,
+    ...listeners
+  ] = useStateHelper(tabs[0], listenerTypes.VALUES, tabs);
   return (
     <>
-      <Main>
-        <IonCard className="welcome-card">
-          <img src="/assets/shapes.svg" alt=""/>
-          <IonCardHeader>
-            <IonCardSubtitle>Get Started</IonCardSubtitle>
-            <IonCardTitle>Welcome to Ionic</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <p>
-              Now that your app has been created, you'll want to start building out features and
-              components. Check out some of the resources below for next steps.
-            </p>
-          </IonCardContent>
-        </IonCard>
-
-        <IonList lines="none">
-          <IonListHeader>
-            <IonLabel>Resources</IonLabel>
-          </IonListHeader>
-          <IonItem href="https://ionicframework.com/docs/" target="_blank">
-            <IonIcon slot="start" color="medium" icon={book} />
-            <IonLabel>Ionic Documentation</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/building/scaffolding" target="_blank">
-            <IonIcon slot="start" color="medium" icon={build} />
-            <IonLabel>Scaffold Out Your App</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/layout/structure" target="_blank">
-            <IonIcon slot="start" color="medium" icon={grid} />
-            <IonLabel>Change Your App Layout</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/theming/basics" target="_blank">
-            <IonIcon slot="start" color="medium" icon={colorFill} />
-            <IonLabel>Theme Your App</IonLabel>
-          </IonItem>
-        </IonList>
-      </Main>
+      <FlexRow>
+        {tabs.map((tab, i) => (
+          <Tab key={tab} name={tab} isActive={tab === activeTab} onClick={listeners[i]} />
+        ))}
+      </FlexRow>
     </>
   );
 };
