@@ -39,3 +39,10 @@ ion-card-content > ion-button:last-child {
   --ion-color-success-rgb: 0, 112, 44;
   --ion-color-success-shade: #008333;
 }
+
+ion-button.md {
+  text-transform: inherit;
+  font-size: 15px;
+  line-height: 26px;
+  height: 40px;
+}
