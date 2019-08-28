@@ -23,6 +23,9 @@ const tabs = [
   }
 ];
 
+const today = Date.now();
+const expiration = new Date(today + 1000 * 60 * 60 * 24 * 3).getTime();
+
 const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, location }) => {
   return (
     <>
@@ -33,8 +36,10 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
       </TabsContainer>
       <Route path="/home/open-agreements" component={() => (
         <Agreement
+          isCommitted={false}
+          expiration={expiration}
           title="Attend Kickstart Conditioning"
-          due="Due date: 7/12/19"
+          due="Due date: 7/12/19 at 6:15 AM"
           description={`
             Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
             Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
@@ -45,17 +50,36 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
         />
       )} exact={true} />
       <Route path="/home/my-agreements" component={() => (
-        <Agreement
-          title="Attend Groundwork Conditioning"
-          due="Due date: 7/12/19"
-          description={`
-            Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-            Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-            tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-            in what sports scientists agree is one of the best total body workouts available.
-          `}
-          onCommit={() => {}}
-        />
+        <>
+          <Agreement
+            isCommitted={true}
+            expiration={expiration}
+            pendingRequests={['Katie Fryer']}
+            acceptedRequests={['Dave Goode']}
+            title="Attend Groundwork Conditioning"
+            due="Due date: 7/12/19"
+            description={`
+              Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
+              Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
+              tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
+              in what sports scientists agree is one of the best total body workouts available.
+            `}
+            onCommit={() => {}}
+          />
+          <Agreement
+            isCommitted={true}
+            expiration={expiration}
+            title="Attend Groundwork Conditioning"
+            due="Due date: 7/15/19"
+            description={`
+              Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
+              Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
+              tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
+              in what sports scientists agree is one of the best total body workouts available.
+            `}
+            onCommit={() => {}}
+          />
+        </>
       )} exact={true} />
       <Route exact path="/home" render={() => <Redirect to="/home/open-agreements" />} />
     </>

@@ -18,3 +18,24 @@ ion-menu ion-icon {
 .card-content-ios + .card-content-ios {
   padding-top: 0;
 }
+
+ion-chip {
+  margin: 0;
+}
+
+:root {
+  --ion-color-warning: #d0aa0d;
+}
+
+ion-card-content > ion-button {
+  margin-bottom: 12px;
+}
+
+ion-card-content > ion-button:last-child {
+  margin-bottom: 0;
+}
+
+.ion-color-success {
+  --ion-color-success-rgb: 0, 112, 44;
+  --ion-color-success-shade: #008333;
+}
