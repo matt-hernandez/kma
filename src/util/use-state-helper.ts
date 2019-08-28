@@ -52,7 +52,7 @@ export const listenerTypes = Object.freeze({
 export const useStateHelper = (
     initialValue: any,
     listenerGenerator: Function,
-    valuesOrResolver: Array<any> | Function
+    valuesOrResolver?: Array<any> | Function
   ): [ any, ...Array<(...args: Array<any>) => void> ] => {
   const [ value, setter ] = useState(initialValue);
   const getter = () => value;

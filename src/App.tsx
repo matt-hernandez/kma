@@ -16,10 +16,9 @@ import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
 import InflateContent from './components/InflateContent';
-import MainPage from './components/MainPage';
 import Home from './pages/Home';
 import List from './pages/List';
-import { contacts, stats, settings } from 'ionicons/icons';
+import { contacts, list, stats, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,8 +43,13 @@ import './overrides.css';
 
 const appPages: AppPage[] = [
   {
-    title: 'Agreements',
-    url: '/home',
+    title: 'Open Agreements',
+    url: '/home/open-agreements',
+    icon: list
+  },
+  {
+    title: 'My Agreements',
+    url: '/home/my-agreements',
     icon: contacts
   },
   {
@@ -76,11 +80,9 @@ const App: React.FunctionComponent = () => (
           </IonHeader>
           <IonRouterOutlet>
             <InflateContent top={56} as="main">
-              <MainPage>
-                <Route path="/home" component={Home} exact={true} />
-                <Route path="/score" component={List} exact={true} />
-                <Route exact path="/" render={() => <Redirect to="/home" />} />
-              </MainPage>
+              <Route path="/home" component={Home} />
+              <Route path="/score" component={List} exact={true} />
+              <Route exact path="/" render={() => <Redirect to="/home" />} />
             </InflateContent>
           </IonRouterOutlet>
         </IonPage>

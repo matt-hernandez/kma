@@ -5,7 +5,6 @@ type ExtraProps = {
   flexGrow?: number;
   flexShrink?: number;
   flexBasis?: number;
-  furtherStyles?: string;
 };
 
 export default styled.div<ExtraProps>`
@@ -21,5 +20,4 @@ export default styled.div<ExtraProps>`
       flex-basis: ${flexBasis};
     `
   }
-  ${({furtherStyles}) => typeof furtherStyles === 'string' && furtherStyles}
 `;
