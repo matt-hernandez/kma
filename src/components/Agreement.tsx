@@ -34,13 +34,15 @@ const TimerContainer = styled.div<TimerContainerProps>`
 type PropTypes = {
   title: string;
   due: string;
-  description: string;
+  description?: string;
   expiration: number;
   isCommitted: boolean;
   pendingRequests?: string[];
   acceptedRequests?: string[];
   onCommit: (...args: any) => void;
-  onCancelRequest?: (...args: any) => void;
+  onExpire: (...args: any) => void;
+  onCancel?: (...args: any) => void;
+  onBreak?: (...args: any) => void;
 };
 
 const Agreement: React.FunctionComponent<PropTypes> = ({
@@ -52,7 +54,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   pendingRequests = [],
   acceptedRequests = [],
   onCommit,
-  onCancelRequest = () => {}
+  onExpire,
+  onCancel = () => {}
 }) => {
   const [ isDescriptionOpen, toggleDescription ] = useStateHelper(false, listenerTypes.TOGGLE);
   const isPastExpiration = expiration < Date.now();
@@ -65,7 +68,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             {isCommitted
               ? 'Time left to cancel:'
               : 'Expires in'
-            } <Timer deadline={expiration} onZero={() => {}} />
+            } <Timer deadline={expiration} onZero={onExpire} />
           </TimerContainer>
         )}
         <IonCardHeader>
@@ -88,7 +91,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
                 <InlineItalic>Request for {request} pending</InlineItalic>
               </IonLabel>
             </IonChip>
-            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Cancel request</CustomLink></InlineItalic>
+            <InlineItalic> - <CustomLink onClick={() => onCancel(request)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
         )) }
         { (!isPastExpiration && isCommitted && pendingRequests.length === 0) && (
@@ -100,9 +103,11 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )}
-        <IonCardContent>
-          {description}
-        </IonCardContent>
+        {typeof description === 'string' && (
+          <IonCardContent>
+            {description}
+          </IonCardContent>
+        )}
         <IonCardContent>
           {!isCommitted && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this agreement</IonButton>}
           {(isCommitted && pendingRequests.length + acceptedRequests.length < 2) && <IonButton expand="block" color="primary" onClick={onCommit}>Find a partner</IonButton>}

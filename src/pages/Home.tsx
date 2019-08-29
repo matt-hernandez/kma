@@ -38,6 +38,7 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
         <Agreement
           isCommitted={false}
           expiration={expiration}
+          onExpire={() => {}}
           title="Attend Kickstart Conditioning"
           due="Due date: 7/12/19 at 6:15 AM"
           description={`
@@ -54,6 +55,7 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
           <Agreement
             isCommitted={true}
             expiration={expiration}
+            onExpire={() => {}}
             pendingRequests={['Katie Fryer']}
             acceptedRequests={['Dave Goode']}
             title="Attend Groundwork Conditioning"
@@ -69,6 +71,7 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
           <Agreement
             isCommitted={true}
             expiration={expiration}
+            onExpire={() => {}}
             title="Attend Groundwork Conditioning"
             due="Due date: 7/15/19"
             description={`
