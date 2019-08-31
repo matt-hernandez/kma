@@ -15,7 +15,16 @@ sevenDaysFromNowAt2PM.setHours(14, 0, 0);
 const sevenDaysFromNowAt12PM = new Date(Date.now() + oneWeekMS);
 sevenDaysFromNowAt12PM.setHours(12, 0, 0);
 
-const allAgreements = [
+interface Agreement {
+  id: string;
+  templateId: string;
+  title: string;
+  due: number;
+  expiration: number;
+  description?: string;
+}
+
+const allAgreements: Agreement[] = [
   {
     title: 'Attend Kickstart Conditioning - Monday',
     due: threeDaysFromNowAt615AM.getTime(),
@@ -57,7 +66,13 @@ const allAgreements = [
   templateId: generateId()
 }));
 
-const closedAgreements = allAgreements.slice(0, 3)
+interface CommittedAgreementRef {
+  agreementId: string;
+  pendingPartners: string[];
+  confirmedPartners: string[];
+}
+
+const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
   .map(agreement => ({
     ...agreement,
     id: generateId(),
@@ -65,7 +80,28 @@ const closedAgreements = allAgreements.slice(0, 3)
     expiration: new Date(agreement.expiration - oneWeekMS).getTime(),
   }));
 
-export const initialState = {
+interface ClosedAgreementRef {
+  agreementId: string;
+  point: 0 | 1;
+  partners?: string[];
+}
+
+interface User {
+  name: string;
+  agreements: Agreement[];
+  closedAgreements?: ClosedAgreementRef[];
+}
+
+interface State {
+  allAgreements: Agreement[];
+  myAgreements: CommittedAgreementRef[];
+  otherUsers: User[];
+  skipConfirmCommitForThese: string[];
+  closedAgreements: ClosedAgreementRef[];
+  today: number;
+}
+
+export let state: State = {
   allAgreements,
   myAgreements: [],
   otherUsers: [
@@ -99,7 +135,7 @@ export const initialState = {
       closedAgreements: [
         {
           agreementId: closedAgreements[1].id,
-          point: -1
+          point: 1,
         }
       ]
     },
@@ -123,7 +159,7 @@ export const initialState = {
       closedAgreements: [
         {
           agreementId: closedAgreements[2].id,
-          point: -1
+          point: 0
         }
       ]
     },
@@ -146,7 +182,7 @@ export const initialState = {
     },
     {
       agreementId: closedAgreements[1].id,
-      point: -1,
+      point: 0,
       partners: ['Erin Armstrong']
     },
     {
@@ -154,7 +190,85 @@ export const initialState = {
       point: 1,
       partners: ['Norby Zylberberg']
     }
-  ]
+  ],
+  today: Date.now()
 };
 
+const initialState: State = {
+  ...state
+};
 
+export function getState() {
+  return state;
+}
+
+export function commitToAgreement(agreement: Agreement) {
+  const index = state.allAgreements.indexOf(agreement);
+  state.allAgreements = [
+    ...state.allAgreements.slice(0, index),
+    ...state.allAgreements.slice(index + 1)
+  ];
+  state.myAgreements = [
+    ...state.myAgreements,
+    {
+      agreementId: agreement.id,
+      pendingPartners: [],
+      confirmedPartners: []
+    }
+  ];
+}
+
+export function requestPartnerForAgreement(agreementId: string, partner: string) {
+  const index = state.myAgreements.findIndex(({agreementId: aId}) => aId === agreementId);
+  const agreement = state.myAgreements[index];
+  state.myAgreements = [
+    ...state.myAgreements.slice(0, index),
+    {
+      ...agreement,
+      pendingPartners: [ ...agreement.pendingPartners, partner ]
+    },
+    ...state.myAgreements.slice(index + 1),
+  ];
+}
+
+export function confirmPartnerForFirstAgreement() {
+  const agreement = state.myAgreements[0];
+  if (!agreement) {
+    return;
+  }
+  const firstPartner = agreement.pendingPartners[0];
+  if (!firstPartner) {
+    return;
+  }
+  const confirmedAgreement = {
+    ...agreement,
+    pendingPartners: agreement.pendingPartners.slice(1),
+    confirmedPartners: [ ...agreement.pendingPartners.slice(0, 1), firstPartner ]
+  };
+  state.myAgreements = [
+    confirmedAgreement,
+    ...state.myAgreements.slice(1)
+  ];
+}
+
+export function breakFirstAgreement() {
+  const agreement = state.myAgreements[0];
+  state.myAgreements = state.myAgreements.slice(1);
+  state.closedAgreements = [
+    ...state.closedAgreements,
+    {
+      agreementId: agreement.agreementId,
+      point: 0,
+      partners: [ ...agreement.confirmedPartners ]
+    }
+  ];
+}
+
+export function jumpAheadThreeDays() {
+  const today = new Date(state.today);
+  today.setDate(today.getDate() + 3);
+}
+
+export function resetStateToInitial() {
+  state = JSON.parse(JSON.stringify(initialState));
+}

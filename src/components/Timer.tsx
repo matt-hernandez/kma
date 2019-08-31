@@ -32,10 +32,11 @@ function getFormattedCountdown(distance: number): string {
 type Props = {
   deadline: number;
   onZero: () => void;
+  specifiedNow?: number;
 }
 
-const Timer: React.FunctionComponent<Props> = function({ deadline, onZero }) {
-  let now = new Date().getTime();
+const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, specifiedNow }) {
+  let now = specifiedNow || new Date().getTime();
   const [ distance, setDistance ] = useState(getFormattedCountdown(deadline - now));
   useEffect(() => {
     const interval = setInterval(function() {
