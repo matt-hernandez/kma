@@ -18,8 +18,7 @@ import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
 import InflateContent from './components/InflateContent';
-import Home from './pages/Home';
-import List from './pages/List';
+import Agreements from './pages/Agreements';
 import { contacts, list, stats, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
@@ -47,12 +46,12 @@ import { reducer } from './util/state';
 const appPages: AppPage[] = [
   {
     title: 'Open Agreements',
-    url: '/home/open-agreements',
+    url: '/agreements/open',
     icon: list
   },
   {
     title: 'My Agreements',
-    url: '/home/my-agreements',
+    url: '/agreements/my',
     icon: contacts
   },
   {
@@ -62,7 +61,7 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Settings',
-    url: '/score',
+    url: '/settings',
     icon: settings
   }
 ];
@@ -86,9 +85,9 @@ const App: React.FunctionComponent = () => (
             </IonHeader>
             <IonRouterOutlet>
               <InflateContent top={56} as="main">
-                <Route path="/home" component={Home} />
-                <Route path="/score" component={List} exact={true} />
-                <Route exact path="/" render={() => <Redirect to="/home" />} />
+                <Route path="/agreements" component={Agreements} />
+                <Route path="/score" component={() => <div />} exact={true} />
+                <Route exact path="/" render={() => <Redirect to="/agreements/open" />} />
               </InflateContent>
             </IonRouterOutlet>
           </IonPage>
