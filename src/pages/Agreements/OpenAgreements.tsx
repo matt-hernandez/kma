@@ -2,6 +2,10 @@ import React from 'react';
 import Agreement from '../../components/Agreement';
 import { StateProps, ourConnect, commitToAgreement } from '../../util/state';
 import { formatDueDate } from '../../util/format-due-date';
+import { addPageData } from '../../util/add-page-data';
+
+const slug = '/open';
+const title = 'Open Agreements';
 
 const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: { openAgreements } }) => (
   <>
@@ -20,4 +24,4 @@ const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: 
   </>
 );
 
-export default ourConnect()(OpenAgreements);
+export default addPageData(ourConnect()(OpenAgreements), { slug, title });

@@ -1,7 +1,11 @@
 import React from 'react';
 import Agreement from '../../components/Agreement';
-import { StateProps, ourConnect, commitToAgreement } from '../../util/state';
+import { StateProps, ourConnect } from '../../util/state';
 import { formatDueDate } from '../../util/format-due-date';
+import { addPageData } from '../../util/add-page-data';
+
+const slug = '/my';
+const title = 'My Agreements';
 
 const MyAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: { myAgreements } }) => (
   <>
@@ -21,4 +25,4 @@ const MyAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: { 
   </>
 );
 
-export default ourConnect()(MyAgreements);
+export default addPageData(ourConnect()(MyAgreements), { slug, title });

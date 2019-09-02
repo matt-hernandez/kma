@@ -85,8 +85,8 @@ const App: React.FunctionComponent = () => (
             </IonHeader>
             <IonRouterOutlet>
               <InflateContent top={56} as="main">
-                <Route path="/agreements" component={Agreements} />
-                <Route path="/score" component={() => <div />} exact={true} />
+                <Route path={Agreements.pageData.slug} component={Agreements} />
+                <Route path="/score" component={() => <div />} strict exact />
                 <Route exact path="/" render={() => <Redirect to="/agreements/open" />} />
               </InflateContent>
             </IonRouterOutlet>

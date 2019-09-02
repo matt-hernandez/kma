@@ -6,38 +6,43 @@ import Tab from '../components/Tab';
 import OpenAgreements from './Agreements/OpenAgreements';
 import MyAgreements from './Agreements/MyAgreements';
 import { colors } from '../styles/colors';
+import { addPageData } from '../util/add-page-data';
 
 const TabsContainer = styled(FlexRow)`
   margin-bottom: 14px;
   border-bottom: 1px solid ${colors.gray3};
 `;
 
+const slug = '/agreements'
+const title = 'Agreements'
+
 const tabs = [
   {
-    name: 'Open Agreements',
-    url: '/agreements/open'
+    title: OpenAgreements.pageData.title,
+    slug: OpenAgreements.pageData.slug
   },
   {
-    name: 'My Agreements',
-    url: '/agreements/my'
+    title: MyAgreements.pageData.title,
+    slug: MyAgreements.pageData.slug
   }
 ];
 
 const Agreements: React.FunctionComponent<RouteComponentProps> = ({
   history,
-  location }) => {
+  location,
+  match }) => {
   return (
     <>
       <TabsContainer>
-        {tabs.map(({ name, url }, i) => (
-          <Tab key={url} name={name} isActive={url === location.pathname} onClick={() => history.push(url)} />
+        {tabs.map(({ title, slug }, i) => (
+          <Tab key={slug} name={title} isActive={`${match.url}${slug}` === location.pathname} onClick={() => history.push(`${match.url}${slug}`)} />
         ))}
       </TabsContainer>
-      <Route path="/agreements/open" component={OpenAgreements} exact={true} />
-      <Route path="/agreements/my" component={MyAgreements} exact={true} />
-      <Route exact path="/agreements" render={() => <Redirect to="/agreements/open" />} />
+      <Route path={`${match.url}${OpenAgreements.pageData.slug}`} component={OpenAgreements} strict exact />
+      <Route path={`${match.url}${MyAgreements.pageData.slug}`} component={MyAgreements} strict exact />
+      <Route exact path={`${match.url}`} render={() => <Redirect to={`${match.url}${OpenAgreements.pageData.slug}`} />} />
     </>
   );
 };
 
-export default withRouter(Agreements);
+export default addPageData(withRouter(Agreements), { slug, title });
