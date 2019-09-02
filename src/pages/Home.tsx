@@ -6,6 +6,8 @@ import Tab from '../components/Tab';
 import Agreement from '../components/Agreement';
 import './Home.css';
 import { colors } from '../styles/colors';
+import { StateProps, ourConnect, commitToAgreement } from '../util/state';
+import { formatDueDate } from '../util/format-due-date';
 
 const TabsContainer = styled(FlexRow)`
   margin-bottom: 14px;
@@ -23,10 +25,11 @@ const tabs = [
   }
 ];
 
-const today = Date.now();
-const expiration = new Date(today + 1000 * 60 * 60 * 24 * 3).getTime();
-
-const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, location }) => {
+const HomePage: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+  history,
+  location,
+  dispatch,
+  state: { openAgreements, myAgreements } }) => {
   return (
     <>
       <TabsContainer>
@@ -35,53 +38,36 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
         ))}
       </TabsContainer>
       <Route path="/home/open-agreements" component={() => (
-        <Agreement
-          isCommitted={false}
-          expiration={expiration}
-          onExpire={() => {}}
-          title="Attend Kickstart Conditioning"
-          due="Due date: 7/12/19 at 6:15 AM"
-          description={`
-            Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-            Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-            tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-            in what sports scientists agree is one of the best total body workouts available.
-          `}
-          onCommit={() => {}}
-        />
+        <>
+          {openAgreements.map(({ id, expiration, title, due, description }) => (
+            <Agreement
+              key={id}
+              isCommitted={false}
+              expiration={expiration}
+              onExpire={() => {}}
+              title={title}
+              due={formatDueDate(due)}
+              description={description}
+              onCommit={() => dispatch(commitToAgreement(id))}
+            />
+          ))}
+        </>
       )} exact={true} />
       <Route path="/home/my-agreements" component={() => (
         <>
-          <Agreement
-            isCommitted={true}
-            expiration={expiration}
-            onExpire={() => {}}
-            pendingRequests={['Katie Fryer']}
-            acceptedRequests={['Dave Goode']}
-            title="Attend Groundwork Conditioning"
-            due="Due date: 7/12/19"
-            description={`
-              Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-              Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-              tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-              in what sports scientists agree is one of the best total body workouts available.
-            `}
-            onCommit={() => {}}
-          />
-          <Agreement
-            isCommitted={true}
-            expiration={expiration}
-            onExpire={() => {}}
-            title="Attend Groundwork Conditioning"
-            due="Due date: 7/15/19"
-            description={`
-              Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-              Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-              tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-              in what sports scientists agree is one of the best total body workouts available.
-            `}
-            onCommit={() => {}}
-          />
+          {myAgreements.map(({ id, expiration, pendingPartners, confirmedPartners, title, due, description }) => (
+            <Agreement
+              key={id}
+              isCommitted={true}
+              expiration={expiration}
+              onExpire={() => {}}
+              pendingPartners={pendingPartners}
+              confirmedPartners={confirmedPartners}
+              title={title}
+              due={formatDueDate(due)}
+              description={description}
+            />
+          ))}
         </>
       )} exact={true} />
       <Route exact path="/home" render={() => <Redirect to="/home/open-agreements" />} />
@@ -89,4 +75,4 @@ const HomePage: React.FunctionComponent<RouteComponentProps> = ({ history, locat
   );
 };
 
-export default withRouter(HomePage);
+export default withRouter(ourConnect()(HomePage));

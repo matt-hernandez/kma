@@ -1,3 +1,6 @@
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+
 function generateId() {
   return '_' + Math.random().toString(36).substr(2, 9);
 };
@@ -66,8 +69,7 @@ const allAgreements: Agreement[] = [
   templateId: generateId()
 }));
 
-interface CommittedAgreementRef {
-  agreementId: string;
+interface CommittedAgreement extends Agreement {
   pendingPartners: string[];
   confirmedPartners: string[];
 }
@@ -80,37 +82,43 @@ const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
     expiration: new Date(agreement.expiration - oneWeekMS).getTime(),
   }));
 
-interface ClosedAgreementRef {
-  agreementId: string;
-  point: 0 | 1;
+interface ClosedAgreement extends Agreement {
+  point: number;
   partners?: string[];
 }
 
 interface User {
   name: string;
   agreements: Agreement[];
-  closedAgreements?: ClosedAgreementRef[];
+  closedAgreements?: ClosedAgreement[];
 }
 
-interface State {
+export interface State {
   allAgreements: Agreement[];
-  myAgreements: CommittedAgreementRef[];
+  openAgreements: Agreement[];
+  myAgreements: CommittedAgreement[];
   otherUsers: User[];
   skipConfirmCommitForThese: string[];
-  closedAgreements: ClosedAgreementRef[];
+  closedAgreements: ClosedAgreement[];
   today: number;
 }
 
-export let state: State = {
-  allAgreements,
-  myAgreements: [],
-  otherUsers: [
+export interface StateProps {
+  state: State,
+  dispatch: Dispatch
+}
+
+class StateConstructor implements State {
+  allAgreements = allAgreements;
+  openAgreements = allAgreements;
+  myAgreements = [];
+  otherUsers = [
     {
       name: 'Katie Fryer',
       agreements: [],
       closedAgreements: [
         {
-          agreementId: closedAgreements[0].id,
+          ...closedAgreements[0],
           point: 1
         }
       ]
@@ -134,7 +142,7 @@ export let state: State = {
       ],
       closedAgreements: [
         {
-          agreementId: closedAgreements[1].id,
+          ...closedAgreements[1],
           point: 1,
         }
       ]
@@ -146,7 +154,7 @@ export let state: State = {
       ],
       closedAgreements: [
         {
-          agreementId: closedAgreements[0].id,
+          ...closedAgreements[0],
           point: 1
         }
       ]
@@ -158,7 +166,7 @@ export let state: State = {
       ],
       closedAgreements: [
         {
-          agreementId: closedAgreements[2].id,
+          ...closedAgreements[2],
           point: 0
         }
       ]
@@ -170,105 +178,174 @@ export let state: State = {
       ],
       closedAgreements: []
     }
-  ],
-  skipConfirmCommitForThese: [
+  ];
+  skipConfirmCommitForThese = [
     allAgreements[1].templateId
-  ],
-  closedAgreements: [
+  ];
+  closedAgreements = [
     {
-      agreementId: closedAgreements[0].id,
+      ...closedAgreements[0],
       point: 1,
       partners: ['Katie Fryer', 'Dave Goode']
     },
     {
-      agreementId: closedAgreements[1].id,
+      ...closedAgreements[1],
       point: 0,
       partners: ['Erin Armstrong']
     },
     {
-      agreementId: closedAgreements[2].id,
+      ...closedAgreements[2],
       point: 1,
       partners: ['Norby Zylberberg']
     }
-  ],
-  today: Date.now()
+  ];
+  today = Date.now();
 };
 
-const initialState: State = {
-  ...state
-};
+let initialState: State = new StateConstructor();
 
-export function getState() {
+export function reducer(state: State = initialState, action: any): State {
+  const { type, payload } = action;
+  if (type === 'COMMIT_TO_AGREEMENT') {
+    const { agreementId } = payload;
+    const agreement = state.openAgreements.find(({id: aId }) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.openAgreements.indexOf(agreement);
+    return {
+      ...state,
+      openAgreements: [
+        ...state.openAgreements.slice(0, index),
+        ...state.openAgreements.slice(index + 1)
+      ],
+      myAgreements: [
+        ...state.myAgreements,
+        {
+          ...agreement,
+          pendingPartners: [],
+          confirmedPartners: []
+        }
+      ]
+    };
+  } else if (type === 'REQUEST_PARTNER') {
+    const { agreementId, partner } = payload;
+    const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.myAgreements.indexOf(agreement);
+    return {
+      ...state,
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        {
+          ...agreement,
+          pendingPartners: [ ...agreement.pendingPartners, partner ]
+        },
+        ...state.myAgreements.slice(index + 1),
+      ]
+    };
+  } else if ('CONFIRM_PARTNER') {
+    const agreement = state.myAgreements[0];
+    if (!agreement) {
+      return state;
+    }
+    const firstPartner = agreement.pendingPartners[0];
+    if (!firstPartner) {
+      return state;
+    }
+    const confirmedAgreement = {
+      ...agreement,
+      pendingPartners: agreement.pendingPartners.slice(1),
+      confirmedPartners: [ ...agreement.pendingPartners.slice(0, 1), firstPartner ]
+    };
+    return {
+      ...state,
+      myAgreements: [
+        confirmedAgreement,
+        ...state.myAgreements.slice(1)
+      ]
+    };
+  } else if ('BREAK_AGREEMENT') {
+    const { agreementId } = payload;
+    const agreement = state.myAgreements.find(({id: aId }) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.myAgreements.indexOf(agreement);
+    return {
+      ...state,
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        ...state.myAgreements.slice(index + 1),
+      ],
+      closedAgreements: [
+        ...state.closedAgreements,
+        {
+          ...agreement,
+          point: 0,
+          partners: [ ...agreement.confirmedPartners ]
+        }
+      ]
+    };
+  } else if ('JUMP_AHEAD') {
+    const today = new Date(state.today);
+    today.setDate(today.getDate() + 3);
+    return {
+      ...state,
+      today: today.getTime()
+    };
+  } else if ('RESET') {
+    return new StateConstructor();
+  }
   return state;
 }
 
-export function commitToAgreement(agreement: Agreement) {
-  const index = state.allAgreements.indexOf(agreement);
-  state.allAgreements = [
-    ...state.allAgreements.slice(0, index),
-    ...state.allAgreements.slice(index + 1)
-  ];
-  state.myAgreements = [
-    ...state.myAgreements,
-    {
-      agreementId: agreement.id,
-      pendingPartners: [],
-      confirmedPartners: []
+export function commitToAgreement(agreementId: string) {
+  return {
+    type: 'COMMIT_TO_AGREEMENT',
+    payload: {
+      agreementId
     }
-  ];
+  };
 }
 
 export function requestPartnerForAgreement(agreementId: string, partner: string) {
-  const index = state.myAgreements.findIndex(({agreementId: aId}) => aId === agreementId);
-  const agreement = state.myAgreements[index];
-  state.myAgreements = [
-    ...state.myAgreements.slice(0, index),
-    {
-      ...agreement,
-      pendingPartners: [ ...agreement.pendingPartners, partner ]
-    },
-    ...state.myAgreements.slice(index + 1),
-  ];
+  return {
+    type: 'REQUEST_PARTNER',
+    payload: {
+      agreementId,
+      partner
+    }
+  };
 }
 
 export function confirmPartnerForFirstAgreement() {
-  const agreement = state.myAgreements[0];
-  if (!agreement) {
-    return;
-  }
-  const firstPartner = agreement.pendingPartners[0];
-  if (!firstPartner) {
-    return;
-  }
-  const confirmedAgreement = {
-    ...agreement,
-    pendingPartners: agreement.pendingPartners.slice(1),
-    confirmedPartners: [ ...agreement.pendingPartners.slice(0, 1), firstPartner ]
+  return {
+    type: 'CONFIRM_PARTNER'
   };
-  state.myAgreements = [
-    confirmedAgreement,
-    ...state.myAgreements.slice(1)
-  ];
 }
 
-export function breakFirstAgreement() {
-  const agreement = state.myAgreements[0];
-  state.myAgreements = state.myAgreements.slice(1);
-  state.closedAgreements = [
-    ...state.closedAgreements,
-    {
-      agreementId: agreement.agreementId,
-      point: 0,
-      partners: [ ...agreement.confirmedPartners ]
+export function breakFirstAgreement(agreementId: string) {
+  return {
+    type: 'BREAK_AGREEMENT',
+    payload: {
+      agreementId
     }
-  ];
+  };
 }
 
 export function jumpAheadThreeDays() {
-  const today = new Date(state.today);
-  today.setDate(today.getDate() + 3);
+  return {
+    type: 'JUMP_AHEAD'
+  };
 }
 
 export function resetStateToInitial() {
-  state = JSON.parse(JSON.stringify(initialState));
+  return {
+    type: 'RESET'
+  };
 }
+
+export const ourConnect = () => connect((state: State) => ({ state }));

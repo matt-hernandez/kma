@@ -36,14 +36,14 @@ type Props = {
 }
 
 const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, specifiedNow }) {
-  let now = specifiedNow || new Date().getTime();
+  const now = specifiedNow || new Date().getTime();
   const [ distance, setDistance ] = useState(getFormattedCountdown(deadline - now));
   useEffect(() => {
     const interval = setInterval(function() {
       // Get todays date and time
-      now = new Date().getTime();
+      const updatedNow = new Date().getTime();
       // Find the distance between now and the count down date
-      const updatedDistance = deadline - now;
+      const updatedDistance = deadline - updatedNow;
       if (updatedDistance < 0) {
         clearInterval(interval);
         setDistance('00:00:00:00');
@@ -52,6 +52,7 @@ const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, speci
       }
       setDistance(getFormattedCountdown(updatedDistance));
     }, 1000);
+    // eslint-disable-next-line
   }, []);
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   IonButton,
   IonCard,
@@ -13,7 +13,6 @@ import styled, { css } from 'styled-components/macro';
 import InlineItalic from '../components/InlineItalic';
 import CustomLink from '../components/CustomLink';
 import Timer from '../components/Timer';
-import { useStateHelper, listenerTypes } from '../util/use-state-helper';
 import { colors } from '../styles/colors';
 
 type TimerContainerProps = {
@@ -37,9 +36,9 @@ type PropTypes = {
   description?: string;
   expiration: number;
   isCommitted: boolean;
-  pendingRequests?: string[];
-  acceptedRequests?: string[];
-  onCommit: (...args: any) => void;
+  pendingPartners?: string[];
+  confirmedPartners?: string[];
+  onCommit?: (...args: any) => void;
   onExpire: (...args: any) => void;
   onCancel?: (...args: any) => void;
   onBreak?: (...args: any) => void;
@@ -51,13 +50,12 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   description,
   expiration,
   isCommitted,
-  pendingRequests = [],
-  acceptedRequests = [],
+  pendingPartners = [],
+  confirmedPartners = [],
   onCommit,
   onExpire,
   onCancel = () => {}
 }) => {
-  const [ isDescriptionOpen, toggleDescription ] = useStateHelper(false, listenerTypes.TOGGLE);
   const isPastExpiration = expiration < Date.now();
   const shouldWarnExpiration = expiration - Date.now() < (1000 * 60 * 60);
   return (
@@ -75,7 +73,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           <IonCardTitle>{title}</IonCardTitle>
           <IonCardSubtitle>{due}</IonCardSubtitle>
         </IonCardHeader>
-        { acceptedRequests.map(request => (
+        { confirmedPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="success" className="partner-request">
               <IonLabel>
@@ -84,7 +82,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )) }
-        { !isPastExpiration && pendingRequests.map(request => (
+        { !isPastExpiration && pendingPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="tertiary" className="partner-request">
               <IonLabel>
@@ -94,7 +92,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             <InlineItalic> - <CustomLink onClick={() => onCancel(request)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
         )) }
-        { (!isPastExpiration && isCommitted && pendingRequests.length === 0) && (
+        { (!isPastExpiration && isCommitted && pendingPartners.length === 0) && (
           <IonCardContent key={`${title} ${due} no-requests`}>
             <IonChip color="danger" className="partner-request">
               <IonLabel>
@@ -110,9 +108,9 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
         )}
         <IonCardContent>
           {!isCommitted && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this agreement</IonButton>}
-          {(isCommitted && pendingRequests.length + acceptedRequests.length < 2) && <IonButton expand="block" color="primary" onClick={onCommit}>Find a partner</IonButton>}
+          {(isCommitted && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onCommit}>Find a partner</IonButton>}
           {(isCommitted && !isPastExpiration) && <IonButton expand="block" color="medium" fill="outline" onClick={onCommit}>Cancel agreement</IonButton>}
-          {(isCommitted && acceptedRequests.length > 0 && isPastExpiration) && <IonButton expand="block" color="danger" onClick={onCommit}>Break agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length > 0 && isPastExpiration) && <IonButton expand="block" color="danger" onClick={onCommit}>Break agreement</IonButton>}
         </IonCardContent>
       </IonCard>
     </>

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import {
   IonApp,
   IonPage,
@@ -40,6 +42,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
+import { reducer } from './util/state';
 
 const appPages: AppPage[] = [
   {
@@ -64,30 +67,34 @@ const appPages: AppPage[] = [
   }
 ];
 
+const store = createStore(reducer);
+
 const App: React.FunctionComponent = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonSplitPane contentId="main">
-        <Menu appPages={appPages} />
-        <IonPage id="main">
-          <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonMenuButton />
-              </IonButtons>
-              <IonTitle>KMA</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-          <IonRouterOutlet>
-            <InflateContent top={56} as="main">
-              <Route path="/home" component={Home} />
-              <Route path="/score" component={List} exact={true} />
-              <Route exact path="/" render={() => <Redirect to="/home" />} />
-            </InflateContent>
-          </IonRouterOutlet>
-        </IonPage>
-      </IonSplitPane>
-    </IonReactRouter>
+    <Provider store={store}>
+      <IonReactRouter>
+        <IonSplitPane contentId="main">
+          <Menu appPages={appPages} />
+          <IonPage id="main">
+            <IonHeader>
+              <IonToolbar>
+                <IonButtons slot="start">
+                  <IonMenuButton />
+                </IonButtons>
+                <IonTitle>KMA</IonTitle>
+              </IonToolbar>
+            </IonHeader>
+            <IonRouterOutlet>
+              <InflateContent top={56} as="main">
+                <Route path="/home" component={Home} />
+                <Route path="/score" component={List} exact={true} />
+                <Route exact path="/" render={() => <Redirect to="/home" />} />
+              </InflateContent>
+            </IonRouterOutlet>
+          </IonPage>
+        </IonSplitPane>
+      </IonReactRouter>
+    </Provider>
   </IonApp>
 );
 
