@@ -29,6 +29,8 @@ interface Agreement {
 
 const allAgreements: Agreement[] = [
   {
+    id: generateId(),
+    templateId: generateId(),
     title: 'Attend Kickstart Conditioning - Monday',
     due: threeDaysFromNowAt615AM.getTime(),
     expiration: new Date(threeDaysFromNowAt615AM.getTime() - twoHoursMS).getTime(),
@@ -38,23 +40,31 @@ const allAgreements: Agreement[] = [
     in what sports scientists agree is one of the best total body workouts available.`
   },
   {
+    id: generateId(),
+    templateId: generateId(),
     title: 'Attend three KM or Fight Tactics classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
     expiration: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any KM 1+ class or Fight Tactics class counts towards doing this agreement.`
   },
   {
+    id: generateId(),
+    templateId: generateId(),
     title: 'Attend three conditioning classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
     expiration: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any Heavy Bag class or Kickstart Conditioning class counts towards doing this agreement.`
   },
   {
+    id: generateId(),
+    templateId: generateId(),
     title: 'Attend Groundwork Conditioning',
     due: sevenDaysFromNowAt2PM.getTime(),
     expiration: new Date(sevenDaysFromNowAt2PM.getTime() - twoHoursMS).getTime()
   },
   {
+    id: generateId(),
+    templateId: generateId(),
     title: 'Attend Kickstart Conditioning - Saturday',
     due: sevenDaysFromNowAt12PM.getTime(),
     expiration: new Date(sevenDaysFromNowAt12PM.getTime() - twoHoursMS).getTime(),
@@ -63,11 +73,7 @@ const allAgreements: Agreement[] = [
     tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
     in what sports scientists agree is one of the best total body workouts available.`
   },
-].map(agreement => ({
-  ...agreement,
-  id: generateId(),
-  templateId: generateId()
-}));
+];
 
 interface CommittedAgreement extends Agreement {
   pendingPartners: string[];
@@ -180,7 +186,7 @@ class StateConstructor implements State {
     }
   ];
   skipConfirmCommitForThese = [
-    allAgreements[1].templateId
+    allAgreements[0].templateId
   ];
   closedAgreements = [
     {
@@ -226,6 +232,15 @@ export function reducer(state: State = initialState, action: any): State {
           pendingPartners: [],
           confirmedPartners: []
         }
+      ]
+    };
+  } else if (type === 'SKIP_CONFIRM') {
+    const { templateId } = payload;
+    return {
+      ...state,
+      skipConfirmCommitForThese: [
+        ...state.skipConfirmCommitForThese,
+        templateId
       ]
     };
   } else if (type === 'REQUEST_PARTNER') {
@@ -307,6 +322,15 @@ export function commitToAgreement(agreementId: string) {
     type: 'COMMIT_TO_AGREEMENT',
     payload: {
       agreementId
+    }
+  };
+}
+
+export function addAgreementTemplateToSkip(templateId: string) {
+  return {
+    type: 'SKIP_CONFIRM',
+    payload: {
+      templateId
     }
   };
 }

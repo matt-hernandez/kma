@@ -10,6 +10,10 @@ ion-menu ion-icon {
   margin-right: 20px;
 }
 
+ion-item {
+  --ion-color-contrast: #393939;
+}
+
 .split-pane-main ion-title {
   text-align: center;
 }
@@ -45,4 +49,26 @@ ion-button.md {
   font-size: 15px;
   line-height: 26px;
   height: 40px;
+}
+
+.modal-wrapper.sc-ion-modal-md {
+  --min-height: 0;
+  --height: auto;
+  --max-height: inherit;
+}
+
+.modal-wrapper.sc-ion-modal-md .ion-page {
+  display: block;
+  position: static;
+  contain: inherit;
+}
+
+ion-checkbox + ion-label {
+  margin-left: 12px;
+}
+
+br {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
