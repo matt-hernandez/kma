@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/macro';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { IonModal, IonButton, IonCheckbox, IonLabel } from '@ionic/react';
 import Agreement from '../../components/Agreement';
 import H1 from '../../components/H1';
@@ -24,8 +25,13 @@ const ModalPadding = styled.div`
   padding: 20px;
 `;
 
-const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: { openAgreements, skipConfirmCommitForThese } }) => {
+const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> = ({
+    dispatch,
+    state: { openAgreements, skipConfirmCommitForThese },
+    history
+  }) => {
   const [ showModal, setShowModal ] = useState(false);
+  const [ commitOnModalDismiss, setCommitOnModalDismiss ] = useState(false);
   const [ agreementToConfirm, setAgreementToConfirm ] = useState<ArrayUnpacked<State['openAgreements']>>();
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
   return (
@@ -44,6 +50,7 @@ const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: 
             onCommit={() => {
               if (skipConfirmCommitForThese.includes(templateId)) {
                 dispatch(commitToAgreement(id));
+                history.push(`/confirmed/${id}`);
               } else {
                 setAgreementToConfirm(agreement);
                 setShowModal(true);
@@ -53,7 +60,10 @@ const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: 
         )
       })}
       {(agreementToConfirm !== undefined &&
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+        <IonModal isOpen={showModal} onDidDismiss={() => {
+          setShowModal(false);
+          history.push(`/confirmed/${agreementToConfirm.id}`);
+        }}>
           <ModalPadding>
             <H1 grayLevel={8}>Ready to commit to this?</H1>
             <Spacer height="6px" />
@@ -80,6 +90,7 @@ const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: 
                   dispatch(addAgreementTemplateToSkip(agreementToConfirm.templateId));
                 }
                 dispatch(commitToAgreement(agreementToConfirm.id));
+                setCommitOnModalDismiss(true);
                 setShowModal(false);
               }}>Yes, commit!</IonButton>
             </MarginWrapper>
@@ -91,4 +102,9 @@ const OpenAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: 
   )
 };
 
-export default addPageData(ourConnect()(OpenAgreements), { slug, title });
+export default addPageData(
+  ourConnect()(
+    withRouter(OpenAgreements)
+  ),
+  { slug, title }
+);

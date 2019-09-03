@@ -19,6 +19,7 @@ import { AppPage } from './declarations';
 import Menu from './components/Menu';
 import InflateContent from './components/InflateContent';
 import Agreements from './pages/Agreements';
+import CommitmentConfirmed from './pages/CommitmentConfirmed';
 import { contacts, list, stats, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
@@ -86,6 +87,7 @@ const App: React.FunctionComponent = () => (
             <IonRouterOutlet>
               <InflateContent top={56} as="main">
                 <Route path={Agreements.pageData.slug} component={Agreements} />
+                <Route path={CommitmentConfirmed.pageData.slug} component={CommitmentConfirmed} strict exact />
                 <Route path="/score" component={() => <div />} strict exact />
                 <Route exact path="/" render={() => <Redirect to="/agreements/open" />} />
               </InflateContent>
