@@ -94,6 +94,7 @@ interface ClosedAgreement extends Agreement {
 }
 
 interface User {
+  id: string;
   name: string;
   agreements: Agreement[];
   closedAgreements?: ClosedAgreement[];
@@ -104,6 +105,7 @@ export interface State {
   openAgreements: Agreement[];
   myAgreements: CommittedAgreement[];
   otherUsers: User[];
+  usersInSearch: User[];
   skipConfirmCommitForThese: string[];
   closedAgreements: ClosedAgreement[];
   today: number;
@@ -120,6 +122,7 @@ class StateConstructor implements State {
   myAgreements = [];
   otherUsers = [
     {
+      id: generateId(),
       name: 'Katie Fryer',
       agreements: [],
       closedAgreements: [
@@ -130,18 +133,22 @@ class StateConstructor implements State {
       ]
     },
     {
+      id: generateId(),
       name: 'Katie Banks',
       agreements: []
     },
     {
+      id: generateId(),
       name: 'Kati Taylor',
       agreements: []
     },
     {
+      id: generateId(),
       name: 'Katherine Love',
       agreements: []
     },
     {
+      id: generateId(),
       name: 'Erin Armstrong',
       agreements: [
         allAgreements[0]
@@ -154,6 +161,7 @@ class StateConstructor implements State {
       ]
     },
     {
+      id: generateId(),
       name: 'Dave Goode',
       agreements: [
         allAgreements[0]
@@ -166,6 +174,7 @@ class StateConstructor implements State {
       ]
     },
     {
+      id: generateId(),
       name: 'Norbi Zylberberg',
       agreements: [
         allAgreements[0]
@@ -178,6 +187,7 @@ class StateConstructor implements State {
       ]
     },
     {
+      id: generateId(),
       name: 'Rachel Weiss',
       agreements: [
         allAgreements[0]
@@ -185,6 +195,7 @@ class StateConstructor implements State {
       closedAgreements: []
     }
   ];
+  usersInSearch = [];
   skipConfirmCommitForThese = [
     allAgreements[0].templateId
   ];

@@ -62,7 +62,9 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
       {(agreementToConfirm !== undefined &&
         <IonModal isOpen={showModal} onDidDismiss={() => {
           setShowModal(false);
-          history.push(`/confirmed/${agreementToConfirm.id}`);
+          if (commitOnModalDismiss) {
+            history.push(`/confirmed/${agreementToConfirm.id}`);
+          }
         }}>
           <ModalPadding>
             <H1 grayLevel={8}>Ready to commit to this?</H1>
