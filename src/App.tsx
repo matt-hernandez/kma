@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import {
   IonApp,
@@ -43,7 +42,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
-import { reducer } from './util/state';
+import { store } from './util/state';
 
 const appPages: AppPage[] = [
   {
@@ -67,8 +66,6 @@ const appPages: AppPage[] = [
     icon: settings
   }
 ];
-
-const store = createStore(reducer);
 
 const App: React.FunctionComponent = () => (
   <IonApp>

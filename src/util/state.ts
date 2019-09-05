@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import { Dispatch, createStore, applyMiddleware } from "redux";
 import { connect } from "react-redux";
 
 function generateId() {
@@ -254,6 +254,33 @@ export function reducer(state: State = initialState, action: any): State {
         templateId
       ]
     };
+  } else if (type === 'SEARCH_FOR_PARTNER') {
+    const { agreementId, query } = payload;
+    const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const { otherUsers } = state;
+    const usersInSearch = otherUsers
+      .filter(({ name }) => name.indexOf(query) !== -1)
+      .filter(({ name }) => agreement.pendingPartners.indexOf(name) === -1 && agreement.confirmedPartners.indexOf(name) === -1)
+      .sort(({ name: a }, { name: b }) => {
+        const aIndex = a.indexOf(query);
+        const bIndex = b.indexOf(query);
+        if (aIndex === bIndex) {
+          return a.length - b.length;
+        }
+        return aIndex - bIndex;
+      });
+    return {
+      ...state,
+      usersInSearch
+    }
+  } else if (type === 'CLEAR_PARTNER_SEARCH') {
+    return {
+      ...state,
+      usersInSearch: []
+    }
   } else if (type === 'REQUEST_PARTNER') {
     const { agreementId, partner } = payload;
     const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
@@ -272,7 +299,7 @@ export function reducer(state: State = initialState, action: any): State {
         ...state.myAgreements.slice(index + 1),
       ]
     };
-  } else if ('CONFIRM_PARTNER') {
+  } else if (type === 'CONFIRM_PARTNER') {
     const agreement = state.myAgreements[0];
     if (!agreement) {
       return state;
@@ -293,7 +320,7 @@ export function reducer(state: State = initialState, action: any): State {
         ...state.myAgreements.slice(1)
       ]
     };
-  } else if ('BREAK_AGREEMENT') {
+  } else if (type === 'BREAK_AGREEMENT') {
     const { agreementId } = payload;
     const agreement = state.myAgreements.find(({id: aId }) => aId === agreementId);
     if (!agreement) {
@@ -315,14 +342,14 @@ export function reducer(state: State = initialState, action: any): State {
         }
       ]
     };
-  } else if ('JUMP_AHEAD') {
+  } else if (type === 'JUMP_AHEAD') {
     const today = new Date(state.today);
     today.setDate(today.getDate() + 3);
     return {
       ...state,
       today: today.getTime()
     };
-  } else if ('RESET') {
+  } else if (type === 'RESET') {
     return new StateConstructor();
   }
   return state;
@@ -343,6 +370,22 @@ export function addAgreementTemplateToSkip(templateId: string) {
     payload: {
       templateId
     }
+  };
+}
+
+export function searchForPartnerForAgreement(query: string, agreementId: string) {
+  return {
+    type: 'SEARCH_FOR_PARTNER',
+    payload: {
+      query,
+      agreementId
+    }
+  };
+}
+
+export function clearPartnerSearch() {
+  return {
+    type: 'CLEAR_PARTNER_SEARCH'
   };
 }
 
@@ -384,3 +427,15 @@ export function resetStateToInitial() {
 }
 
 export const ourConnect = () => connect((state: State) => ({ state }));
+
+const pastState = localStorage.getItem('km-agreements-state');
+
+export const store = createStore(
+  reducer,
+  pastState ? JSON.parse(pastState) : initialState,
+  applyMiddleware(store => next => action => {
+    let result = next(action);
+    localStorage.setItem('km-agreements-state', JSON.stringify(store.getState()));
+    return result;
+  })
+);

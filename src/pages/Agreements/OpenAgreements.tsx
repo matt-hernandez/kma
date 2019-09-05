@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { IonModal, IonButton, IonCheckbox, IonLabel } from '@ionic/react';
@@ -32,6 +32,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
   }) => {
   const [ showModal, setShowModal ] = useState(false);
   const [ commitOnModalDismiss, setCommitOnModalDismiss ] = useState(false);
+  const commitOnModalDismissRef = useRef(commitOnModalDismiss); // using a ref for modal dismissal because of old callback being called when user commits to agreement
   const [ agreementToConfirm, setAgreementToConfirm ] = useState<ArrayUnpacked<State['openAgreements']>>();
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
   return (
@@ -62,7 +63,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
       {(agreementToConfirm !== undefined &&
         <IonModal isOpen={showModal} onDidDismiss={() => {
           setShowModal(false);
-          if (commitOnModalDismiss) {
+          if (commitOnModalDismissRef.current) {
             history.push(`/confirmed/${agreementToConfirm.id}`);
           }
         }}>
@@ -94,6 +95,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
                 dispatch(commitToAgreement(agreementToConfirm.id));
                 setCommitOnModalDismiss(true);
                 setShowModal(false);
+                commitOnModalDismissRef.current = true;
               }}>Yes, commit!</IonButton>
             </MarginWrapper>
             <IonButton expand="block" color="medium" fill="outline" onClick={() => setShowModal(false)}>Nevermind</IonButton>

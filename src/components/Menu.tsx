@@ -13,12 +13,13 @@ import React from 'react';
 import InflateContent from '../components/InflateContent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AppPage } from '../declarations';
+import { ourConnect, StateProps, resetStateToInitial } from '../util/state';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
 }
 
-const Menu: React.FunctionComponent<MenuProps> = ({ appPages, location }) => (
+const Menu: React.FunctionComponent<MenuProps & StateProps> = ({ appPages, location, dispatch }) => (
   <IonMenu contentId="main">
     <IonHeader>
       <IonToolbar>
@@ -37,9 +38,12 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, location }) => (
             </IonMenuToggle>
           );
         })}
+        <IonItem button={true} onClick={() => dispatch(resetStateToInitial())}>
+          <IonLabel>Reset</IonLabel>
+        </IonItem>
       </IonList>
     </InflateContent>
   </IonMenu>
 );
 
-export default withRouter(Menu);
+export default withRouter(ourConnect()(Menu));

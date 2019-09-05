@@ -52,6 +52,9 @@ const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, speci
       }
       setDistance(getFormattedCountdown(updatedDistance));
     }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
     // eslint-disable-next-line
   }, []);
   return (
