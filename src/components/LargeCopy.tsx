@@ -35,4 +35,5 @@ export default styled.h4<ExtraProps>`
       color: ${(colors as any)[`gray${grayLevel}`]};
     `
   }
+  font-weight: 400;
 `;

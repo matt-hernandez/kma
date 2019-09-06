@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import UserItem from '../components/UserItem';
 import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
-import { ourConnect, StateProps, searchForPartnerForAgreement, clearPartnerSearch } from '../util/state';
+import { ourConnect, StateProps, searchForPartnerForAgreement, clearPartnerSearch, saveSearchQuery } from '../util/state';
 
 const slug = '/partner-search/:id';
-const title = 'Search for Partner';
+const title = 'Partner Search';
 
-const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     match,
     history,
     dispatch,
-    state: { usersInSearch }
+    state: { usersInSearch, myAgreements, savedSearchQuery }
   }) => {
   const agreementId = (match.params as RouteParams)['id'];
+  const agreement = myAgreements.find(({id: aId}) => aId === agreementId);
+  const queryRef = useRef(savedSearchQuery);
+  const [ query, setQuery ] = useState('');
+  if (!agreement) {
+    return <Redirect to="/404" />
+  }
   return (
     <PageWrapper>
       <IonSearchbar
@@ -24,26 +30,31 @@ const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps
         animated
         placeholder="Search for partners"
         autocomplete="off"
+        value={savedSearchQuery || query}
         onIonInput={({ target }) => {
           if (!target) {
             return;
           }
           const { value } = (target as any);
+          queryRef.current = value;
+          setQuery(value);
           if (value.length === 0) {
             dispatch(clearPartnerSearch());
             return;
           }
-          if (value.length > 2) {
+          if (value.length > 0) {
             dispatch(searchForPartnerForAgreement(value, agreementId));
           }
         }}
         onIonClear={() => {
+          queryRef.current = '';
           dispatch(clearPartnerSearch());
         }}
       />
       <IonList>
         { usersInSearch.map(({ id: userId, name }) => (
           <UserItem key={userId} name={name} onClick={() => {
+            dispatch(saveSearchQuery(queryRef.current));
             history.push(`/confirm-partner/${agreementId}/${userId}`);
           }} />
         )) }
@@ -52,4 +63,4 @@ const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps
   );
 };
 
-export default addPageData((withRouter(ourConnect()(SearchForPartner))), { slug, title });
+export default addPageData((withRouter(ourConnect()(PartnerSearch))), { slug, title });

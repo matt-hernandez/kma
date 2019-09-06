@@ -181,6 +181,7 @@ export interface State {
   myAgreements: CommittedAgreement[];
   otherUsers: User[];
   usersInSearch: User[];
+  savedSearchQuery: string;
   skipConfirmCommitForThese: string[];
   closedAgreements: ClosedAgreement[];
   today: number;
@@ -197,6 +198,7 @@ class StateConstructor implements State {
   myAgreements = [];
   otherUsers = users;
   usersInSearch = [];
+  savedSearchQuery = '';
   skipConfirmCommitForThese = [
     allAgreements[0].templateId
   ];
@@ -279,6 +281,12 @@ export function reducer(state: State = initialState, action: any): State {
     return {
       ...state,
       usersInSearch
+    }
+  } else if (type === 'SAVE_SEARCH_QUERY') {
+    const { query } = payload;
+    return {
+      ...state,
+      savedSearchQuery: query
     }
   } else if (type === 'CLEAR_PARTNER_SEARCH') {
     return {
@@ -394,6 +402,15 @@ export function searchForPartnerForAgreement(query: string, agreementId: string)
 export function clearPartnerSearch() {
   return {
     type: 'CLEAR_PARTNER_SEARCH'
+  };
+}
+
+export function saveSearchQuery(query: string) {
+  return {
+    type: 'SAVE_SEARCH_QUERY',
+    payload: {
+      query
+    }
   };
 }
 
