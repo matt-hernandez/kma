@@ -12,10 +12,11 @@ const title = 'Search for Partner';
 
 const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     match,
+    history,
     dispatch,
     state: { usersInSearch }
   }) => {
-  const id = (match.params as RouteParams)['id'];
+  const agreementId = (match.params as RouteParams)['id'];
   return (
     <PageWrapper>
       <IonSearchbar
@@ -33,7 +34,7 @@ const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps
             return;
           }
           if (value.length > 2) {
-            dispatch(searchForPartnerForAgreement(value, id));
+            dispatch(searchForPartnerForAgreement(value, agreementId));
           }
         }}
         onIonClear={() => {
@@ -41,8 +42,10 @@ const SearchForPartner: React.FunctionComponent<RouteComponentProps & StateProps
         }}
       />
       <IonList>
-        { usersInSearch.map(({ id, name }) => (
-          <UserItem key={id} name={name} />
+        { usersInSearch.map(({ id: userId, name }) => (
+          <UserItem key={userId} name={name} onClick={() => {
+            history.push(`/confirm-partner/${agreementId}/${userId}`);
+          }} />
         )) }
       </IonList>
     </PageWrapper>

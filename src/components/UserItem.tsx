@@ -9,11 +9,12 @@ const LabelWrapper = styled.div`
 
 type Props = {
   name: string;
+  onClick?: (...args: any[]) => void;
 };
 
-const UserItem: React.FunctionComponent<Props> = function ({ name }) {
+const UserItem: React.FunctionComponent<Props> = function ({ name, onClick }) {
   return (
-    <IonItem>
+    <IonItem button={true} onClick={onClick}>
       <UserPic />
       <LabelWrapper>
         <IonLabel>{name}</IonLabel>

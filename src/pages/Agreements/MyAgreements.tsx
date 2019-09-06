@@ -15,8 +15,8 @@ const MyAgreements: React.FunctionComponent<StateProps> = ({ dispatch, state: { 
         isCommitted={true}
         expiration={expiration}
         onExpire={() => {}}
-        pendingPartners={pendingPartners}
-        confirmedPartners={confirmedPartners}
+        pendingPartners={pendingPartners.map(({name}) => name)}
+        confirmedPartners={confirmedPartners.map(({name}) => name)}
         title={title}
         due={formatDueDate(due)}
         description={description}

@@ -20,6 +20,8 @@ import InflateContent from './components/InflateContent';
 import Agreements from './pages/Agreements';
 import CommitmentConfirmed from './pages/CommitmentConfirmed';
 import SearchForPartner from './pages/SearchForPartner';
+import ConfirmPartnerRequest from './pages/ConfirmPartnerRequest';
+import RequestSent from './pages/RequestSent';
 import { contacts, list, stats, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
@@ -87,6 +89,8 @@ const App: React.FunctionComponent = () => (
                 <Route path={Agreements.pageData.slug} component={Agreements} />
                 <Route path={CommitmentConfirmed.pageData.slug} component={CommitmentConfirmed} strict exact />
                 <Route path={SearchForPartner.pageData.slug} component={SearchForPartner} strict exact />
+                <Route path={ConfirmPartnerRequest.pageData.slug} component={ConfirmPartnerRequest} strict exact />
+                <Route path={RequestSent.pageData.slug} component={RequestSent} strict exact />
                 <Route path="/score" component={() => <div />} strict exact />
                 <Route exact path="/" render={() => <Redirect to="/agreements/open" />} />
               </InflateContent>

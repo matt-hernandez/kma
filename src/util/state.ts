@@ -76,8 +76,8 @@ const allAgreements: Agreement[] = [
 ];
 
 interface CommittedAgreement extends Agreement {
-  pendingPartners: string[];
-  confirmedPartners: string[];
+  pendingPartners: User[];
+  confirmedPartners: User[];
 }
 
 const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
@@ -90,7 +90,7 @@ const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
 
 interface ClosedAgreement extends Agreement {
   point: number;
-  partners?: string[];
+  partners?: User[];
 }
 
 interface User {
@@ -99,6 +99,81 @@ interface User {
   agreements: Agreement[];
   closedAgreements?: ClosedAgreement[];
 }
+const users: User[] = [
+  {
+    id: generateId(),
+    name: 'Katie Fryer',
+    agreements: [],
+    closedAgreements: [
+      {
+        ...closedAgreements[0],
+        point: 1
+      }
+    ]
+  },
+  {
+    id: generateId(),
+    name: 'Katie Banks',
+    agreements: []
+  },
+  {
+    id: generateId(),
+    name: 'Kati Taylor',
+    agreements: []
+  },
+  {
+    id: generateId(),
+    name: 'Katherine Love',
+    agreements: []
+  },
+  {
+    id: generateId(),
+    name: 'Erin Armstrong',
+    agreements: [
+      allAgreements[0]
+    ],
+    closedAgreements: [
+      {
+        ...closedAgreements[1],
+        point: 1,
+      }
+    ]
+  },
+  {
+    id: generateId(),
+    name: 'Dave Goode',
+    agreements: [
+      allAgreements[0]
+    ],
+    closedAgreements: [
+      {
+        ...closedAgreements[0],
+        point: 1
+      }
+    ]
+  },
+  {
+    id: generateId(),
+    name: 'Norbi Zylberberg',
+    agreements: [
+      allAgreements[0]
+    ],
+    closedAgreements: [
+      {
+        ...closedAgreements[2],
+        point: 0
+      }
+    ]
+  },
+  {
+    id: generateId(),
+    name: 'Rachel Weiss',
+    agreements: [
+      allAgreements[0]
+    ],
+    closedAgreements: []
+  }
+];
 
 export interface State {
   allAgreements: Agreement[];
@@ -120,81 +195,7 @@ class StateConstructor implements State {
   allAgreements = allAgreements;
   openAgreements = allAgreements;
   myAgreements = [];
-  otherUsers = [
-    {
-      id: generateId(),
-      name: 'Katie Fryer',
-      agreements: [],
-      closedAgreements: [
-        {
-          ...closedAgreements[0],
-          point: 1
-        }
-      ]
-    },
-    {
-      id: generateId(),
-      name: 'Katie Banks',
-      agreements: []
-    },
-    {
-      id: generateId(),
-      name: 'Kati Taylor',
-      agreements: []
-    },
-    {
-      id: generateId(),
-      name: 'Katherine Love',
-      agreements: []
-    },
-    {
-      id: generateId(),
-      name: 'Erin Armstrong',
-      agreements: [
-        allAgreements[0]
-      ],
-      closedAgreements: [
-        {
-          ...closedAgreements[1],
-          point: 1,
-        }
-      ]
-    },
-    {
-      id: generateId(),
-      name: 'Dave Goode',
-      agreements: [
-        allAgreements[0]
-      ],
-      closedAgreements: [
-        {
-          ...closedAgreements[0],
-          point: 1
-        }
-      ]
-    },
-    {
-      id: generateId(),
-      name: 'Norbi Zylberberg',
-      agreements: [
-        allAgreements[0]
-      ],
-      closedAgreements: [
-        {
-          ...closedAgreements[2],
-          point: 0
-        }
-      ]
-    },
-    {
-      id: generateId(),
-      name: 'Rachel Weiss',
-      agreements: [
-        allAgreements[0]
-      ],
-      closedAgreements: []
-    }
-  ];
+  otherUsers = users;
   usersInSearch = [];
   skipConfirmCommitForThese = [
     allAgreements[0].templateId
@@ -203,17 +204,17 @@ class StateConstructor implements State {
     {
       ...closedAgreements[0],
       point: 1,
-      partners: ['Katie Fryer', 'Dave Goode']
+      partners: [users[0], users[5]]
     },
     {
       ...closedAgreements[1],
       point: 0,
-      partners: ['Erin Armstrong']
+      partners: [users[4]]
     },
     {
       ...closedAgreements[2],
       point: 1,
-      partners: ['Norby Zylberberg']
+      partners: [users[6]]
     }
   ];
   today = Date.now();
@@ -263,7 +264,10 @@ export function reducer(state: State = initialState, action: any): State {
     const { otherUsers } = state;
     const usersInSearch = otherUsers
       .filter(({ name }) => name.indexOf(query) !== -1)
-      .filter(({ name }) => agreement.pendingPartners.indexOf(name) === -1 && agreement.confirmedPartners.indexOf(name) === -1)
+      .filter(({ name }) =>
+        agreement.pendingPartners.findIndex(({name: n}) => n === name) === -1 &&
+        agreement.confirmedPartners.findIndex(({name: n}) => n === name) === -1
+      )
       .sort(({ name: a }, { name: b }) => {
         const aIndex = a.indexOf(query);
         const bIndex = b.indexOf(query);
@@ -282,12 +286,16 @@ export function reducer(state: State = initialState, action: any): State {
       usersInSearch: []
     }
   } else if (type === 'REQUEST_PARTNER') {
-    const { agreementId, partner } = payload;
+    const { agreementId, partnerId } = payload;
     const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
     if (!agreement) {
       return state;
     }
     const index = state.myAgreements.indexOf(agreement);
+    const partner = state.otherUsers.find(({id: uId}) => uId === partnerId);
+    if (!partner) {
+      return state;
+    }
     return {
       ...state,
       myAgreements: [
@@ -389,19 +397,23 @@ export function clearPartnerSearch() {
   };
 }
 
-export function requestPartnerForAgreement(agreementId: string, partner: string) {
+export function requestPartnerForAgreement(agreementId: string, partnerId: string) {
   return {
     type: 'REQUEST_PARTNER',
     payload: {
       agreementId,
-      partner
+      partnerId
     }
   };
 }
 
-export function confirmPartnerForFirstAgreement() {
+export function confirmPartnerForAgreement(agreementId: string, partnerId: string) {
   return {
-    type: 'CONFIRM_PARTNER'
+    type: 'CONFIRM_PARTNER',
+    payload: {
+      agreementId,
+      partnerId
+    }
   };
 }
 
