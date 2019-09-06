@@ -23,6 +23,7 @@ import PartnerSearch from './pages/PartnerSearch';
 import ConfirmPartnerRequest from './pages/ConfirmPartnerRequest';
 import RequestSent from './pages/RequestSent';
 import FindAPartner from './pages/FindAPartner';
+import UserPool from './pages/UserPool';
 import PageDoesNotExist from './pages/404';
 import { contacts, list, stats, settings } from 'ionicons/icons';
 
@@ -95,6 +96,7 @@ const App: React.FunctionComponent = () => (
                   <Route path={ConfirmPartnerRequest.pageData.slug} component={ConfirmPartnerRequest} strict exact />
                   <Route path={RequestSent.pageData.slug} component={RequestSent} strict exact />
                   <Route path={FindAPartner.pageData.slug} component={FindAPartner} strict exact />
+                  <Route path={UserPool.pageData.slug} component={UserPool} strict exact />
                   <Route path="/score" component={() => <div />} strict exact />
                   <Route path="/" exact render={() => <Redirect to="/agreements/open" />} />
                   <Route component={PageDoesNotExist} />

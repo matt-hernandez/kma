@@ -37,7 +37,7 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StatePr
         <LargeCopy centered>Now it's time to find a partner. You can do one of two things.</LargeCopy>
         <IonButton expand="block" color="primary" onClick={() => history.push(`/partner-search/${agreementId}`)}>Direct message a person</IonButton>
         <LargeCopy centered>Or</LargeCopy>
-        <IonButton expand="block" color="primary" onClick={() => {}}>Choose from others who have made the same agreement</IonButton>
+        <IonButton expand="block" color="primary" onClick={() => history.push(`/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
       </PageContent>
     </FlexColumn>
   );

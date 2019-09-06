@@ -16,6 +16,10 @@ const Half = styled(FlexCell)`
   position: relative;
 `;
 
+const ButtonsContainer = styled.div`
+  width: 50%;
+`;
+
 const RequestSent: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
@@ -31,11 +35,13 @@ const RequestSent: React.FunctionComponent<RouteComponentProps> = ({
       </Half>
       <Half shouldInflate>
         <FlexColumn shouldInflate centeredHorizontal>
-          <IonButton expand="block" color="primary" onClick={() => {
-            history.push('/agreements/my');
-          }}>
-            Go to My Agreements
-          </IonButton>
+          <ButtonsContainer>
+            <IonButton expand="block" color="primary" onClick={() => {
+              history.push('/agreements/my');
+            }}>
+              Go to My Agreements
+            </IonButton>
+          </ButtonsContainer>
         </FlexColumn>
       </Half>
     </FlexColumn>

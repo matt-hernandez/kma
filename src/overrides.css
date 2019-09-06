@@ -72,3 +72,8 @@ br {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+ion-list.list-md,
+ion-list.list-ios {
+  padding-top: 0;
+}

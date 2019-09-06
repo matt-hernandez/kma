@@ -20,7 +20,7 @@ const Half = styled(FlexCell)`
 `;
 
 const ButtonsContainer = styled.div`
-  width: 40%;
+  width: 50%;
 `;
 
 const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & StateProps> = ({

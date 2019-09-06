@@ -112,7 +112,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
         <IonCardContent>
           {!isCommitted && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this agreement</IonButton>}
           {(isCommitted && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
-          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCommit}>Cancel this agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break this agreement</IonButton>}
         </IonCardContent>
       </IonCard>
     </>

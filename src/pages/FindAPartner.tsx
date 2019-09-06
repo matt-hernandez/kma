@@ -62,7 +62,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                         <InlineBold>{`"${agreement.title}."`}</InlineBold>
                       </LargeCopy>
                       <LargeCopy centered>
-                        You are allowed to send one more additional request. You can...
+                        You are allowed to send one more additional request.
                       </LargeCopy>
                     </>
                   )}
@@ -75,7 +75,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                         <InlineBold>{`"${agreement.title}."`}</InlineBold>
                       </LargeCopy>
                       <LargeCopy centered>
-                        You are allowed to request one more additional partner. You can...
+                        You are allowed to request one more additional partner.
                       </LargeCopy>
                     </>
                   )}
@@ -97,7 +97,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
           <>
             <IonButton expand="block" color="primary" onClick={() => history.push(`/partner-search/${agreementId}`)}>Direct message a person</IonButton>
             <LargeCopy centered>Or</LargeCopy>
-            <IonButton expand="block" color="primary" onClick={() => {}}>Choose from others who have made the same agreement</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
           </>
         )}
         {!canRequestPartner && (
