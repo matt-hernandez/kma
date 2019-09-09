@@ -27,7 +27,7 @@ const ModalPadding = styled.div`
 
 const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> = ({
     dispatch,
-    state: { openAgreements, skipConfirmCommitForThese },
+    state: { openAgreements, skipConfirmCommitForThese, today },
     history
   }) => {
   const [ showModal, setShowModal ] = useState(false);
@@ -38,15 +38,14 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
   return (
     <>
       {openAgreements.map((agreement) => {
-        const { id, expiration, title, due, description, templateId } = agreement;
+        const { id, partnerUpDeadline, title, due, description, templateId } = agreement;
         return (
           <Agreement
             key={id}
             isCommitted={false}
-            expiration={expiration}
-            onExpire={() => {}}
+            partnerUpDeadline={partnerUpDeadline}
             title={title}
-            due={formatDueDate(due)}
+            due={due}
             description={description}
             onCommit={() => {
               if (skipConfirmCommitForThese.includes(templateId)) {
@@ -57,6 +56,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
                 setShowModal(true);
               }
             }}
+            debugNow={today}
           />
         )
       })}

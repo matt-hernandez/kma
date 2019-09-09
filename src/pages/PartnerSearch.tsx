@@ -5,7 +5,7 @@ import PageWrapper from '../components/PageWrapper';
 import UserItem from '../components/UserItem';
 import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
-import { ourConnect, StateProps, searchForPartnerForAgreement, clearPartnerSearch, saveSearchQuery } from '../util/state';
+import { ourConnect, StateProps, searchForPartnerForAgreement, clearSearchQuery, saveSearchQuery } from '../util/state';
 
 const slug = '/partner-search/:id';
 const title = 'Partner Search';
@@ -39,16 +39,17 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
           queryRef.current = value;
           setQuery(value);
           if (value.length === 0) {
-            dispatch(clearPartnerSearch());
+            dispatch(clearSearchQuery());
             return;
           }
           if (value.length > 0) {
+            dispatch(saveSearchQuery(queryRef.current));
             dispatch(searchForPartnerForAgreement(value, agreementId));
           }
         }}
         onIonClear={() => {
           queryRef.current = '';
-          dispatch(clearPartnerSearch());
+          dispatch(clearSearchQuery());
         }}
       />
       <IonList>

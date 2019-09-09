@@ -29,7 +29,12 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
   if (!agreement) {
     return <Redirect to="/404" />
   }
-  const users = otherUsers.filter(user => user.agreements.find(({ id: aId }) => aId === agreementId));
+  const users = otherUsers
+    .filter(user => user.agreements.find(({ id: aId }) => aId === agreementId))
+    .filter(user => 
+      !agreement.pendingPartners.some(({ id }) => id === user.id) &&
+      !agreement.confirmedPartners.some(({ id }) => id === user.id)
+    );
   return (
     <PageWrapper>
       <Spacer height="12px" />

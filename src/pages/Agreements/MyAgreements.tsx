@@ -11,21 +11,21 @@ const title = 'My Agreements';
 const MyAgreements: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     dispatch,
     history,
-    state: { myAgreements } }
-  ) => (
+    state: { myAgreements, today }
+  }) => (
   <>
-    {myAgreements.map(({ id, expiration, title, due, description, pendingPartners, confirmedPartners }) => (
+    {myAgreements.map(({ id, partnerUpDeadline, title, due, description, pendingPartners, confirmedPartners }) => (
       <Agreement
         key={id}
         isCommitted={true}
-        expiration={expiration}
-        onExpire={() => {}}
+        partnerUpDeadline={partnerUpDeadline}
         pendingPartners={pendingPartners.map(({name}) => name)}
         confirmedPartners={confirmedPartners.map(({name}) => name)}
         title={title}
-        due={formatDueDate(due)}
+        due={due}
         description={description}
         onFindPartner={() => history.push(`/find-a-partner/${id}`)}
+        debugNow={today}
       />
     ))}
   </>

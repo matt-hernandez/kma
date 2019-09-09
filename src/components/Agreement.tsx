@@ -9,72 +9,64 @@ import {
   IonChip,
   IonLabel
   } from '@ionic/react';
-import styled, { css } from 'styled-components/macro';
 import InlineItalic from '../components/InlineItalic';
 import CustomLink from '../components/CustomLink';
-import Timer from '../components/Timer';
+import InlineColor from '../components/InlineColor';
+import { formatDueDate, formatCommitAndPartnerDate } from '../util/format-due-date';
 import { colors } from '../styles/colors';
-
-type TimerContainerProps = {
-  shouldWarn: boolean;
-};
-
-const TimerContainer = styled.div<TimerContainerProps>`
-  position: absolute;
-  top: 12px;
-  right: 20px;
-  font-size: 14px;
-  ${({shouldWarn}) => shouldWarn
-    ? css`color: ${colors.warn};`
-    : css`color: ${colors.gray6};`
-  }
-`;
 
 type PropTypes = {
   title: string;
-  due: string;
+  due: number;
+  partnerUpDeadline: number;
   description?: string;
-  expiration: number;
   isCommitted: boolean;
   pendingPartners?: string[];
   confirmedPartners?: string[];
   onCommit?: (...args: any) => void;
-  onExpire: (...args: any) => void;
   onFindPartner?: (...args: any) => void;
+  onMarkAsDone?: () => void;
+  onCancel?: (...args: any) => void;
   onBreak?: (...args: any) => void;
   onCancelRequest?: (...args: any) => void;
+  debugNow?: number;
 };
 
 const Agreement: React.FunctionComponent<PropTypes> = ({
   title,
   due,
+  partnerUpDeadline,
   description,
-  expiration,
   isCommitted,
   pendingPartners = [],
   confirmedPartners = [],
-  onCommit,
-  onExpire,
-  onBreak = () => {},
+  onCommit = () => {},
   onFindPartner = () => {},
-  onCancelRequest = () => {}
+  onMarkAsDone = () => {},
+  onBreak = () => {},
+  onCancel = () => {},
+  onCancelRequest = () => {},
+  debugNow
 }) => {
-  const isPastExpiration = expiration < Date.now();
-  const shouldWarnExpiration = expiration - Date.now() < (1000 * 60 * 60);
+  const isPastPartnerUpDeadline = partnerUpDeadline < (debugNow || Date.now());
+  const shouldWarnPartnerUpDeadline = partnerUpDeadline - (debugNow || Date.now()) < (1000 * 60 * 60) && partnerUpDeadline - (debugNow || Date.now()) > 0;
+  const isPastDue = (debugNow || Date.now()) > due;
+  const formattedDueDate = formatDueDate(due);
+  const formattedCommitmentDeadline = formatCommitAndPartnerDate(partnerUpDeadline);
   return (
     <>
       <IonCard>
-        {!isPastExpiration && (
-          <TimerContainer shouldWarn={shouldWarnExpiration}>
-            {isCommitted
-              ? 'Time left to cancel:'
-              : 'Expires in'
-            } <Timer deadline={expiration} onZero={onExpire} />
-          </TimerContainer>
-        )}
         <IonCardHeader>
           <IonCardTitle>{title}</IonCardTitle>
-          <IonCardSubtitle>{due}</IonCardSubtitle>
+          <IonCardSubtitle>
+            {shouldWarnPartnerUpDeadline && (
+              <InlineColor color={colors.warn}>
+                {formattedCommitmentDeadline}
+              </InlineColor>
+            )}
+            {!shouldWarnPartnerUpDeadline && formattedCommitmentDeadline}
+          </IonCardSubtitle>
+          <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
         </IonCardHeader>
         { confirmedPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
@@ -85,7 +77,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )) }
-        { !isPastExpiration && pendingPartners.map(request => (
+        { !isPastPartnerUpDeadline && pendingPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="tertiary" className="partner-request">
               <IonLabel>
@@ -95,7 +87,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
         )) }
-        { (!isPastExpiration && isCommitted && pendingPartners.length === 0) && (
+        { (!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
           <IonCardContent key={`${title} ${due} no-requests`}>
             <IonChip color="danger" className="partner-request">
               <IonLabel>
@@ -111,8 +103,9 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
         )}
         <IonCardContent>
           {!isCommitted && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this agreement</IonButton>}
-          {(isCommitted && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
-          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCommit}>Cancel this agreement</IonButton>}
+          {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
+          {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
+          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCancel}>Cancel this agreement</IonButton>}
           {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break this agreement</IonButton>}
         </IonCardContent>
       </IonCard>

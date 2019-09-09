@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function pad(integer: number): string {
   return `0${integer}`.slice(-2);
@@ -32,16 +32,17 @@ function getFormattedCountdown(distance: number): string {
 type Props = {
   deadline: number;
   onZero: () => void;
-  specifiedNow?: number;
+  debugNow?: number;
 }
 
-const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, specifiedNow }) {
-  const now = specifiedNow || new Date().getTime();
-  const [ distance, setDistance ] = useState(getFormattedCountdown(deadline - now));
+const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, debugNow }) {
+  const now = Date.now();
+  const [ distance, setDistance ] = useState(getFormattedCountdown(deadline - (debugNow || now)));
+  const intervalRef = useRef(0);
   useEffect(() => {
     const interval = setInterval(function() {
       // Get todays date and time
-      const updatedNow = new Date().getTime();
+      const updatedNow = debugNow ? debugNow + (Date.now() - now) : Date.now();
       // Find the distance between now and the count down date
       const updatedDistance = deadline - updatedNow;
       if (updatedDistance < 0) {
@@ -52,15 +53,17 @@ const Timer: React.FunctionComponent<Props> = function({ deadline, onZero, speci
       }
       setDistance(getFormattedCountdown(updatedDistance));
     }, 1000);
+    if (intervalRef.current !== 0 && intervalRef.current !== interval) {
+      clearInterval(intervalRef.current);
+    }
+    intervalRef.current = interval;
     return () => {
       clearInterval(interval);
     };
     // eslint-disable-next-line
-  }, []);
+  }, [debugNow, intervalRef]);
   return (
-    <>
-      {distance}
-    </>
+    <></>
   );
 }
 

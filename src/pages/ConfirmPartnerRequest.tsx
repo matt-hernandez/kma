@@ -9,7 +9,7 @@ import LargeCopy from '../components/LargeCopy';
 import Spacer from '../components/Spacer';
 import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
-import { ourConnect, StateProps, requestPartnerForAgreement } from '../util/state';
+import { ourConnect, StateProps, requestPartnerForAgreement, clearSearchQuery } from '../util/state';
 import { ReactComponent as UserPic } from '../assets/large-user-pic.svg';
 
 const slug = '/confirm-partner/:agreementId/:partnerId';
@@ -54,6 +54,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
               dispatch(requestPartnerForAgreement(agreementId, partnerId));
+              dispatch(clearSearchQuery());
               history.push('/request-sent');
             }}>
               Yes, send!

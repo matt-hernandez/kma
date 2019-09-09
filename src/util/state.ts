@@ -23,7 +23,7 @@ interface Agreement {
   templateId: string;
   title: string;
   due: number;
-  expiration: number;
+  partnerUpDeadline: number;
   description?: string;
 }
 
@@ -33,7 +33,7 @@ const allAgreements: Agreement[] = [
     templateId: generateId(),
     title: 'Attend Kickstart Conditioning - Monday',
     due: threeDaysFromNowAt615AM.getTime(),
-    expiration: new Date(threeDaysFromNowAt615AM.getTime() - twoHoursMS).getTime(),
+    partnerUpDeadline: new Date(threeDaysFromNowAt615AM.getTime() - twoHoursMS).getTime(),
     description: `Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
     Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
     tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
@@ -44,7 +44,7 @@ const allAgreements: Agreement[] = [
     templateId: generateId(),
     title: 'Attend three KM or Fight Tactics classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
-    expiration: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
+    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any KM 1+ class or Fight Tactics class counts towards doing this agreement.`
   },
   {
@@ -52,7 +52,7 @@ const allAgreements: Agreement[] = [
     templateId: generateId(),
     title: 'Attend three conditioning classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
-    expiration: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
+    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any Heavy Bag class or Kickstart Conditioning class counts towards doing this agreement.`
   },
   {
@@ -60,14 +60,14 @@ const allAgreements: Agreement[] = [
     templateId: generateId(),
     title: 'Attend Groundwork Conditioning',
     due: sevenDaysFromNowAt2PM.getTime(),
-    expiration: new Date(sevenDaysFromNowAt2PM.getTime() - twoHoursMS).getTime()
+    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - twoHoursMS).getTime()
   },
   {
     id: generateId(),
     templateId: generateId(),
     title: 'Attend Kickstart Conditioning - Saturday',
     due: sevenDaysFromNowAt12PM.getTime(),
-    expiration: new Date(sevenDaysFromNowAt12PM.getTime() - twoHoursMS).getTime(),
+    partnerUpDeadline: new Date(sevenDaysFromNowAt12PM.getTime() - twoHoursMS).getTime(),
     description: `Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
     Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
     tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
@@ -85,7 +85,7 @@ const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
     ...agreement,
     id: generateId(),
     due: new Date(agreement.due - oneWeekMS).getTime(),
-    expiration: new Date(agreement.expiration - oneWeekMS).getTime(),
+    partnerUpDeadline: new Date(agreement.partnerUpDeadline - oneWeekMS).getTime(),
   }));
 
 interface ClosedAgreement extends Agreement {
@@ -288,9 +288,10 @@ export function reducer(state: State = initialState, action: any): State {
       ...state,
       savedSearchQuery: query
     }
-  } else if (type === 'CLEAR_PARTNER_SEARCH') {
+  } else if (type === 'CLEAR_SEARCH_QUERY') {
     return {
       ...state,
+      savedSearchQuery: '',
       usersInSearch: []
     }
   } else if (type === 'REQUEST_PARTNER') {
@@ -316,24 +317,29 @@ export function reducer(state: State = initialState, action: any): State {
       ]
     };
   } else if (type === 'CONFIRM_PARTNER') {
-    const agreement = state.myAgreements[0];
-    if (!agreement) {
+    const { agreementId, partnerId } = payload;
+    const agreement = state.myAgreements.find(({ id: aId }) => aId === agreementId);
+    if (!agreement || agreement.confirmedPartners.length === 2) {
       return state;
     }
-    const firstPartner = agreement.pendingPartners[0];
-    if (!firstPartner) {
+    const partner = agreement.pendingPartners.find(({ id: pId }) => pId === partnerId);
+    if (!partner) {
       return state;
     }
     const confirmedAgreement = {
       ...agreement,
-      pendingPartners: agreement.pendingPartners.slice(1),
-      confirmedPartners: [ ...agreement.pendingPartners.slice(0, 1), firstPartner ]
+      pendingPartners: [
+        ...agreement.pendingPartners.slice(0, agreement.pendingPartners.indexOf(partner)),
+        ...agreement.pendingPartners.slice(agreement.pendingPartners.indexOf(partner) + 1)
+      ],
+      confirmedPartners: [ ...agreement.confirmedPartners.slice(0, 1), partner ]
     };
     return {
       ...state,
       myAgreements: [
+        ...state.myAgreements.slice(0, state.myAgreements.indexOf(agreement)),
         confirmedAgreement,
-        ...state.myAgreements.slice(1)
+        ...state.myAgreements.slice(state.myAgreements.indexOf(agreement) + 1),
       ]
     };
   } else if (type === 'BREAK_AGREEMENT') {
@@ -358,9 +364,16 @@ export function reducer(state: State = initialState, action: any): State {
         }
       ]
     };
-  } else if (type === 'JUMP_AHEAD') {
+  } else if (type === 'JUMP_AHEAD_TWO_DAYS') {
     const today = new Date(state.today);
-    today.setDate(today.getDate() + 3);
+    today.setDate(today.getDate() + 2);
+    return {
+      ...state,
+      today: today.getTime()
+    };
+  } else if (type === 'JUMP_AHEAD_ONE_DAY') {
+    const today = new Date(state.today);
+    today.setDate(today.getDate() + 1);
     return {
       ...state,
       today: today.getTime()
@@ -399,18 +412,18 @@ export function searchForPartnerForAgreement(query: string, agreementId: string)
   };
 }
 
-export function clearPartnerSearch() {
-  return {
-    type: 'CLEAR_PARTNER_SEARCH'
-  };
-}
-
 export function saveSearchQuery(query: string) {
   return {
     type: 'SAVE_SEARCH_QUERY',
     payload: {
       query
     }
+  };
+}
+
+export function clearSearchQuery() {
+  return {
+    type: 'CLEAR_SEARCH_QUERY'
   };
 }
 
@@ -443,9 +456,15 @@ export function breakFirstAgreement(agreementId: string) {
   };
 }
 
-export function jumpAheadThreeDays() {
+export function jumpAheadTwoDays() {
   return {
-    type: 'JUMP_AHEAD'
+    type: 'JUMP_AHEAD_TWO_DAYS'
+  };
+}
+
+export function jumpAheadOneDay() {
+  return {
+    type: 'JUMP_AHEAD_ONE_DAY'
   };
 }
 
