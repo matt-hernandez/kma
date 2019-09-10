@@ -21,7 +21,7 @@ type PropTypes = {
   partnerUpDeadline: number;
   description?: string;
   isCommitted: boolean;
-  partnerRequests?: string[];
+  partnerRequestsToMe?: string[];
   pendingPartners?: string[];
   confirmedPartners?: string[];
   onCommit?: (...args: any) => void;
@@ -39,7 +39,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   partnerUpDeadline,
   description,
   isCommitted,
-  partnerRequests = [],
+  partnerRequestsToMe = [],
   pendingPartners = [],
   confirmedPartners = [],
   onCommit = () => {},
@@ -98,7 +98,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )}
-        {(!isPastPartnerUpDeadline && partnerRequests.length > 0) && partnerRequests.map(request => (
+        {(!isPastPartnerUpDeadline && partnerRequestsToMe.length > 0) && partnerRequestsToMe.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="primary" className="partner-request">
               <IonLabel>
@@ -115,8 +115,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           </IonCardContent>
         )}
         <IonCardContent>
-          {(!isCommitted && partnerRequests.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this</IonButton>}
-          {(!isCommitted && partnerRequests.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
+          {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this</IonButton>}
+          {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
           {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
           {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
           {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCancel}>Cancel agreement</IonButton>}

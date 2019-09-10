@@ -10,7 +10,7 @@ import UserItem from '../components/UserItem';
 import HorizontalRule from '../components/HorizontalRule';
 import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
-import { ourConnect, StateProps } from '../util/state';
+import { ourConnect, StateProps, findMyConnections, getPartnerRequestsSent, getPartnerRequestsReceived, getAllMyConfirmedPartnerships } from '../util/state';
 
 const slug = '/user-pool/:id';
 const title = 'User Pool';
@@ -22,19 +22,21 @@ const HorizontalRuleContainer = styled.div`
 const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     match,
     history,
-    state: { otherUsers, myAgreements }
+    state: { myAgreements, me }
   }) => {
   const agreementId = (match.params as RouteParams)['id'];
   const agreement = myAgreements.find(({id: aId}) => aId === agreementId);
   if (!agreement) {
     return <Redirect to="/404" />
   }
-  const users = otherUsers
-    .filter(user => user.agreements.find(({ id: aId }) => aId === agreementId))
-    .filter(user => 
-      !agreement.pendingPartners.some(({ id }) => id === user.id) &&
-      !agreement.confirmedPartners.some(({ id }) => id === user.id)
-    );
+  const requestsSent = getPartnerRequestsSent(agreement.connections, me.id);
+  const requestsReceived = getPartnerRequestsReceived(agreement.connections, me.id);
+  const confirmedPartners = getAllMyConfirmedPartnerships(agreement.connections, me.id);
+  const users = agreement.committedUsers
+    .filter(({ id }) => findMyConnections(agreement.connections, id).length < 2)
+    .filter(({ id }) => !!requestsSent.find(({ to }) => to === id))
+    .filter(({ id }) => !!requestsReceived.find(({ from }) => from === id))
+    .filter(({ id }) => !!confirmedPartners.find(({ to, from }) => to === id || from === id));
   return (
     <PageWrapper>
       <Spacer height="12px" />

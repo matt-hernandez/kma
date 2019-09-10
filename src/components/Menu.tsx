@@ -13,7 +13,7 @@ import React from 'react';
 import InflateContent from '../components/InflateContent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AppPage } from '../declarations';
-import { ourConnect, StateProps, resetStateToInitial, confirmPartnerForAgreement, jumpAheadTwoDays, jumpAheadOneDay } from '../util/state';
+import { ourConnect, StateProps, resetStateToInitial, confirmPartnerForAgreement, jumpAheadTwoDays, jumpAheadOneDay, getPartnerRequestsSent } from '../util/state';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
@@ -23,7 +23,7 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
     appPages,
     location,
     dispatch,
-    state: { myAgreements }
+    state: { myAgreements, me }
   }) => {
   const firstAgreement = myAgreements[0];
   return (
@@ -48,11 +48,11 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
           <IonItem button={true} onClick={() => dispatch(resetStateToInitial())}>
             <IonLabel>Reset</IonLabel>
           </IonItem>
-          {(!!firstAgreement && firstAgreement.pendingPartners.length > 0) && (
+          {(!!firstAgreement && getPartnerRequestsSent(firstAgreement.connections, me.id).length > 0) && (
             <IonItem button={true} onClick={() => {
-              firstAgreement.pendingPartners.forEach((partner) => {
-                dispatch(confirmPartnerForAgreement(firstAgreement.id, partner.id));
-              })
+              getPartnerRequestsSent(firstAgreement.connections, me.id).forEach((connection) => {
+                dispatch(confirmPartnerForAgreement(firstAgreement.id, connection.to));
+              });
             }}>
               <IonLabel>Confirm Partners for first agreement</IonLabel>
             </IonItem>
