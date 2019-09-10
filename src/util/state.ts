@@ -76,6 +76,7 @@ const allAgreements: Agreement[] = [
 ];
 
 interface CommittedAgreement extends Agreement {
+  partnerRequests: User[];
   pendingPartners: User[];
   confirmedPartners: User[];
 }
@@ -179,6 +180,7 @@ export interface State {
   allAgreements: Agreement[];
   openAgreements: Agreement[];
   myAgreements: CommittedAgreement[];
+  requestsToBePartner: CommittedAgreement[];
   otherUsers: User[];
   usersInSearch: User[];
   savedSearchQuery: string;
@@ -195,6 +197,7 @@ export interface StateProps {
 class StateConstructor implements State {
   allAgreements = allAgreements;
   openAgreements = allAgreements;
+  requestsToBePartner = [];
   myAgreements = [];
   otherUsers = users;
   usersInSearch = [];
@@ -243,6 +246,7 @@ export function reducer(state: State = initialState, action: any): State {
         ...state.myAgreements,
         {
           ...agreement,
+          partnerRequests: [],
           pendingPartners: [],
           confirmedPartners: []
         }

@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Agreement from '../../components/Agreement';
 import { StateProps, ourConnect } from '../../util/state';
-import { formatDueDate } from '../../util/format-due-date';
 import { addPageData } from '../../util/add-page-data';
 
 const slug = '/my';

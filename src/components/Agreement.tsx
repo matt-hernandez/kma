@@ -21,6 +21,7 @@ type PropTypes = {
   partnerUpDeadline: number;
   description?: string;
   isCommitted: boolean;
+  partnerRequests?: string[];
   pendingPartners?: string[];
   confirmedPartners?: string[];
   onCommit?: (...args: any) => void;
@@ -38,6 +39,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   partnerUpDeadline,
   description,
   isCommitted,
+  partnerRequests = [],
   pendingPartners = [],
   confirmedPartners = [],
   onCommit = () => {},
@@ -68,7 +70,7 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           </IonCardSubtitle>
           <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
         </IonCardHeader>
-        { confirmedPartners.map(request => (
+        {isCommitted && confirmedPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="success" className="partner-request">
               <IonLabel>
@@ -76,8 +78,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
               </IonLabel>
             </IonChip>
           </IonCardContent>
-        )) }
-        { !isPastPartnerUpDeadline && pendingPartners.map(request => (
+        ))}
+        {(!isPastPartnerUpDeadline && isCommitted) && pendingPartners.map(request => (
           <IonCardContent key={`${title} ${due} ${request}`}>
             <IonChip color="tertiary" className="partner-request">
               <IonLabel>
@@ -86,8 +88,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
             <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
-        )) }
-        { (!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
+        ))}
+        {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
           <IonCardContent key={`${title} ${due} no-requests`}>
             <IonChip color="danger" className="partner-request">
               <IonLabel>
@@ -96,17 +98,29 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )}
+        {(!isPastPartnerUpDeadline && partnerRequests.length > 0) && partnerRequests.map(request => (
+          <IonCardContent key={`${title} ${due} ${request}`}>
+            <IonChip color="primary" className="partner-request">
+              <IonLabel>
+                <InlineItalic>{`${request}`} requested you!</InlineItalic>
+              </IonLabel>
+            </IonChip>
+            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Confirm request</CustomLink></InlineItalic>
+            <InlineItalic> or <CustomLink onClick={() => onCancelRequest(request)}>deny request</CustomLink></InlineItalic>
+          </IonCardContent>
+        ))}
         {typeof description === 'string' && (
           <IonCardContent>
             {description}
           </IonCardContent>
         )}
         <IonCardContent>
-          {!isCommitted && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this agreement</IonButton>}
+          {(!isCommitted && partnerRequests.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this</IonButton>}
+          {(!isCommitted && partnerRequests.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
           {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
           {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
-          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCancel}>Cancel this agreement</IonButton>}
-          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break this agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCancel}>Cancel agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break agreement</IonButton>}
         </IonCardContent>
       </IonCard>
     </>

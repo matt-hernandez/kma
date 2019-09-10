@@ -25,7 +25,7 @@ import RequestSent from './pages/RequestSent';
 import FindAPartner from './pages/FindAPartner';
 import UserPool from './pages/UserPool';
 import PageDoesNotExist from './pages/404';
-import { contacts, list, stats, settings } from 'ionicons/icons';
+import { contacts, list, stats, settings, personAdd } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -54,6 +54,11 @@ const appPages: AppPage[] = [
     title: 'Open Agreements',
     url: '/agreements/open',
     icon: list
+  },
+  {
+    title: 'Partner Requests',
+    url: '/agreements/requests',
+    icon: personAdd
   },
   {
     title: 'My Agreements',
