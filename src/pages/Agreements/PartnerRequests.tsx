@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Agreement from '../../components/Agreement';
-import { StateProps, ourConnect, getPartnerRequestsReceived } from '../../util/state';
+import { StateProps, ourConnect, getPartnerRequestsReceived, getPartnerRequestsSent, getConfirmedPartnershipsReceived, getConfirmedPartnershipsSent, denyPartnerRequest, confirmPartnerRequest } from '../../util/state';
 import { addPageData } from '../../util/add-page-data';
 
 const slug = '/requests';
@@ -21,8 +21,15 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps & StateProps>
         title={title}
         due={due}
         description={description}
-        partnerRequestsToMe={getPartnerRequestsReceived(connections, me.id).map(({fromName}) => fromName)}
+        pendingPartners={getPartnerRequestsSent(connections, me.id).map(({to, toName}) => ({ id: to, name: toName}))}
+        confirmedPartners={
+          getConfirmedPartnershipsSent(connections, me.id).map(({to, toName}) => ({ id: to, name: toName}))
+            .concat(getConfirmedPartnershipsReceived(connections, me.id).map(({from, fromName}) => ({ id: from, name: fromName})))
+        }
+        partnerRequestsToMe={getPartnerRequestsReceived(connections, me.id).map(({from, fromName}) => ({ id: from, name: fromName}))}
         debugNow={today}
+        onConfirmRequest={(partnerId) => dispatch(confirmPartnerRequest(id, partnerId))}
+        onDenyRequest={(partnerId) => dispatch(denyPartnerRequest(id, partnerId))}
       />
     ))}
   </>

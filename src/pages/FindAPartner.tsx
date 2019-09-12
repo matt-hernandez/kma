@@ -82,6 +82,19 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                       </LargeCopy>
                     </>
                   )}
+                  {hasReceivedRequest && (
+                    <>
+                      <LargeCopy centered>
+                        You have already received a partner request for:
+                      </LargeCopy>
+                      <LargeCopy centered>
+                        <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                      </LargeCopy>
+                      <LargeCopy centered>
+                        You are allowed to send one more request of your own to an additional partner.
+                      </LargeCopy>
+                    </>
+                  )}
                 </>
               )}
             </>

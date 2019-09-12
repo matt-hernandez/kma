@@ -24,12 +24,12 @@ const tabs = [
     slug: OpenAgreements.pageData.slug
   },
   {
-    title: PartnerRequests.pageData.title,
-    slug: PartnerRequests.pageData.slug
-  },
-  {
     title: MyAgreements.pageData.title,
     slug: MyAgreements.pageData.slug
+  },
+  {
+    title: PartnerRequests.pageData.title,
+    slug: PartnerRequests.pageData.slug
   }
 ];
 
@@ -49,8 +49,8 @@ const Agreements: React.FunctionComponent<RouteComponentProps & StateProps> = ({
         })}
       </TabsContainer>
       <Route path={`${match.url}${OpenAgreements.pageData.slug}`} component={OpenAgreements} strict exact />
-      <Route path={`${match.url}${PartnerRequests.pageData.slug}`} component={PartnerRequests} strict exact />
       <Route path={`${match.url}${MyAgreements.pageData.slug}`} component={MyAgreements} strict exact />
+      <Route path={`${match.url}${PartnerRequests.pageData.slug}`} component={PartnerRequests} strict exact />
       <Route exact path={`${match.url}`} render={() => <Redirect to={`${match.url}${OpenAgreements.pageData.slug}`} />} />
     </>
   );

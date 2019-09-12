@@ -13,7 +13,7 @@ import React from 'react';
 import InflateContent from '../components/InflateContent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AppPage } from '../declarations';
-import { ourConnect, StateProps, resetStateToInitial, confirmPartnerForAgreement, jumpAheadTwoDays, jumpAheadOneDay, getPartnerRequestsSent } from '../util/state';
+import { ourConnect, StateProps, resetStateToInitial, confirmPartnerForAgreement, jumpAheadTwoDays, jumpAheadOneDay, getPartnerRequestsSent, receivePartnerRequest } from '../util/state';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
@@ -23,7 +23,7 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
     appPages,
     location,
     dispatch,
-    state: { myAgreements, me }
+    state: { openAgreements, myAgreements, me, otherUsers }
   }) => {
   const firstAgreement = myAgreements[0];
   return (
@@ -69,6 +69,13 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
               dispatch(jumpAheadOneDay());
             }}>
               <IonLabel>Jump Ahead 1 Day</IonLabel>
+            </IonItem>
+          )}
+          {!!openAgreements.length && (
+            <IonItem button={true} onClick={() => {
+              dispatch(receivePartnerRequest(openAgreements[openAgreements.length - 1].id, otherUsers[2].id));
+            }}>
+              <IonLabel>Receive partner request</IonLabel>
             </IonItem>
           )}
         </IonList>

@@ -14,6 +14,7 @@ import CustomLink from '../components/CustomLink';
 import InlineColor from '../components/InlineColor';
 import { formatDueDate, formatCommitAndPartnerDate } from '../util/format-due-date';
 import { colors } from '../styles/colors';
+import { User } from '../util/state';
 
 type PropTypes = {
   title: string;
@@ -21,15 +22,17 @@ type PropTypes = {
   partnerUpDeadline: number;
   description?: string;
   isCommitted: boolean;
-  partnerRequestsToMe?: string[];
-  pendingPartners?: string[];
-  confirmedPartners?: string[];
+  partnerRequestsToMe?: User[];
+  pendingPartners?: User[];
+  confirmedPartners?: User[];
   onCommit?: (...args: any) => void;
   onFindPartner?: (...args: any) => void;
   onMarkAsDone?: () => void;
   onCancel?: (...args: any) => void;
   onBreak?: (...args: any) => void;
   onCancelRequest?: (...args: any) => void;
+  onConfirmRequest?: (...args: any) => void;
+  onDenyRequest?: (...args: any) => void;
   debugNow?: number;
 };
 
@@ -48,6 +51,8 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   onBreak = () => {},
   onCancel = () => {},
   onCancelRequest = () => {},
+  onConfirmRequest = () => {},
+  onDenyRequest = () => {},
   debugNow
 }) => {
   const isPastPartnerUpDeadline = partnerUpDeadline < (debugNow || Date.now());
@@ -70,23 +75,23 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           </IonCardSubtitle>
           <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
         </IonCardHeader>
-        {isCommitted && confirmedPartners.map(request => (
-          <IonCardContent key={`${title} ${due} ${request}`}>
+        {isCommitted && confirmedPartners.map(partner => (
+          <IonCardContent key={`${title} ${due} ${partner.name}`}>
             <IonChip color="success" className="partner-request">
               <IonLabel>
-                <InlineItalic>{request} is a partner!</InlineItalic>
+                <InlineItalic>{partner.name} is a partner!</InlineItalic>
               </IonLabel>
             </IonChip>
           </IonCardContent>
         ))}
-        {(!isPastPartnerUpDeadline && isCommitted) && pendingPartners.map(request => (
-          <IonCardContent key={`${title} ${due} ${request}`}>
+        {(!isPastPartnerUpDeadline && isCommitted) && pendingPartners.map(partner => (
+          <IonCardContent key={`${title} ${due} ${partner.name}`}>
             <IonChip color="tertiary" className="partner-request">
               <IonLabel>
-                <InlineItalic>Request for {request} pending</InlineItalic>
+                <InlineItalic>Request for {partner.name} pending</InlineItalic>
               </IonLabel>
             </IonChip>
-            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Cancel request</CustomLink></InlineItalic>
+            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(partner.id)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
         ))}
         {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
@@ -98,15 +103,15 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )}
-        {(!isPastPartnerUpDeadline && partnerRequestsToMe.length > 0) && partnerRequestsToMe.map(request => (
-          <IonCardContent key={`${title} ${due} ${request}`}>
+        {(!isPastPartnerUpDeadline && partnerRequestsToMe.length > 0) && partnerRequestsToMe.map(partner => (
+          <IonCardContent key={`${title} ${due} ${partner.name}`}>
             <IonChip color="primary" className="partner-request">
               <IonLabel>
-                <InlineItalic>{`${request}`} requested you!</InlineItalic>
+                <InlineItalic>{`${partner.name}`} requested you!</InlineItalic>
               </IonLabel>
             </IonChip>
-            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(request)}>Confirm request</CustomLink></InlineItalic>
-            <InlineItalic> or <CustomLink onClick={() => onCancelRequest(request)}>deny request</CustomLink></InlineItalic>
+            <InlineItalic> - <CustomLink onClick={() => onConfirmRequest(partner.id)}>Confirm request</CustomLink></InlineItalic>
+            <InlineItalic> or <CustomLink onClick={() => onDenyRequest(partner.id)}>deny request</CustomLink></InlineItalic>
           </IonCardContent>
         ))}
         {typeof description === 'string' && (

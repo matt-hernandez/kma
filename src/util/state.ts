@@ -33,7 +33,7 @@ interface Outcome {
   type: OutcomeType;
 }
 
-interface User {
+export interface User {
   id: string;
   name: string;
 }
@@ -89,6 +89,14 @@ function findUserByName(name: string): User {
   const user = users.find(({ name: n }) => n === name);
   if (!user) {
     throw new Error('Attempted to find user by name, but no user with that name was found.');
+  }
+  return user;
+}
+
+function findUserById(id: string): User {
+  const user = users.find(({ id: _id }) => _id === id);
+  if (!user) {
+    throw new Error('Attempted to find user by id, but no user with that id was found.');
   }
   return user;
 }
@@ -445,6 +453,102 @@ export function reducer(state: State = initialState, action: any): State {
         ...state.myAgreements.slice(state.myAgreements.indexOf(agreement) + 1),
       ]
     };
+  } else if (type === 'RECEIVE_PARTNER_REQUEST') {
+    const { agreementId, partnerId } = payload;
+    const agreement = state.openAgreements.find(({id: aId }) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.openAgreements.indexOf(agreement);
+    const openAgreements = [
+      ...state.openAgreements.slice(0, index),
+      ...state.openAgreements.slice(index + 1),
+    ];
+    const partner = findUserById(partnerId);
+    return {
+      ...state,
+      openAgreements,
+      requestsToBePartner: [
+        ...state.requestsToBePartner,
+        {
+          ...agreement,
+          connections: [
+            ...agreement.connections,
+            {
+              from: partner.id,
+              fromName: partner.name,
+              type: 'REQUESTED',
+              to: state.me.id,
+              toName: state.me.name
+            }
+          ]
+        }
+      ]
+    };
+  } else if (type === 'CONFIRM_PARTNER_REQUEST') {
+    const { agreementId, partnerId } = payload;
+    const agreement = state.requestsToBePartner.find(({id: aId }) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const indexOfAgreement = state.requestsToBePartner.indexOf(agreement);
+    const requestsToBePartner = [
+      ...state.requestsToBePartner.slice(0, indexOfAgreement),
+      ...state.requestsToBePartner.slice(indexOfAgreement + 1),
+    ];
+    const connection = findAConnection(agreement.connections, state.me.id, partnerId);
+    if (!connection) {
+      return state;
+    }
+    const indexOfConnection = agreement.connections.indexOf(connection);
+    return {
+      ...state,
+      requestsToBePartner,
+      myAgreements: [
+        ...state.myAgreements,
+        {
+          ...agreement,
+          connections: [
+            ...agreement.connections.slice(0, indexOfConnection),
+            {
+              ...connection,
+              type: 'CONFIRMED'
+            },
+            ...agreement.connections.slice(indexOfConnection + 1)
+          ]
+        }
+      ]
+    };
+  } else if (type === 'DENY_PARTNER_REQUEST') {
+    const { agreementId, partnerId } = payload;
+    const agreement = state.requestsToBePartner.find(({id: aId }) => aId === agreementId);
+    if (!agreement) {
+      return state;
+    }
+    const indexOfAgreement = state.requestsToBePartner.indexOf(agreement);
+    const requestsToBePartner = [
+      ...state.requestsToBePartner.slice(0, indexOfAgreement),
+      ...state.requestsToBePartner.slice(indexOfAgreement + 1),
+    ];
+    const connection = findAConnection(agreement.connections, state.me.id, partnerId);
+    if (!connection) {
+      return state;
+    }
+    const indexOfConnection = agreement.connections.indexOf(connection);
+    return {
+      ...state,
+      requestsToBePartner,
+      openAgreements: [
+        ...state.openAgreements,
+        {
+          ...agreement,
+          connections: [
+            ...agreement.connections.slice(0, indexOfConnection),
+            ...agreement.connections.slice(indexOfConnection + 1)
+          ]
+        }
+      ]
+    };
   } else if (type === 'BREAK_AGREEMENT') {
     const { agreementId } = payload;
     const agreement = state.myAgreements.find(({id: aId }) => aId === agreementId);
@@ -570,6 +674,36 @@ export function requestPartnerForAgreement(agreementId: string, partnerId: strin
 export function confirmPartnerForAgreement(agreementId: string, partnerId: string) {
   return {
     type: 'CONFIRM_PARTNER',
+    payload: {
+      agreementId,
+      partnerId
+    }
+  };
+}
+
+export function receivePartnerRequest(agreementId: string, partnerId: string) {
+  return {
+    type: 'RECEIVE_PARTNER_REQUEST',
+    payload: {
+      agreementId,
+      partnerId
+    }
+  };
+}
+
+export function confirmPartnerRequest(agreementId: string, partnerId: string) {
+  return {
+    type: 'CONFIRM_PARTNER_REQUEST',
+    payload: {
+      agreementId,
+      partnerId
+    }
+  };
+}
+
+export function denyPartnerRequest(agreementId: string, partnerId: string) {
+  return {
+    type: 'DENY_PARTNER_REQUEST',
     payload: {
       agreementId,
       partnerId
