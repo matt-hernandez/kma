@@ -2,7 +2,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
+import Admin from './pages/Admin';
+import PageDoesNotExist from './pages/404';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,7 +33,12 @@ const App: React.FunctionComponent = () => (
   <IonApp>
     <Provider store={store}>
       <IonReactRouter>
-        <Main />
+        <Switch>
+          <Route path="/main" component={Main} />
+          <Route path="/admin" component={Admin} />
+          <Route component={PageDoesNotExist} />
+          <Route path="/404" strict exact component={PageDoesNotExist} />
+        </Switch>
       </IonReactRouter>
     </Provider>
   </IonApp>

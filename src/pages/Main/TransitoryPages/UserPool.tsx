@@ -44,7 +44,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         { userPool.map((user) => (
           <UserItem key={user.cid} name={user.name} onClick={() => {
             dispatch(selectPossiblePartnerForConfirm(user));
-            history.push(`/confirm-partner/${agreementCid}`);
+            history.push(`/main/confirm-partner/${agreementCid}`);
           }} />
         )) }
       </IonList>

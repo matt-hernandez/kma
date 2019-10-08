@@ -50,7 +50,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
             onCommit={() => {
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
                 // dispatch(commitToAgreement(cid));
-                history.push(`/confirmed/${cid}`);
+                history.push(`/main/confirmed/${cid}`);
               } else {
                 setAgreementToConfirm(agreement);
                 setShowModal(true);
@@ -64,7 +64,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
         <IonModal isOpen={showModal} onDidDismiss={() => {
           setShowModal(false);
           if (commitOnModalDismissRef.current) {
-            history.push(`/confirmed/${agreementToConfirm.cid}`);
+            history.push(`/main/confirmed/${agreementToConfirm.cid}`);
           }
         }}>
           <ModalPadding>

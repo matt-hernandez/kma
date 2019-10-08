@@ -20,33 +20,32 @@ import ConfirmPartnerRequest from './TransitoryPages/ConfirmPartnerRequest';
 import RequestSent from './TransitoryPages/RequestSent';
 import FindAPartner from './TransitoryPages/FindAPartner';
 import UserPool from './TransitoryPages/UserPool';
-import PageDoesNotExist from '../404';
 import { AppPage } from '../../declarations';
 
 const mainPages: AppPage[] = [
   {
     title: 'Open Agreements',
-    url: '/agreements/open',
+    url: '/main/agreements/open',
     icon: list
   },
   {
     title: 'Partner Requests',
-    url: '/agreements/requests',
+    url: '/main/agreements/requests',
     icon: personAdd
   },
   {
     title: 'My Agreements',
-    url: '/agreements/my',
+    url: '/main/agreements/my',
     icon: contacts
   },
   {
     title: 'Score',
-    url: '/score',
+    url: '/main/score',
     icon: stats
   },
   {
     title: 'Settings',
-    url: '/settings',
+    url: '/main/settings',
     icon: settings
   }
 ];
@@ -67,17 +66,15 @@ const Main: React.FunctionComponent = () => {
         <IonRouterOutlet>
           <InflateContent top={56} as="main">
             <Switch>
-              <Route path={Agreements.pageData.slug} component={Agreements} />
-              <Route path={CommitmentConfirmed.pageData.slug} component={CommitmentConfirmed} strict exact />
-              <Route path={PartnerSearch.pageData.slug} component={PartnerSearch} strict exact />
-              <Route path={ConfirmPartnerRequest.pageData.slug} component={ConfirmPartnerRequest} strict exact />
-              <Route path={RequestSent.pageData.slug} component={RequestSent} strict exact />
-              <Route path={FindAPartner.pageData.slug} component={FindAPartner} strict exact />
-              <Route path={UserPool.pageData.slug} component={UserPool} strict exact />
-              <Route path="/score" component={() => <div />} strict exact />
-              <Route path="/" exact render={() => <Redirect to="/agreements/open" />} />
-              <Route component={PageDoesNotExist} />
-              <Route path="/404" strict exact component={PageDoesNotExist} />
+              <Route path={`/main${Agreements.pageData.slug}`} component={Agreements} />
+              <Route path={`/main${CommitmentConfirmed.pageData.slug}`} component={CommitmentConfirmed} strict exact />
+              <Route path={`/main${PartnerSearch.pageData.slug}`} component={PartnerSearch} strict exact />
+              <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
+              <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
+              <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
+              <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
+              <Route path="/main/score" component={() => <div />} strict exact />
+              <Route path="/main" exact render={() => <Redirect to="/main/agreements/open" />} />
             </Switch>
           </InflateContent>
         </IonRouterOutlet>

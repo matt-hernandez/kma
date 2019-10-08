@@ -111,14 +111,14 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
           )}
         {canRequestPartner && (
           <>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/partner-search/${agreementId}`)}>Direct message a person</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${agreementId}`)}>Direct message a person</IonButton>
             <LargeCopy centered>Or</LargeCopy>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
           </>
         )}
         {!canRequestPartner && (
           <IonButton expand="block" color="primary" onClick={() => {
-            history.push('/agreements/my');
+            history.push('/main/agreements/my');
           }}>
             Go to My Agreements
           </IonButton>

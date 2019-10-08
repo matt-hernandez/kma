@@ -7,7 +7,7 @@ import FlexCell from '../../../components/FlexCell';
 import LargeCopy from '../../../components/LargeCopy';
 import PageWrapper from '../../../components/PageWrapper';
 import { addPageData } from '../../../util/add-page-data';
-import { ReactComponent as UserPic } from '../assets/large-user-pic.svg';
+import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
 
 const slug = '/request-sent';
 const title = 'Request Sent!';
@@ -37,7 +37,7 @@ const RequestSent: React.FunctionComponent<RouteComponentProps> = ({
         <FlexColumn shouldInflate centeredHorizontal>
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
-              history.push('/agreements/my');
+              history.push('/main/agreements/my');
             }}>
               Go to My Agreements
             </IonButton>

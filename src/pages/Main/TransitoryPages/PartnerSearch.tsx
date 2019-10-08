@@ -56,7 +56,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         { usersInSearch.map(({ cid: userCid, name }) => (
           <UserItem key={userCid} name={name} onClick={() => {
             dispatch(saveSearchQuery(queryRef.current));
-            history.push(`/confirm-partner/${agreementCid}/${userCid}`);
+            history.push(`/main/confirm-partner/${agreementCid}/${userCid}`);
           }} />
         )) }
       </IonList>

@@ -24,7 +24,7 @@ const MyAgreements: React.FunctionComponent<RouteComponentProps & StateProps> = 
         title={title}
         due={due}
         description={description}
-        onFindPartner={() => history.push(`/find-a-partner/${cid}`)}
+        onFindPartner={() => history.push(`/main/find-a-partner/${cid}`)}
         debugNow={today}
         onConfirmRequest={(partnerId) => {
           // dispatch(confirmPartnerRequest(''))
