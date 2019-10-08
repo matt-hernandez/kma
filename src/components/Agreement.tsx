@@ -14,7 +14,7 @@ import CustomLink from '../components/CustomLink';
 import InlineColor from '../components/InlineColor';
 import { formatDueDate, formatCommitAndPartnerDate } from '../util/format-due-date';
 import { colors } from '../styles/colors';
-import { User } from '../util/state';
+import { Connection } from '../util/state';
 
 type PropTypes = {
   title: string;
@@ -22,9 +22,9 @@ type PropTypes = {
   partnerUpDeadline: number;
   description?: string;
   isCommitted: boolean;
-  partnerRequestsToMe?: User[];
-  pendingPartners?: User[];
-  confirmedPartners?: User[];
+  partnerRequestsToMe?: Connection[];
+  pendingPartners?: Connection[];
+  confirmedPartners?: Connection[];
   onCommit?: (...args: any) => void;
   onFindPartner?: (...args: any) => void;
   onMarkAsDone?: () => void;
@@ -75,23 +75,23 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           </IonCardSubtitle>
           <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
         </IonCardHeader>
-        {isCommitted && confirmedPartners.map(partner => (
-          <IonCardContent key={`${title} ${due} ${partner.name}`}>
+        {isCommitted && confirmedPartners.map(connection => (
+          <IonCardContent key={`${title} ${due} ${connection.connectedUserName}`}>
             <IonChip color="success" className="partner-request">
               <IonLabel>
-                <InlineItalic>{partner.name} is a partner!</InlineItalic>
+                <InlineItalic>{connection.connectedUserName} is a partner!</InlineItalic>
               </IonLabel>
             </IonChip>
           </IonCardContent>
         ))}
-        {(!isPastPartnerUpDeadline && isCommitted) && pendingPartners.map(partner => (
-          <IonCardContent key={`${title} ${due} ${partner.name}`}>
+        {(!isPastPartnerUpDeadline && isCommitted) && pendingPartners.map(connection => (
+          <IonCardContent key={`${title} ${due} ${connection.connectedUserName}`}>
             <IonChip color="tertiary" className="partner-request">
               <IonLabel>
-                <InlineItalic>Request for {partner.name} pending</InlineItalic>
+                <InlineItalic>Request for {connection.connectedUserName} pending</InlineItalic>
               </IonLabel>
             </IonChip>
-            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(partner.id)}>Cancel request</CustomLink></InlineItalic>
+            <InlineItalic> - <CustomLink onClick={() => onCancelRequest(connection.cid)}>Cancel request</CustomLink></InlineItalic>
           </IonCardContent>
         ))}
         {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
@@ -103,15 +103,15 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
             </IonChip>
           </IonCardContent>
         )}
-        {(!isPastPartnerUpDeadline && partnerRequestsToMe.length > 0) && partnerRequestsToMe.map(partner => (
-          <IonCardContent key={`${title} ${due} ${partner.name}`}>
+        {(!isPastPartnerUpDeadline && partnerRequestsToMe.length > 0) && partnerRequestsToMe.map(connection => (
+          <IonCardContent key={`${title} ${due} ${connection.connectedUserName}`}>
             <IonChip color="primary" className="partner-request">
               <IonLabel>
-                <InlineItalic>{`${partner.name}`} requested you!</InlineItalic>
+                <InlineItalic>{`${connection.connectedUserName}`} requested you!</InlineItalic>
               </IonLabel>
             </IonChip>
-            <InlineItalic> - <CustomLink onClick={() => onConfirmRequest(partner.id)}>Confirm request</CustomLink></InlineItalic>
-            <InlineItalic> or <CustomLink onClick={() => onDenyRequest(partner.id)}>deny request</CustomLink></InlineItalic>
+            <InlineItalic> - <CustomLink onClick={() => onConfirmRequest(connection.cid)}>Confirm request</CustomLink></InlineItalic>
+            <InlineItalic> or <CustomLink onClick={() => onDenyRequest(connection.cid)}>deny request</CustomLink></InlineItalic>
           </IonCardContent>
         ))}
         {typeof description === 'string' && (

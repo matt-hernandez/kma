@@ -12,7 +12,7 @@ import { RouteParams } from '../util/interface-overrides';
 import { ourConnect, StateProps, requestPartnerForAgreement, clearSearchQuery } from '../util/state';
 import { ReactComponent as UserPic } from '../assets/large-user-pic.svg';
 
-const slug = '/confirm-partner/:agreementId/:partnerId';
+const slug = '/confirm-partner/:agreementCid';
 const title = 'Confirm Partner';
 
 const Half = styled(FlexCell)`
@@ -27,15 +27,12 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
     match,
     history,
     dispatch,
-    state: { otherUsers, myAgreements }
+    state: { myAgreements, userToConfirm }
   }) => {
-  const agreementId = (match.params as RouteParams)['agreementId'];
-  const partnerId = (match.params as RouteParams)['partnerId'];
-  const agreement = myAgreements.find(({id}) => id === agreementId);
-  const partner = otherUsers.find(({id}) => id === partnerId);
+  const agreementCid = (match.params as RouteParams)['agreementCid'];
+  const agreement = myAgreements.find(({cid}) => cid === agreementCid);
   const title = agreement ? agreement.title : '';
-  const name = partner ? partner.name : '';
-  if (!title || !name) {
+  if (!title || userToConfirm === null) {
     return <Redirect to="/404" />
   }
   return (
@@ -44,7 +41,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
         <FlexColumn shouldInflate alignBottom centeredHorizontal>
           <UserPic />
           <PageWrapper>
-            <LargeCopy centered>Send a partner request to {name} for "{title}?"</LargeCopy>
+            <LargeCopy centered>Send a partner request to {userToConfirm.name} for "{title}?"</LargeCopy>
           </PageWrapper>
         </FlexColumn>
       </Half>
@@ -53,7 +50,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
           <Spacer height="4px" />
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
-              dispatch(requestPartnerForAgreement(agreementId, partnerId));
+              // dispatch(requestPartnerForAgreement(agreementCid, partnerCid));
               dispatch(clearSearchQuery());
               history.push('/request-sent');
             }}>

@@ -9,7 +9,7 @@ import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
 import { StateProps, ourConnect } from '../util/state';
 
-const slug = '/confirmed/:id';
+const slug = '/confirmed/:cid';
 const title = 'You Have Committed!';
 
 const PageContent = styled.div`
@@ -25,8 +25,8 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StatePr
     match,
     state: { myAgreements }
   }) => {
-  const agreementId = (match.params as RouteParams)['id'];
-  const agreement = myAgreements.find(({id}) => id === agreementId);
+  const agreementCid = (match.params as RouteParams)['cid'];
+  const agreement = myAgreements.find(({cid}) => cid === agreementCid);
   if (!agreement) {
     return <Redirect to="/404" />
   }
@@ -35,9 +35,9 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StatePr
       <PageContent>
         <H1 centered>You have committed!</H1>
         <LargeCopy centered>Now it's time to find a partner. You can do one of two things.</LargeCopy>
-        <IonButton expand="block" color="primary" onClick={() => history.push(`/partner-search/${agreementId}`)}>Direct message a person</IonButton>
+        <IonButton expand="block" color="primary" onClick={() => history.push(`/partner-search/${agreementCid}`)}>Direct message a person</IonButton>
         <LargeCopy centered>Or</LargeCopy>
-        <IonButton expand="block" color="primary" onClick={() => history.push(`/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
+        <IonButton expand="block" color="primary" onClick={() => history.push(`/user-pool/${agreementCid}`)}>Choose from others who have made the same agreement</IonButton>
       </PageContent>
     </FlexColumn>
   );

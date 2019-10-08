@@ -7,9 +7,9 @@ import FlexColumn from '../components/FlexColumn';
 import InlineBold from '../components/InlineBold';
 import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
-import { StateProps, ourConnect, findMyConnections, getPartnerRequestsSent, getPartnerRequestsReceived, getAllMyConfirmedPartnerships } from '../util/state';
+import { StateProps, ourConnect } from '../util/state';
 
-const slug = '/find-a-partner/:id';
+const slug = '/find-a-partner/:cid';
 const title = 'Find a Partner';
 
 const PageContent = styled.div`
@@ -24,18 +24,18 @@ const PageContent = styled.div`
 const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     history,
     match,
-    state: { myAgreements, me }
+    state: { myAgreements }
   }) => {
-  const agreementId = (match.params as RouteParams)['id'];
-  const agreement = myAgreements.find(({id}) => id === agreementId);
+  const agreementId = (match.params as RouteParams)['cid'];
+  const agreement = myAgreements.find(({cid}) => cid === agreementId);
   if (!agreement) {
     return <Redirect to="/404" />
   }
-  const myConnections = findMyConnections(agreement.connections, me.id);
+  const myConnections = agreement.connections;
   const canRequestPartner = myConnections.length < 2;
-  const hasSentRequest = getPartnerRequestsSent(myConnections, me.id).length > 0;
-  const hasReceivedRequest = getPartnerRequestsReceived(myConnections, me.id).length > 0;
-  const hasConfirmedPartner = getAllMyConfirmedPartnerships(myConnections, me.id).length > 0;
+  const hasSentRequest = myConnections.some(({ type }) => type === 'REQUEST_TO');
+  const hasConfirmedPartner = myConnections.some(({ type }) => type === 'CONFIRMED');
+  const hasReceivedRequest = myConnections.some(({ type }) => type === 'REQUEST_FROM');
   return (
     <FlexColumn shouldInflate centeredHorizontal>
       <PageContent>

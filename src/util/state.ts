@@ -13,98 +13,53 @@ const oneWeekMS = oneDayMS * 7;
 
 const threeDaysFromNowAt615AM = new Date(Date.now() + threeDaysMS);
 threeDaysFromNowAt615AM.setHours(6, 15, 0);
+const threeDaysFromNowAt515AM = new Date(Date.now() + threeDaysMS);
+threeDaysFromNowAt515AM.setHours(5, 15, 0);
 const sevenDaysFromNowAt2PM = new Date(Date.now() + oneWeekMS);
 sevenDaysFromNowAt2PM.setHours(14, 0, 0);
 const sevenDaysFromNowAt12PM = new Date(Date.now() + oneWeekMS);
 sevenDaysFromNowAt12PM.setHours(12, 0, 0);
 
-interface Connection {
-  from: string;
-  fromName: string;
-  type: 'REQUESTED' | 'CONFIRMED' | 'BROKE_WITH';
-  to: string;
-  toName: string;
-}
+type ConnectionType = 'REQUEST_TO' | 'REQUEST_FROM' | 'CONFIRMED' | 'BROKE_WITH';
 
-type OutcomeType = 'FULFILLED' | 'BROKEN';
-
-interface Outcome {
-  id: string;
-  type: OutcomeType;
+export interface Connection {
+  cid: string
+  connectedUserCid: string
+  connectedUserName: string
+  type: ConnectionType
 }
 
 export interface User {
-  id: string;
+  cid: string;
   name: string;
+  email: string;
+  score: number;
+  isAdmin: boolean;
+  templatesToSkipCommitConfirm: string[];
+  templatesToSkipMarkAsDone: string[];
+}
+
+export interface PossiblePartner {
+  cid: string
+  name: string
 }
 
 interface Agreement {
-  id: string;
-  templateId: string;
-  title: string;
-  due: number;
-  partnerUpDeadline: number;
-  description?: string;
-  committedUsers: User[];
-  connections: Connection[];
-  outcomes: Outcome[];
-}
-
-const users: User[] = [
-  {
-    id: generateId(),
-    name: 'Katie Fryer'
-  },
-  {
-    id: generateId(),
-    name: 'Katie Banks'
-  },
-  {
-    id: generateId(),
-    name: 'Kati Taylor'
-  },
-  {
-    id: generateId(),
-    name: 'Katherine Love'
-  },
-  {
-    id: generateId(),
-    name: 'Erin Armstrong'
-  },
-  {
-    id: generateId(),
-    name: 'Dave Goode'
-  },
-  {
-    id: generateId(),
-    name: 'Norbi Zylberberg'
-  },
-  {
-    id: generateId(),
-    name: 'Rachel Weiss'
-  }
-];
-
-function findUserByName(name: string): User {
-  const user = users.find(({ name: n }) => n === name);
-  if (!user) {
-    throw new Error('Attempted to find user by name, but no user with that name was found.');
-  }
-  return user;
-}
-
-function findUserById(id: string): User {
-  const user = users.find(({ id: _id }) => _id === id);
-  if (!user) {
-    throw new Error('Attempted to find user by id, but no user with that id was found.');
-  }
-  return user;
+  cid: string
+  templateCid?: string
+  title: string
+  due: number
+  partnerUpDeadline: number
+  description?: string
+  isCommitted: boolean
+  connections: Connection[]
+  wasCompleted: boolean | null
 }
 
 const allAgreements: Agreement[] = [
   {
-    id: generateId(),
-    templateId: generateId(),
+    cid: generateId(),
+    templateCid: generateId(),
     title: 'Attend Kickstart Conditioning - Monday',
     due: threeDaysFromNowAt615AM.getTime(),
     partnerUpDeadline: new Date(threeDaysFromNowAt615AM.getTime() - twoHoursMS).getTime(),
@@ -112,50 +67,45 @@ const allAgreements: Agreement[] = [
     Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
     tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
     in what sports scientists agree is one of the best total body workouts available.`,
-    committedUsers: [
-      findUserByName('Erin Armstrong'),
-      findUserByName('Dave Goode'),
-      findUserByName('Rachel Weiss'),
-      findUserByName('Norbi Zylberberg')
-    ],
+    isCommitted: false,
     connections: [],
-    outcomes: []
+    wasCompleted: null
   },
   {
-    id: generateId(),
-    templateId: generateId(),
+    cid: generateId(),
+    templateCid: generateId(),
     title: 'Attend three KM or Fight Tactics classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
     partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any KM 1+ class or Fight Tactics class counts towards doing this agreement.`,
-    committedUsers: [],
+    isCommitted: false,
     connections: [],
-    outcomes: []
+    wasCompleted: null
   },
   {
-    id: generateId(),
-    templateId: generateId(),
+    cid: generateId(),
+    templateCid: generateId(),
     title: 'Attend three conditioning classes this week',
     due: sevenDaysFromNowAt2PM.getTime(),
     partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
     description: `Any Heavy Bag class or Kickstart Conditioning class counts towards doing this agreement.`,
-    committedUsers: [],
+    isCommitted: false,
     connections: [],
-    outcomes: []
+    wasCompleted: null
   },
   {
-    id: generateId(),
-    templateId: generateId(),
+    cid: generateId(),
+    templateCid: generateId(),
     title: 'Attend Groundwork Conditioning',
     due: sevenDaysFromNowAt2PM.getTime(),
     partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - twoHoursMS).getTime(),
-    committedUsers: [],
+    isCommitted: false,
     connections: [],
-    outcomes: []
+    wasCompleted: null
   },
   {
-    id: generateId(),
-    templateId: generateId(),
+    cid: generateId(),
+    templateCid: generateId(),
     title: 'Attend Kickstart Conditioning - Saturday',
     due: sevenDaysFromNowAt12PM.getTime(),
     partnerUpDeadline: new Date(sevenDaysFromNowAt12PM.getTime() - twoHoursMS).getTime(),
@@ -163,126 +113,21 @@ const allAgreements: Agreement[] = [
     Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
     tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
     in what sports scientists agree is one of the best total body workouts available.`,
-    committedUsers: [],
+    isCommitted: false,
     connections: [],
-    outcomes: []
+    wasCompleted: null
   },
 ];
-
-const me: User = {
-  id: generateId(),
-  name: 'Matt'
-}
-
-const closedAgreements: Agreement[] = allAgreements.slice(0, 3)
-  .map((agreement, index) => {
-    let connections = agreement.connections;
-    let outcomes = agreement.outcomes;
-    if (index === 0) {
-      {
-        const partner = findUserByName('Katie Fryer');
-        outcomes = [
-          {
-            id: me.id,
-            type: 'FULFILLED'
-          },
-          {
-            id: partner.id,
-            type: 'FULFILLED'
-          }
-        ];
-        connections = [
-          {
-            from: me.id,
-            fromName: me.name,
-            type: 'CONFIRMED',
-            to: partner.id,
-            toName: partner.name
-          }
-        ];
-      }
-      {
-        const partner = findUserByName('Dave Goode');
-        outcomes = [
-          ...outcomes,
-          {
-            id: partner.id,
-            type: 'FULFILLED'
-          }
-        ];
-        connections = [
-          ...connections,
-          {
-            from: me.id,
-            fromName: me.name,
-            type: 'CONFIRMED',
-            to: partner.id,
-            toName: partner.name
-          }
-        ];
-      }
-    } else if (index === 1) {
-      const partner = findUserByName('Erin Armstrong');
-      outcomes = [
-        {
-          id: me.id,
-          type: 'BROKEN'
-        },
-        {
-          id: partner.id,
-          type: 'FULFILLED'
-        }
-      ];
-      connections = [
-        {
-          from: partner.id,
-          fromName: partner.name,
-          type: 'CONFIRMED',
-          to: me.id,
-          toName: me.name
-        }
-      ];
-    } else if (index === 2) {
-      const partner = findUserByName('Norbi Zylberberg');
-      outcomes = [
-        {
-          id: me.id,
-          type: 'FULFILLED'
-        },
-        {
-          id: partner.id,
-          type: 'BROKEN'
-        }
-      ];
-      connections = [
-        {
-          from: partner.id,
-          fromName: partner.name,
-          type: 'CONFIRMED',
-          to: me.id,
-          toName: me.name
-        }
-      ];
-    }
-    return {
-      ...agreement,
-      id: generateId(),
-      due: new Date(agreement.due - oneWeekMS).getTime(),
-      partnerUpDeadline: new Date(agreement.partnerUpDeadline - oneWeekMS).getTime(),
-      connections,
-      outcomes
-    };
-  });
 
 export interface State {
   me: User;
   openAgreements: Agreement[];
   myAgreements: Agreement[];
   requestsToBePartner: Agreement[];
-  otherUsers: User[];
-  usersInSearch: User[];
+  usersInSearch: PossiblePartner[];
+  userToConfirm: PossiblePartner | null;
+  userPool: PossiblePartner[];
   savedSearchQuery: string;
-  skipConfirmCommitForThese: string[];
   closedAgreements: Agreement[];
   today: number;
 }
@@ -293,37 +138,33 @@ export interface StateProps {
 }
 
 class StateConstructor implements State {
-  me = me;
-  openAgreements = allAgreements;
-  requestsToBePartner = [];
+  me = {
+    cid: '',
+    name: '',
+    email: '',
+    score: 0,
+    isAdmin: false,
+    templatesToSkipCommitConfirm: [],
+    templatesToSkipMarkAsDone: []
+  };
+  openAgreements = [];
   myAgreements = [];
-  otherUsers = users;
+  requestsToBePartner = [];
   usersInSearch = [];
+  userToConfirm = null;
+  userPool = [];
   savedSearchQuery = '';
-  skipConfirmCommitForThese = [
-    allAgreements[0].templateId
-  ];
-  closedAgreements = closedAgreements;
+  closedAgreements = [];
   today = Date.now();
 };
-
-export function findMyConnections(connections: Connection[], myId: string): Connection[] {
-  return connections.filter(({ from, to }) => from === myId || to === myId);
-}
-
-function findAConnection(connections: Connection[], myId: string, partnerId: string): Connection | undefined {
-  return connections.find(({ from, to }) =>
-    (from === myId && to === partnerId) ||
-    (from === partnerId && to === myId));
-}
 
 let initialState: State = new StateConstructor();
 
 export function reducer(state: State = initialState, action: any): State {
   const { type, payload } = action;
   if (type === 'COMMIT_TO_AGREEMENT') {
-    const { agreementId } = payload;
-    const agreement = state.openAgreements.find(({id: aId }) => aId === agreementId);
+    const { agreementCid } = payload;
+    const agreement = state.openAgreements.find(({cid: aCid }) => aCid === agreementCid);
     if (!agreement) {
       return state;
     }
@@ -337,266 +178,127 @@ export function reducer(state: State = initialState, action: any): State {
       myAgreements: [
         ...state.myAgreements,
         {
-          ...agreement,
-          committedUsers: [
-            ...agreement.committedUsers,
-            {
-              ...state.me
-            }
-          ]
+          ...agreement
         }
       ]
     };
   } else if (type === 'SKIP_CONFIRM') {
-    const { templateId } = payload;
+    const me = payload;
     return {
       ...state,
-      skipConfirmCommitForThese: [
-        ...state.skipConfirmCommitForThese,
-        templateId
-      ]
+      me
     };
   } else if (type === 'SEARCH_FOR_PARTNER') {
-    const { agreementId, query } = payload;
-    const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
-    if (!agreement) {
-      return state;
-    }
-    const { otherUsers } = state;
-    const usersInSearch = otherUsers
-      .filter(({ name }) => name.indexOf(query) !== -1)
-      .sort(({ name: a }, { name: b }) => {
-        const aIndex = a.toLowerCase().indexOf(query.toLowerCase());
-        const bIndex = b.toLowerCase().indexOf(query.toLowerCase());
-        if (aIndex === bIndex) {
-          return a.length - b.length;
-        }
-        return aIndex - bIndex;
-      });
+    const usersInSearch = payload;
     return {
       ...state,
       usersInSearch
-    }
+    };
   } else if (type === 'SAVE_SEARCH_QUERY') {
-    const { query } = payload;
+    const query = payload;
     return {
       ...state,
       savedSearchQuery: query
-    }
+    };
   } else if (type === 'CLEAR_SEARCH_QUERY') {
     return {
       ...state,
       savedSearchQuery: '',
       usersInSearch: []
-    }
+    };
   } else if (type === 'REQUEST_PARTNER') {
-    const { agreementId, partnerId } = payload;
-    const agreement = state.myAgreements.find(({id: aId}) => aId === agreementId);
+    const { agreementCid } = payload;
+    const agreement = state.myAgreements.find(({cid: aCid}) => aCid === agreementCid);
     if (!agreement) {
       return state;
     }
     const index = state.myAgreements.indexOf(agreement);
-    const partner = state.otherUsers.find(({id: uId}) => uId === partnerId);
-    if (!partner) {
-      return state;
-    }
-    const myConnections = findMyConnections(agreement.connections, state.me.id);
-    if (myConnections.length > 2) {
-      return state;
-    }
     return {
       ...state,
       myAgreements: [
         ...state.myAgreements.slice(0, index),
         {
-          ...agreement,
-          connections: [
-            ...agreement.connections,
-            {
-              from: state.me.id,
-              fromName: state.me.name,
-              type: 'REQUESTED',
-              to: partner.id,
-              toName: partner.name,
-            }
-          ]
+          ...agreement
         },
         ...state.myAgreements.slice(index + 1),
       ]
     };
   } else if (type === 'CONFIRM_PARTNER') {
-    const { agreementId, partnerId } = payload;
-    const agreement = state.myAgreements.find(({ id: aId }) => aId === agreementId);
-    if (!agreement) {
-      return state;
-    }
-    const connection = findAConnection(agreement.connections, state.me.id, partnerId);
-    if (!connection) {
-      return state;
-    }
-    const confirmedAgreement: Agreement = {
-      ...agreement,
-      connections: [
-        ...agreement.connections.slice(0, agreement.connections.indexOf(connection)),
-        {
-          ...connection,
-          type: 'CONFIRMED'
-        },
-        ...agreement.connections.slice(agreement.connections.indexOf(connection) + 1)
-      ],
-    };
-    return {
-      ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, state.myAgreements.indexOf(agreement)),
-        confirmedAgreement,
-        ...state.myAgreements.slice(state.myAgreements.indexOf(agreement) + 1),
-      ]
-    };
-  } else if (type === 'RECEIVE_PARTNER_REQUEST') {
-    const { agreementId, partnerId } = payload;
-    const agreement = state.openAgreements.find(({id: aId }) => aId === agreementId);
-    if (!agreement) {
-      return state;
-    }
-    const index = state.openAgreements.indexOf(agreement);
-    const openAgreements = [
-      ...state.openAgreements.slice(0, index),
-      ...state.openAgreements.slice(index + 1),
-    ];
-    const partner = findUserById(partnerId);
-    return {
-      ...state,
-      openAgreements,
-      requestsToBePartner: [
-        ...state.requestsToBePartner,
-        {
-          ...agreement,
-          connections: [
-            ...agreement.connections,
-            {
-              from: partner.id,
-              fromName: partner.name,
-              type: 'REQUESTED',
-              to: state.me.id,
-              toName: state.me.name
-            }
-          ]
-        }
-      ]
-    };
-  } else if (type === 'CONFIRM_PARTNER_REQUEST') {
-    const { agreementId, partnerId } = payload;
-    const agreement = state.requestsToBePartner.find(({id: aId }) => aId === agreementId);
-    if (!agreement) {
-      return state;
-    }
-    const indexOfAgreement = state.requestsToBePartner.indexOf(agreement);
-    const requestsToBePartner = [
-      ...state.requestsToBePartner.slice(0, indexOfAgreement),
-      ...state.requestsToBePartner.slice(indexOfAgreement + 1),
-    ];
-    const connection = findAConnection(agreement.connections, state.me.id, partnerId);
-    if (!connection) {
-      return state;
-    }
-    const indexOfConnection = agreement.connections.indexOf(connection);
-    return {
-      ...state,
-      requestsToBePartner,
-      myAgreements: [
-        ...state.myAgreements,
-        {
-          ...agreement,
-          connections: [
-            ...agreement.connections.slice(0, indexOfConnection),
-            {
-              ...connection,
-              type: 'CONFIRMED'
-            },
-            ...agreement.connections.slice(indexOfConnection + 1)
-          ]
-        }
-      ]
-    };
-  } else if (type === 'DENY_PARTNER_REQUEST') {
-    const { agreementId, partnerId } = payload;
-    const agreement = state.requestsToBePartner.find(({id: aId }) => aId === agreementId);
-    if (!agreement) {
-      return state;
-    }
-    const indexOfAgreement = state.requestsToBePartner.indexOf(agreement);
-    const requestsToBePartner = [
-      ...state.requestsToBePartner.slice(0, indexOfAgreement),
-      ...state.requestsToBePartner.slice(indexOfAgreement + 1),
-    ];
-    const connection = findAConnection(agreement.connections, state.me.id, partnerId);
-    if (!connection) {
-      return state;
-    }
-    const indexOfConnection = agreement.connections.indexOf(connection);
-    return {
-      ...state,
-      requestsToBePartner,
-      openAgreements: [
-        ...state.openAgreements,
-        {
-          ...agreement,
-          connections: [
-            ...agreement.connections.slice(0, indexOfConnection),
-            ...agreement.connections.slice(indexOfConnection + 1)
-          ]
-        }
-      ]
-    };
-  } else if (type === 'BREAK_AGREEMENT') {
-    const { agreementId } = payload;
-    const agreement = state.myAgreements.find(({id: aId }) => aId === agreementId);
+    const { agreementCid } = payload;
+    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
     if (!agreement) {
       return state;
     }
     const index = state.myAgreements.indexOf(agreement);
-    const myAgreements = [
-      ...state.myAgreements.slice(0, index),
-      ...state.myAgreements.slice(index + 1),
-    ];
-    const myConnections = findMyConnections(agreement.connections, state.me.id);
-    if (!myConnections.length) {
-      return state;
-    }
-    let connections = agreement.connections.filter(connection => !myConnections.includes(connection));
-    const brokenConnections: Connection[] = myConnections.map((connection) => {
-      const partnerId = connection.from === state.me.id ? connection.to : connection.from;
-      const partnerName = connection.from === state.me.id ? connection.toName : connection.fromName;
-      return {
-        from: state.me.id,
-        fromName: state.me.name,
-        type: 'BROKE_WITH',
-        to: partnerId,
-        toName: partnerName
-      };
-    });
-    const closedAgreements: Agreement[] = [
-      ...state.closedAgreements,
-      {
-        ...agreement,
-        connections: [
-          ...connections,
-          ...brokenConnections
-        ],
-        outcomes: [
-          ...agreement.outcomes,
-          {
-            id: state.me.id,
-            type: 'BROKEN'
-          }
-        ]
-      }
-    ];
     return {
       ...state,
-      myAgreements,
-      closedAgreements
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        {
+          ...agreement
+        },
+        ...state.myAgreements.slice(index + 1),
+      ]
+    };
+  } else if (type === 'SELECT_POSSIBLE_PARTNER_FOR_CONFIRM') {
+    const userToConfirm = payload;
+    return {
+      ...state,
+      userToConfirm
+    };
+  } else if (type === 'CONFIRM_PARTNER_REQUEST') {
+    const { agreementCid } = payload;
+    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.myAgreements.indexOf(agreement);
+    return {
+      ...state,
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        {
+          ...agreement
+        },
+        ...state.myAgreements.slice(index + 1),
+      ]
+    };
+  } else if (type === 'DENY_PARTNER_REQUEST') {
+    const { agreementCid } = payload;
+    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.myAgreements.indexOf(agreement);
+    return {
+      ...state,
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        {
+          ...agreement
+        },
+        ...state.myAgreements.slice(index + 1),
+      ]
+    };
+  } else if (type === 'BREAK_AGREEMENT') {
+    const { agreementCid } = payload;
+    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
+    if (!agreement) {
+      return state;
+    }
+    const index = state.myAgreements.indexOf(agreement);
+    return {
+      ...state,
+      myAgreements: [
+        ...state.myAgreements.slice(0, index),
+        ...state.myAgreements.slice(index + 1),
+      ],
+      closedAgreements: [
+        ...state.closedAgreements,
+        {
+          ...agreement
+        },
+      ]
     };
   } else if (type === 'JUMP_AHEAD_TWO_DAYS') {
     const today = new Date(state.today);
@@ -618,40 +320,31 @@ export function reducer(state: State = initialState, action: any): State {
   return state;
 }
 
-export function commitToAgreement(agreementId: string) {
+export function commitToAgreement(payload: Agreement) {
   return {
     type: 'COMMIT_TO_AGREEMENT',
-    payload: {
-      agreementId
-    }
+    payload
   };
 }
 
-export function addAgreementTemplateToSkip(templateId: string) {
+export function addAgreementTemplateToSkip(payload: User) {
   return {
     type: 'SKIP_CONFIRM',
-    payload: {
-      templateId
-    }
+    payload
   };
 }
 
-export function searchForPartnerForAgreement(query: string, agreementId: string) {
+export function searchForPartnerForAgreement(payload: PossiblePartner[]) {
   return {
     type: 'SEARCH_FOR_PARTNER',
-    payload: {
-      query,
-      agreementId
-    }
+    payload
   };
 }
 
-export function saveSearchQuery(query: string) {
+export function saveSearchQuery(payload: string) {
   return {
     type: 'SAVE_SEARCH_QUERY',
-    payload: {
-      query
-    }
+    payload
   };
 }
 
@@ -661,62 +354,45 @@ export function clearSearchQuery() {
   };
 }
 
-export function requestPartnerForAgreement(agreementId: string, partnerId: string) {
+export function requestPartnerForAgreement(payload: Agreement) {
   return {
     type: 'REQUEST_PARTNER',
-    payload: {
-      agreementId,
-      partnerId
-    }
+    payload
   };
 }
 
-export function confirmPartnerForAgreement(agreementId: string, partnerId: string) {
+export function confirmPartnerForAgreement(payload: Agreement) {
   return {
     type: 'CONFIRM_PARTNER',
-    payload: {
-      agreementId,
-      partnerId
-    }
+    payload
   };
 }
 
-export function receivePartnerRequest(agreementId: string, partnerId: string) {
+export function selectPossiblePartnerForConfirm(payload: PossiblePartner) {
   return {
-    type: 'RECEIVE_PARTNER_REQUEST',
-    payload: {
-      agreementId,
-      partnerId
-    }
+    type: 'SELECT_POSSIBLE_PARTNER_FOR_CONFIRM',
+    payload
   };
 }
 
-export function confirmPartnerRequest(agreementId: string, partnerId: string) {
+export function confirmPartnerRequest(payload: Agreement) {
   return {
     type: 'CONFIRM_PARTNER_REQUEST',
-    payload: {
-      agreementId,
-      partnerId
-    }
+    payload
   };
 }
 
-export function denyPartnerRequest(agreementId: string, partnerId: string) {
+export function denyPartnerRequest(payload: Agreement) {
   return {
     type: 'DENY_PARTNER_REQUEST',
-    payload: {
-      agreementId,
-      partnerId
-    }
+    payload
   };
 }
 
-export function breakFirstAgreement(agreementId: string) {
+export function breakAgreement(payload: Agreement) {
   return {
     type: 'BREAK_AGREEMENT',
-    payload: {
-      agreementId
-    }
+    payload
   };
 }
 
@@ -740,44 +416,4 @@ export function resetStateToInitial() {
 
 export const ourConnect = () => connect((state: State) => ({ state }));
 
-const pastState = localStorage.getItem('km-agreements-state');
-
-export const store = createStore(
-  reducer,
-  pastState ? JSON.parse(pastState) : initialState,
-  applyMiddleware(store => next => action => {
-    let result = next(action);
-    localStorage.setItem('km-agreements-state', JSON.stringify(store.getState()));
-    return result;
-  })
-);
-
-export function getPartnerRequestsSent(connections: Connection[], myId: string): Connection[] {
-  return connections.filter(({ from, type }) => from === myId && type === 'REQUESTED');
-}
-
-export function getPartnerRequestsReceived(connections: Connection[], myId: string): Connection[] {
-  return connections.filter(({ to, type }) => to === myId && type === 'REQUESTED');
-}
-
-export function getConfirmedPartnershipsSent(connections: Connection[], myId: string): Connection[] {
-  return findMyConnections(connections, myId)
-    .filter(({ from, type }) => from === myId && type === 'CONFIRMED');
-}
-
-export function getConfirmedPartnershipsReceived(connections: Connection[], myId: string): Connection[] {
-  return findMyConnections(connections, myId)
-    .filter(({ to, type }) => to === myId && type === 'CONFIRMED');
-}
-
-export function getAllMyConfirmedPartnerships(connections: Connection[], myId: string): Connection[] {
-  return getConfirmedPartnershipsSent(connections, myId).concat(getConfirmedPartnershipsReceived(connections, myId));
-}
-
-export function getBrokenPartnershipsSent(connections: Connection[], myId: string): Connection[] {
-  return connections.filter(({ from, type }) => from === myId && type === 'BROKE_WITH');
-}
-
-export function getBrokenPartnershipsRecieved(connections: Connection[], myId: string): Connection[] {
-  return connections.filter(({ to, type }) => to === myId && type === 'BROKE_WITH');
-}
+export const store = createStore(reducer);

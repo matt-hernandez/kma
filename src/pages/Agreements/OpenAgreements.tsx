@@ -27,7 +27,7 @@ const ModalPadding = styled.div`
 
 const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> = ({
     dispatch,
-    state: { openAgreements, skipConfirmCommitForThese, today },
+    state: { openAgreements, me: { templatesToSkipCommitConfirm }, today },
     history
   }) => {
   const [ showModal, setShowModal ] = useState(false);
@@ -38,19 +38,19 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
   return (
     <>
       {openAgreements.map((agreement) => {
-        const { id, partnerUpDeadline, title, due, description, templateId } = agreement;
+        const { cid, partnerUpDeadline, title, due, description, templateCid } = agreement;
         return (
           <Agreement
-            key={id}
+            key={cid}
             isCommitted={false}
             partnerUpDeadline={partnerUpDeadline}
             title={title}
             due={due}
             description={description}
             onCommit={() => {
-              if (skipConfirmCommitForThese.includes(templateId)) {
-                dispatch(commitToAgreement(id));
-                history.push(`/confirmed/${id}`);
+              if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
+                // dispatch(commitToAgreement(cid));
+                history.push(`/confirmed/${cid}`);
               } else {
                 setAgreementToConfirm(agreement);
                 setShowModal(true);
@@ -64,7 +64,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
         <IonModal isOpen={showModal} onDidDismiss={() => {
           setShowModal(false);
           if (commitOnModalDismissRef.current) {
-            history.push(`/confirmed/${agreementToConfirm.id}`);
+            history.push(`/confirmed/${agreementToConfirm.cid}`);
           }
         }}>
           <ModalPadding>
@@ -89,10 +89,10 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
             <Spacer height="6px" />
             <MarginWrapper marginTop marginBottom>
               <IonButton expand="block" color="primary" onClick={() => {
-                if (skipConfirm) {
-                  dispatch(addAgreementTemplateToSkip(agreementToConfirm.templateId));
+                if (skipConfirm && agreementToConfirm.templateCid) {
+                  // dispatch(addAgreementTemplateToSkip(agreementToConfirm.templateCid));
                 }
-                dispatch(commitToAgreement(agreementToConfirm.id));
+                // dispatch(commitToAgreement(agreementToConfirm.cid));
                 setCommitOnModalDismiss(true);
                 setShowModal(false);
                 commitOnModalDismissRef.current = true;

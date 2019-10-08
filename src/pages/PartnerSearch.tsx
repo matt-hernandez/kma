@@ -7,7 +7,7 @@ import { addPageData } from '../util/add-page-data';
 import { RouteParams } from '../util/interface-overrides';
 import { ourConnect, StateProps, searchForPartnerForAgreement, clearSearchQuery, saveSearchQuery } from '../util/state';
 
-const slug = '/partner-search/:id';
+const slug = '/partner-search/:cid';
 const title = 'Partner Search';
 
 const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> = ({
@@ -16,8 +16,8 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
     dispatch,
     state: { usersInSearch, myAgreements, savedSearchQuery }
   }) => {
-  const agreementId = (match.params as RouteParams)['id'];
-  const agreement = myAgreements.find(({id: aId}) => aId === agreementId);
+  const agreementCid = (match.params as RouteParams)['cid'];
+  const agreement = myAgreements.find(({cid: aCid}) => aCid === agreementCid);
   const queryRef = useRef(savedSearchQuery);
   const [ query, setQuery ] = useState('');
   if (!agreement) {
@@ -44,7 +44,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
           }
           if (value.length > 0) {
             dispatch(saveSearchQuery(queryRef.current));
-            dispatch(searchForPartnerForAgreement(value, agreementId));
+            // dispatch(searchForPartnerForAgreement(value, agreementCid));
           }
         }}
         onIonClear={() => {
@@ -53,10 +53,10 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         }}
       />
       <IonList>
-        { usersInSearch.map(({ id: userId, name }) => (
-          <UserItem key={userId} name={name} onClick={() => {
+        { usersInSearch.map(({ cid: userCid, name }) => (
+          <UserItem key={userCid} name={name} onClick={() => {
             dispatch(saveSearchQuery(queryRef.current));
-            history.push(`/confirm-partner/${agreementId}/${userId}`);
+            history.push(`/confirm-partner/${agreementCid}/${userCid}`);
           }} />
         )) }
       </IonList>
