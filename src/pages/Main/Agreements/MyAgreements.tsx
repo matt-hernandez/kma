@@ -1,8 +1,8 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import Agreement from '../../components/Agreement';
-import { StateProps, ourConnect, confirmPartnerRequest, denyPartnerRequest } from '../../util/state';
-import { addPageData } from '../../util/add-page-data';
+import Agreement from '../../../components/Agreement';
+import { StateProps, ourConnect, confirmPartnerRequest, denyPartnerRequest } from '../../../util/state';
+import { addPageData } from '../../../util/add-page-data';
 
 const slug = '/my';
 const title = 'My Agreements';

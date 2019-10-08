@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
-import PageWrapper from '../components/PageWrapper';
-import UserItem from '../components/UserItem';
-import { addPageData } from '../util/add-page-data';
-import { RouteParams } from '../util/interface-overrides';
-import { ourConnect, StateProps, searchForPartnerForAgreement, clearSearchQuery, saveSearchQuery } from '../util/state';
+import PageWrapper from '../../../components/PageWrapper';
+import UserItem from '../../../components/UserItem';
+import { addPageData } from '../../../util/add-page-data';
+import { RouteParams } from '../../../util/interface-overrides';
+import { ourConnect, StateProps, searchForPartnerForAgreement, clearSearchQuery, saveSearchQuery } from '../../../util/state';
 
 const slug = '/partner-search/:cid';
 const title = 'Partner Search';

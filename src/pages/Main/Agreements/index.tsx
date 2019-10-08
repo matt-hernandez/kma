@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { Redirect, Route, withRouter, RouteComponentProps } from 'react-router-dom';
-import FlexRow from '../components/FlexRow';
-import Tab from '../components/Tab';
-import OpenAgreements from './Agreements/OpenAgreements';
-import MyAgreements from './Agreements/MyAgreements';
-import PartnerRequests from './Agreements/PartnerRequests';
-import { colors } from '../styles/colors';
-import { addPageData } from '../util/add-page-data';
-import { ourConnect, StateProps } from '../util/state';
+import FlexRow from '../../../components/FlexRow';
+import Tab from '../../../components/Tab';
+import OpenAgreements from './OpenAgreements';
+import MyAgreements from './MyAgreements';
+import PartnerRequests from './PartnerRequests';
+import { colors } from '../../../styles/colors';
+import { addPageData } from '../../../util/add-page-data';
+import { ourConnect, StateProps } from '../../../util/state';
 
 const TabsContainer = styled(FlexRow)`
   margin-bottom: 14px;

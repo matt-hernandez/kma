@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { IonButton } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
-import LargeCopy from '../components/LargeCopy';
-import FlexColumn from '../components/FlexColumn';
-import InlineBold from '../components/InlineBold';
-import { addPageData } from '../util/add-page-data';
-import { RouteParams } from '../util/interface-overrides';
-import { StateProps, ourConnect } from '../util/state';
+import LargeCopy from '../../../components/LargeCopy';
+import FlexColumn from '../../../components/FlexColumn';
+import InlineBold from '../../../components/InlineBold';
+import { addPageData } from '../../../util/add-page-data';
+import { RouteParams } from '../../../util/interface-overrides';
+import { StateProps, ourConnect } from '../../../util/state';
 
 const slug = '/find-a-partner/:cid';
 const title = 'Find a Partner';

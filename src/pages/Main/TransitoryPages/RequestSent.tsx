@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { IonButton } from '@ionic/react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import FlexColumn from '../components/FlexColumn';
-import FlexCell from '../components/FlexCell';
-import LargeCopy from '../components/LargeCopy';
-import PageWrapper from '../components/PageWrapper';
-import { addPageData } from '../util/add-page-data';
+import FlexColumn from '../../../components/FlexColumn';
+import FlexCell from '../../../components/FlexCell';
+import LargeCopy from '../../../components/LargeCopy';
+import PageWrapper from '../../../components/PageWrapper';
+import { addPageData } from '../../../util/add-page-data';
 import { ReactComponent as UserPic } from '../assets/large-user-pic.svg';
 
 const slug = '/request-sent';
