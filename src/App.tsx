@@ -2,6 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
@@ -29,19 +31,25 @@ import './theme/variables.css';
 import './overrides.css';
 import { store } from './util/state';
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+});
+
 const App: React.FunctionComponent = () => (
   <IonApp>
-    <Provider store={store}>
-      <IonReactRouter>
-        <Switch>
-          <Route path="/" exact render={() => <Redirect to="/main" />} />
-          <Route path="/main" component={Main} />
-          <Route path="/admin" component={Admin} />
-          <Route component={PageDoesNotExist} />
-          <Route path="/404" strict exact component={PageDoesNotExist} />
-        </Switch>
-      </IonReactRouter>
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <IonReactRouter>
+          <Switch>
+            <Route path="/" exact render={() => <Redirect to="/main" />} />
+            <Route path="/main" component={Main} />
+            <Route path="/admin" component={Admin} />
+            <Route component={PageDoesNotExist} />
+            <Route path="/404" strict exact component={PageDoesNotExist} />
+          </Switch>
+        </IonReactRouter>
+      </Provider>
+    </ApolloProvider>
   </IonApp>
 );
 
