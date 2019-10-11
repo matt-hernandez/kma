@@ -1,3 +1,7 @@
+export const oneHour = 3600000;
+
+export const oneDay = 3600000 * 24;
+
 export function formatDate(date: number) {
   const d = new Date(date);
   const month = d.getMonth() + 1;

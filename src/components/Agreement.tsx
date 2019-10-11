@@ -12,7 +12,7 @@ import {
 import InlineItalic from '../components/InlineItalic';
 import CustomLink from '../components/CustomLink';
 import InlineColor from '../components/InlineColor';
-import { formatDueDate, formatCommitAndPartnerDate } from '../util/format-due-date';
+import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time-helpers';
 import { colors } from '../styles/colors';
 import { Connection } from '../util/state';
 

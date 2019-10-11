@@ -34,6 +34,7 @@ const App: React.FunctionComponent = () => (
     <Provider store={store}>
       <IonReactRouter>
         <Switch>
+          <Route path="/" exact render={() => <Redirect to="/main" />} />
           <Route path="/main" component={Main} />
           <Route path="/admin" component={Admin} />
           <Route component={PageDoesNotExist} />

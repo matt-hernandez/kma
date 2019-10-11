@@ -11,7 +11,7 @@ import InlineBold from '../../../components/InlineBold';
 import Spacer from '../../../components/Spacer';
 import MarginWrapper from '../../../components/MarginWrapper';
 import { StateProps, ourConnect, commitToAgreement, addAgreementTemplateToSkip, State } from '../../../util/state';
-import { formatDueDate } from '../../../util/format-due-date';
+import { formatDueDate } from '../../../util/date-time-helpers';
 import { addPageData } from '../../../util/add-page-data';
 import { useStateHelper, listenerTypes } from '../../../util/use-state-helper';
 import FlexRow from '../../../components/FlexRow';

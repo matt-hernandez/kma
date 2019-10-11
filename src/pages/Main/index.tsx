@@ -6,7 +6,6 @@ import {
     IonMenuButton,
     IonTitle,
     IonToolbar,
-    IonRouterOutlet,
     IonSplitPane
   } from '@ionic/react';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -63,21 +62,19 @@ const Main: React.FunctionComponent = () => {
             <IonTitle>KMA</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonRouterOutlet>
-          <InflateContent top={56} as="main">
-            <Switch>
-              <Route path={`/main${Agreements.pageData.slug}`} component={Agreements} />
-              <Route path={`/main${CommitmentConfirmed.pageData.slug}`} component={CommitmentConfirmed} strict exact />
-              <Route path={`/main${PartnerSearch.pageData.slug}`} component={PartnerSearch} strict exact />
-              <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
-              <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
-              <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
-              <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
-              <Route path="/main/score" component={() => <div />} strict exact />
-              <Route path="/main" exact render={() => <Redirect to="/main/agreements/open" />} />
-            </Switch>
-          </InflateContent>
-        </IonRouterOutlet>
+        <InflateContent top={56} as="main">
+          <Switch>
+            <Route path={`/main${Agreements.pageData.slug}`} component={Agreements} />
+            <Route path={`/main${CommitmentConfirmed.pageData.slug}`} component={CommitmentConfirmed} strict exact />
+            <Route path={`/main${PartnerSearch.pageData.slug}`} component={PartnerSearch} strict exact />
+            <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
+            <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
+            <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
+            <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
+            <Route path="/main/score" component={() => <div />} strict exact />
+            <Route path="/main" exact render={() => <Redirect to="/main/agreements/open" />} />
+          </Switch>
+        </InflateContent>
       </IonPage>
     </IonSplitPane>
   );

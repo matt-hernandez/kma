@@ -6,10 +6,9 @@ import {
     IonMenuButton,
     IonTitle,
     IonToolbar,
-    IonRouterOutlet,
     IonSplitPane
   } from '@ionic/react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 import { list, stats, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
@@ -66,12 +65,10 @@ const Admin: React.FunctionComponent = () => {
             <IonTitle>KMA</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonRouterOutlet>
-          <InflateContent top={56} as="main">
-            {adminPages.map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
-            <Route path="/admin" exact render={() => <Redirect to="/admin/agreements/current" />} />
-          </InflateContent>
-        </IonRouterOutlet>
+        <InflateContent top={56} as="main">
+          {adminPages.map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
+          <Route path="/admin" exact render={() => <Redirect to="/admin/agreements/current" />} />
+        </InflateContent>
       </IonPage>
     </IonSplitPane>
   );
