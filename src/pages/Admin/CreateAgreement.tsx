@@ -9,13 +9,16 @@ import {
   IonSelect,
   IonSelectOption
   } from '@ionic/react';
+import { useMutation } from '@apollo/react-hooks';
 import { addPageData } from '../../util/add-page-data';
 import { oneHour, oneDay } from '../../util/date-time-helpers';
+import { createAgreement } from '../../constants/graphql/admin';
 
 const slug = '/agreements/create';
 const title = 'Create Agreement';
 
 export default addPageData(() => {
+  const [ create, { data }] = useMutation(createAgreement);
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState('');
@@ -26,16 +29,16 @@ export default addPageData(() => {
     return title.trim() && due && partnerUpDeadline;
   };
   const isFormValid = checkFormValidity();
-  const createTask = () => {
+  const createAgreementListener = () => {
+    const now = new Date().getUTCMilliseconds();
     const data = {
       title,
       description,
-      due,
+      due: new Date(partnerUpDeadline).getUTCMilliseconds(),
       partnerUpDeadline,
-      publishDate: publishDate || 0,
-      repeatFrequency: repeatFrequency || 0
+      publishDate: publishDate || now
     };
-    const json = JSON.stringify(data);
+    create({ variables: data });
   };
   return (
     <>
@@ -74,7 +77,7 @@ export default addPageData(() => {
           <IonSelectOption value={oneDay * 7}>End of the month</IonSelectOption>
         </IonSelect>
       </IonItem>
-      <IonButton expand="block" color="primary" onClick={createTask} disabled={!isFormValid}>Create task</IonButton>
+      <IonButton expand="block" color="primary" onClick={createAgreementListener} disabled={!isFormValid}>Create task</IonButton>
     </>
   )
 }, { slug, title });

@@ -32,7 +32,8 @@ import './overrides.css';
 import { store } from './util/state';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
+  uri: 'http://localhost:4000',
+  credentials: 'include'
 });
 
 const App: React.FunctionComponent = () => (
