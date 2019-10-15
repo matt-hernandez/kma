@@ -42,7 +42,7 @@ const adminPages: AppPage[] = [
     title: CreateAgreement.pageData.title,
     url: `/admin${CreateAgreement.pageData.slug}`,
     icon: addCircle,
-    component: CreateAgreement
+    component: (CreateAgreement as any)
   },
   {
     title: Users.pageData.title,

@@ -8,6 +8,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
+import LoadingWrapper from './subpages/LoadingWrapper';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -48,6 +49,7 @@ const App: React.FunctionComponent = () => (
             <Route component={PageDoesNotExist} />
             <Route path="/404" strict exact component={PageDoesNotExist} />
           </Switch>
+          <LoadingWrapper />
         </IonReactRouter>
       </Provider>
     </ApolloProvider>

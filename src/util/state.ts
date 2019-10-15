@@ -121,6 +121,8 @@ const allAgreements: Agreement[] = [
 
 export interface State {
   me: User;
+  isLoadingScreenVisible: boolean;
+  loadingScreenText: string;
   openAgreements: Agreement[];
   myAgreements: Agreement[];
   requestsToBePartner: Agreement[];
@@ -147,6 +149,8 @@ class StateConstructor implements State {
     templatesToSkipCommitConfirm: [],
     templatesToSkipMarkAsDone: []
   };
+  isLoadingScreenVisible = false;
+  loadingScreenText = 'Please wait...'
   openAgreements = [];
   myAgreements = [];
   requestsToBePartner = [];
@@ -314,6 +318,19 @@ export function reducer(state: State = initialState, action: any): State {
       ...state,
       today: today.getTime()
     };
+  } else if (type === 'TRIGGER_LOADING_SCREEN') {
+    const loadingScreenText = payload;
+    return {
+      ...state,
+      isLoadingScreenVisible: true,
+      loadingScreenText: loadingScreenText || state.loadingScreenText
+    }
+  } else if (type === 'DISMISS_LOADING_SCREEN') {
+    return {
+      ...state,
+      isLoadingScreenVisible: false,
+      loadingScreenText: 'Please wait...'
+    }
   } else if (type === 'RESET') {
     return new StateConstructor();
   }
@@ -412,6 +429,19 @@ export function resetStateToInitial() {
   return {
     type: 'RESET'
   };
+}
+
+export function triggerLoadingScreen(payload?: string) {
+  return {
+    type: 'TRIGGER_LOADING_SCREEN',
+    payload
+  };
+}
+
+export function dismissLoadingScreen() {
+  return {
+    type: 'DISMISS_LOADING_SCREEN'
+  }
 }
 
 export const ourConnect = () => connect((state: State) => ({ state }));

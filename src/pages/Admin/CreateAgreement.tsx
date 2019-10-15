@@ -15,12 +15,16 @@ import Tooltip from '../../components/Tooltip';
 import { addPageData } from '../../util/add-page-data';
 import { oneHour, oneDay } from '../../util/date-time-helpers';
 import { createAgreement } from '../../constants/graphql/admin';
+import { StateProps, ourConnect, dismissLoadingScreen, triggerLoadingScreen } from '../../util/state';
 
 const slug = '/agreements/create';
 const title = 'Create Task';
 
-export default addPageData(() => {
-  const [ create, { data }] = useMutation(createAgreement);
+const CreateAgreement: React.FunctionComponent<StateProps> = ({ dispatch }) => {
+  const [ create, { data }] = useMutation(createAgreement, {
+    onCompleted: () => dispatch(dismissLoadingScreen()),
+    onError: () => dispatch(dismissLoadingScreen())
+  });
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState('');
@@ -40,6 +44,7 @@ export default addPageData(() => {
       partnerUpDeadline,
       publishDate: publishDate || now
     };
+    dispatch(triggerLoadingScreen());
     create({ variables: agreementData });
   };
   return (
@@ -82,4 +87,6 @@ export default addPageData(() => {
       <IonButton expand="block" color="primary" onClick={createAgreementListener} disabled={!isFormValid}>Create task</IonButton>
     </>
   )
-}, { slug, title });
+};
+
+export default addPageData(ourConnect()(CreateAgreement), { slug, title });
