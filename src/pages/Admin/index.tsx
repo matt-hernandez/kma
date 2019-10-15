@@ -9,7 +9,7 @@ import {
     IonSplitPane
   } from '@ionic/react';
 import { Redirect, Route } from 'react-router-dom';
-import { list, stats, personAdd } from 'ionicons/icons';
+import { list, rewind, fastforward, addCircle, person } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import CreateAgreement from './CreateAgreement';
@@ -29,25 +29,25 @@ const adminPages: AppPage[] = [
   {
     title: PastAgreements.pageData.title,
     url: `/admin${PastAgreements.pageData.slug}`,
-    icon: personAdd,
+    icon: rewind,
     component: PastAgreements
   },
   {
     title: UpcomingAgreements.pageData.title,
     url: `/admin${UpcomingAgreements.pageData.slug}`,
-    icon: personAdd,
+    icon: fastforward,
     component: UpcomingAgreements
   },
   {
     title: CreateAgreement.pageData.title,
     url: `/admin${CreateAgreement.pageData.slug}`,
-    icon: list,
+    icon: addCircle,
     component: CreateAgreement
   },
   {
     title: Users.pageData.title,
     url: `/admin${Users.pageData.slug}`,
-    icon: stats,
+    icon: person,
     component: Users
   }
 ];

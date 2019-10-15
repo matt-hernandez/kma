@@ -15,7 +15,7 @@ import { oneHour, oneDay } from '../../util/date-time-helpers';
 import { createAgreement } from '../../constants/graphql/admin';
 
 const slug = '/agreements/create';
-const title = 'Create Agreement';
+const title = 'Create Task';
 
 export default addPageData(() => {
   const [ create, { data }] = useMutation(createAgreement);
@@ -43,17 +43,17 @@ export default addPageData(() => {
   return (
     <>
       <IonItem>
-        <IonInput placeholder="Title" name="title" onIonInput={(e) => setTitle((e as any).target.value)}></IonInput>
+        <IonInput placeholder="Title*" name="title" onIonInput={(e) => setTitle((e as any).target.value)}></IonInput>
       </IonItem>
       <IonItem>
         <IonTextarea placeholder="Description" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
       </IonItem>
       <IonItem>
-        <IonLabel>Due date &amp; time</IonLabel>
-        <IonDatetime displayFormat="MMM DD, YYYY h:mm A" pickerFormat="MMM DD, YYYY h:m A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} />
+        <IonLabel>Due date &amp; time*</IonLabel>
+        <IonDatetime displayFormat="MMM DD, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} />
       </IonItem>
       <IonItem>
-        <IonLabel>Commit &amp; partner-up deadline</IonLabel>
+        <IonLabel>Commit &amp; partner-up deadline*</IonLabel>
         <IonSelect placeholder="Select one" interface="popover" name="partnerUpDeadline" onIonChange={(e) => setPartnerUpDeadline((e as any).target.value)}>
           <IonSelectOption value={oneHour}>1 hour before due date</IonSelectOption>
           <IonSelectOption value={oneHour * 2}>2 hours before</IonSelectOption>
@@ -65,7 +65,7 @@ export default addPageData(() => {
       </IonItem>
       <IonItem>
         <IonLabel>Publish date</IonLabel>
-        <IonDatetime displayFormat="MMM DD, YYYY h:mm A" pickerFormat="MMM DD, YYYY h:m A" placeholder="Now" minuteValues="0,15,30,45" name="publishDate" onIonChange={(e) => setPublishDate((e as any).target.value)} />
+        <IonDatetime displayFormat="MMM DD, YYYY h:mm A" placeholder="Now" minuteValues="0,15,30,45" name="publishDate" onIonChange={(e) => setPublishDate((e as any).target.value)} />
       </IonItem>
       <IonItem>
         <IonLabel>Task frequency</IonLabel>
