@@ -82,3 +82,8 @@ ion-list.list-md,
 ion-list.list-ios {
   padding-top: 0;
 }
+
+body .item .sc-ion-label-md-h,
+body .item.item-label {
+  overflow: visible;
+}

@@ -31,6 +31,12 @@ export const listenerTypes = Object.freeze({
       setter(getter() === a ? b : a);
     };
   },
+  TOGGLE_MANUALLY(setter: (value: boolean) => void) {
+    return [
+      () => setter(true),
+      () => setter(false)
+    ];
+  },
   VALUES(setter: (value: any) => void, values: Array<any>) {
     return values.map((value) => {
       return () => setter(value);
@@ -63,6 +69,10 @@ export const useStateHelper = (
   if (listenerGenerator === listenerTypes.TOGGLE_VALUES) {
     const listener = listenerGenerator(getter, setter, valuesOrResolver);
     return [ value, listener ];
+  }
+  if (listenerGenerator === listenerTypes.TOGGLE_MANUALLY) {
+    const listeners = listenerGenerator(setter);
+    return [ value, ...listeners ];
   }
   if (listenerGenerator === listenerTypes.VALUES) {
     const listeners = listenerGenerator(setter, valuesOrResolver);
