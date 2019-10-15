@@ -33,14 +33,14 @@ export default addPageData(() => {
   const isFormValid = checkFormValidity();
   const createAgreementListener = () => {
     const now = new Date().getUTCMilliseconds();
-    const data = {
+    const agreementData = {
       title,
       description,
       due: new Date(partnerUpDeadline).getUTCMilliseconds(),
       partnerUpDeadline,
       publishDate: publishDate || now
     };
-    create({ variables: data });
+    create({ variables: agreementData });
   };
   return (
     <>
