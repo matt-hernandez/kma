@@ -1,16 +1,9 @@
-export const oneHour = 3600000;
-
-export const oneDay = 3600000 * 24;
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
+import { TIME_ZONE, TODAY_MILLISECONDS_ZONED } from '../constants/date';
 
 export function formatDate(date: number) {
-  const d = new Date(date);
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-  const year = d.getFullYear();
-  const hour = d.getHours() % 12 === 0 ? 12 : d.getHours() % 12;
-  const minute = `0${d.getMinutes()}`.slice(-2);
-  const amOrPm = d.getHours() >= 12 ? 'PM' : 'AM';
-  return `${month}/${day}/${year} at ${hour}:${minute} ${amOrPm}`;
+  const d = utcToZonedTime(new Date(date), TIME_ZONE);
+  return format(d, 'M/d/yyyy \'at\' h:mm a', { timeZone: TIME_ZONE });
 }
 
 export function formatDueDate(date: number) {
@@ -19,4 +12,12 @@ export function formatDueDate(date: number) {
 
 export function formatCommitAndPartnerDate(date: number) {
   return `Partner-up by ${formatDate(date)}`;
+}
+
+export function isBeforeNow(date: number, milliseconds: number) {
+  return date - milliseconds < TODAY_MILLISECONDS_ZONED;
+}
+
+export function getUTCTimeInMilliseconds(date: number | string) {
+  return zonedTimeToUtc(date, TIME_ZONE).getTime();
 }

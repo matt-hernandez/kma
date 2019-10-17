@@ -1,4 +1,6 @@
-export const me = `
+import gql from 'graphql-tag';
+
+export const ME = gql`
   query Me {
     me {
       cid
@@ -12,7 +14,7 @@ export const me = `
   }
 `;
 
-export const possiblePartnersForAgreement = `
+export const POSSIBLE_PARTNERS_FOR_AGREEMENT = gql`
   query PossiblePartnersForAgreement($name: String!, $agreementCid: String!) {
     possiblePartnersForAgreement(name: $name, agreementCid: $agreementCid) {
       cid
@@ -21,7 +23,7 @@ export const possiblePartnersForAgreement = `
   }
 `;
 
-export const userPool = `
+export const USER_POOL = gql`
   query UserPool($agreementCid: String!) {
     userPool(agreementCid: $agreementCid) {
       cid
@@ -30,7 +32,7 @@ export const userPool = `
   }
 `;
 
-export const openAgreements = `
+export const OPEN_AGREEMENTS = gql`
   query OpenAgreements {
     openAgreements {
       cid
@@ -46,7 +48,7 @@ export const openAgreements = `
   }
 `; 
 
-export const myAgreements = `
+export const MY_AGREEMENTS = gql`
   query MyAgreements {
     myAgreements {
       cid
@@ -62,7 +64,7 @@ export const myAgreements = `
   }
 `;
 
-export const requestedPartnerAgreements = `
+export const REQUESTED_PARTNER_AGREEMENTS = gql`
   query RequestedPartnerAgreements {
     requestedPartnerAgreements {
       cid
@@ -78,7 +80,7 @@ export const requestedPartnerAgreements = `
   }
 `;
 
-export const myPastAgreements = `
+export const MY_PAST_AGREEMENTS = gql`
   query MyPastAgreements {
     myPastAgreements {
       cid
@@ -94,7 +96,7 @@ export const myPastAgreements = `
   }
 `;
 
-export const commitToAgreement = `
+export const COMMIT_TO_AGREEMENT = gql`
   mutation CommitToAgreement($agreementCid: String!) {
     commitToAgreement(agreementCid: $agreementCid) {
       cid
@@ -110,7 +112,7 @@ export const commitToAgreement = `
   }
 `;
 
-export const addAgreementTemplateToSkipCommitConfirm = `
+export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
   mutation AddAgreementTemplateToSkipCommitConfirm($templateCid: String!) {
     addAgreementTemplateToSkipCommitConfirm(templateCid: $templateCid) {
       cid
@@ -124,7 +126,7 @@ export const addAgreementTemplateToSkipCommitConfirm = `
   }
 `;
 
-export const addAgreementTemplateToSkipDoneConfirm = `
+export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
   mutation AddAgreementTemplateToSkipDoneConfirm($templateCid: String!) {
     addAgreementTemplateToSkipDoneConfirm(templateCid: $templateCid) {
       cid
@@ -138,7 +140,7 @@ export const addAgreementTemplateToSkipDoneConfirm = `
   }
 `;
 
-export const requestPartnerForAgreement = `
+export const REQUEST_PARTNER_FOR_AGREEMENT = gql`
   mutation RequestPartnerForAgreement($agreementCid: String!, $partnerCid: String!) {
     requestPartnerForAgreement(agreementCid: $agreementCid, partnerCid: $partnerCid) {
       cid
@@ -154,7 +156,7 @@ export const requestPartnerForAgreement = `
   }
 `;
 
-export const confirmPartnerRequest = `
+export const CONFIRM_PARTNER_REQUEST = gql`
   mutation ConfirmPartnerRequest($agreementCid: String!, $connectionCid: String!) {
     confirmPartnerRequest(agreementCid: $agreementCid, connectionCid: $connectionCid) {
       cid
@@ -170,7 +172,7 @@ export const confirmPartnerRequest = `
   }
 `;
 
-export const denyPartnerRequest = `
+export const DENY_PARTNER_REQUEST = gql`
   mutation DenyPartnerRequest($agreementCid: String!, $connectionCid: String!) {
     denyPartnerRequest(agreementCid: $agreementCid, connectionCid: $connectionCid) {
       cid
@@ -186,7 +188,7 @@ export const denyPartnerRequest = `
   }
 `;
 
-export const removeBrokenPartnership = `
+export const REMOVE_BROKEN_PARTNERSHIP = gql`
   mutation RemoveBrokenPartnership($agreementCid: String!, $connectionCid: String!) {
     removeBrokenPartnership(agreementCid: $agreementCid, connectionCid: $connectionCid) {
       cid
@@ -202,7 +204,7 @@ export const removeBrokenPartnership = `
   }
 `;
 
-export const cancelAgreement = `
+export const CANCEL_AGREEMENT = gql`
   mutation CancelAgreement($agreementCid: String!) {
     cancelAgreement(agreementCid: $agreementCid) {
       cid
@@ -218,7 +220,7 @@ export const cancelAgreement = `
   }
 `;
 
-export const breakAgreement = `
+export const BREAK_AGREEMENT = gql`
   mutation BreakAgreement($agreementCid: String!) {
     breakAgreement(agreementCid: $agreementCid) {
       cid
@@ -234,7 +236,7 @@ export const breakAgreement = `
   }
 `;
 
-export const markAgreementAsDone = `
+export const MARK_AGREEMENT_AS_DONE = gql`
   mutation MarkAgreementAsDone($agreementCid: String!) {
     markAgreementAsDone(agreementCid: $agreementCid) {
       cid
