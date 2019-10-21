@@ -1,6 +1,9 @@
 export const colors = {
   active: '#3880ff',
   warn: '#da1e28',
+  danger: '#d33939',
+  success: '#0ec254',
+  tertiary: '#633ce0',
   black: '#000000',
   gray10: '#171717',
   gray9: '#282828',

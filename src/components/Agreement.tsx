@@ -28,7 +28,6 @@ type PropTypes = {
   onCommit?: (...args: any) => void;
   onFindPartner?: (...args: any) => void;
   onMarkAsDone?: () => void;
-  onCancel?: (...args: any) => void;
   onBreak?: (...args: any) => void;
   onCancelRequest?: (...args: any) => void;
   onConfirmRequest?: (...args: any) => void;
@@ -49,7 +48,6 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
   onFindPartner = () => {},
   onMarkAsDone = () => {},
   onBreak = () => {},
-  onCancel = () => {},
   onCancelRequest = () => {},
   onConfirmRequest = () => {},
   onDenyRequest = () => {},
@@ -124,7 +122,6 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
           {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
           {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
-          {(isCommitted && confirmedPartners.length === 0) && <IonButton expand="block" color="medium" fill="outline" onClick={onCancel}>Cancel agreement</IonButton>}
           {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break agreement</IonButton>}
         </IonCardContent>
       </IonCard>

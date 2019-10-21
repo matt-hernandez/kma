@@ -1,26 +1,27 @@
-import { Dispatch, createStore, applyMiddleware } from "redux";
+import { Dispatch, createStore } from "redux";
 import { connect } from "react-redux";
 
-function generateId() {
-  return '_' + Math.random().toString(36).substr(2, 9);
-};
+export type ConnectionTypeForAdmin = 'REQUESTED' | 'CONFIRMED' | 'BROKE_WITH';
 
-const oneHourMS = 1000 * 60 * 60;
-const twoHoursMS = oneHourMS * 2;
-const oneDayMS = oneHourMS * 24;
-const threeDaysMS = oneDayMS * 3;
-const oneWeekMS = oneDayMS * 7;
+export interface ConnectionForAdmin {
+  cid: string;
+  fromCid: string;
+  fromName: string;
+  type: ConnectionTypeForAdmin;
+  toCid: string;
+  toName: string;
+}
 
-const threeDaysFromNowAt615AM = new Date(Date.now() + threeDaysMS);
-threeDaysFromNowAt615AM.setHours(6, 15, 0);
-const threeDaysFromNowAt515AM = new Date(Date.now() + threeDaysMS);
-threeDaysFromNowAt515AM.setHours(5, 15, 0);
-const sevenDaysFromNowAt2PM = new Date(Date.now() + oneWeekMS);
-sevenDaysFromNowAt2PM.setHours(14, 0, 0);
-const sevenDaysFromNowAt12PM = new Date(Date.now() + oneWeekMS);
-sevenDaysFromNowAt12PM.setHours(12, 0, 0);
+type OutcomeType = 'FULFILLED' | 'BROKEN' | 'PENDING';
 
-type ConnectionType = 'REQUEST_TO' | 'REQUEST_FROM' | 'CONFIRMED' | 'BROKE_WITH';
+export interface Outcome {
+  cid: string;
+  agreementCid: string;
+  userCid: string;
+  type: OutcomeType;
+}
+
+export type ConnectionType = 'REQUEST_TO' | 'REQUEST_FROM' | 'CONFIRMED' | 'BROKE_WITH';
 
 export interface Connection {
   cid: string
@@ -56,68 +57,18 @@ interface Agreement {
   wasCompleted: boolean | null
 }
 
-const allAgreements: Agreement[] = [
-  {
-    cid: generateId(),
-    templateCid: generateId(),
-    title: 'Attend Kickstart Conditioning - Monday',
-    due: threeDaysFromNowAt615AM.getTime(),
-    partnerUpDeadline: new Date(threeDaysFromNowAt615AM.getTime() - twoHoursMS).getTime(),
-    description: `Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-    Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-    tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-    in what sports scientists agree is one of the best total body workouts available.`,
-    isCommitted: false,
-    connections: [],
-    wasCompleted: null
-  },
-  {
-    cid: generateId(),
-    templateCid: generateId(),
-    title: 'Attend three KM or Fight Tactics classes this week',
-    due: sevenDaysFromNowAt2PM.getTime(),
-    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
-    description: `Any KM 1+ class or Fight Tactics class counts towards doing this agreement.`,
-    isCommitted: false,
-    connections: [],
-    wasCompleted: null
-  },
-  {
-    cid: generateId(),
-    templateCid: generateId(),
-    title: 'Attend three conditioning classes this week',
-    due: sevenDaysFromNowAt2PM.getTime(),
-    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - oneDayMS).getTime(),
-    description: `Any Heavy Bag class or Kickstart Conditioning class counts towards doing this agreement.`,
-    isCommitted: false,
-    connections: [],
-    wasCompleted: null
-  },
-  {
-    cid: generateId(),
-    templateCid: generateId(),
-    title: 'Attend Groundwork Conditioning',
-    due: sevenDaysFromNowAt2PM.getTime(),
-    partnerUpDeadline: new Date(sevenDaysFromNowAt2PM.getTime() - twoHoursMS).getTime(),
-    isCommitted: false,
-    connections: [],
-    wasCompleted: null
-  },
-  {
-    cid: generateId(),
-    templateCid: generateId(),
-    title: 'Attend Kickstart Conditioning - Saturday',
-    due: sevenDaysFromNowAt12PM.getTime(),
-    partnerUpDeadline: new Date(sevenDaysFromNowAt12PM.getTime() - twoHoursMS).getTime(),
-    description: `Kickstart your day with a strength-building, lung-challenging, ass-kicking workout!
-    Burn up to 1000 calories in this high intensity class that utilizes plyometrics,
-    tabata training, and a range of boxing and kickboxing techniques. Spend 45 minutes
-    in what sports scientists agree is one of the best total body workouts available.`,
-    isCommitted: false,
-    connections: [],
-    wasCompleted: null
-  },
-];
+export interface AgreementForAdmin {
+  cid: string;
+  templateCid?: string;
+  title: string;
+  due: number;
+  publishDate: number;
+  partnerUpDeadline: number;
+  description?: string;
+  committedUsers: User[];
+  connections: ConnectionForAdmin[];
+  outcomes: Outcome[];
+}
 
 export interface State {
   me: User;
