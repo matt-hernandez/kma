@@ -10,9 +10,9 @@ import {
   IonLabel
   } from '@ionic/react';
 import styled, { css } from 'styled-components/macro';
-import InlineItalic from '../components/InlineItalic';
+import InlineItalic from './InlineItalic';
 import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time-helpers';
-import { Connection, ConnectionForAdmin, User, Outcome, ConnectionType, AgreementForAdmin } from '../util/state';
+import { Connection, ConnectionForAdmin, User, Outcome, ConnectionType, TaskForAdmin } from '../util/state';
 import { ReactComponent as UserPic } from '../assets/user-pic.svg';
 import { colors } from '../styles/colors';
 
@@ -66,10 +66,10 @@ type ConnectionsProps = {
 
 const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connections = [], outcomes = [] }) => {
   const ownUserOutcome = outcomes.find(({ userCid }) => userCid === user.cid);
-  const ownUserBrokeAgreement = ownUserOutcome && ownUserOutcome.type === 'BROKEN';
+  const ownUserBrokeTask = ownUserOutcome && ownUserOutcome.type === 'BROKEN';
   return (
     <ConnectionContainer>
-      <ConnectionPerson type={ownUserBrokeAgreement ? 'BROKE_WITH' : ''}>
+      <ConnectionPerson type={ownUserBrokeTask ? 'BROKE_WITH' : ''}>
         <UserPic />
         <ConnectionPersonName>
           {user.name}
@@ -102,7 +102,7 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
   );
 };
 
-const Agreement: React.FunctionComponent<AgreementForAdmin> = ({
+const Task: React.FunctionComponent<TaskForAdmin> = ({
   cid,
   templateCid,
   title,
@@ -148,4 +148,4 @@ const Agreement: React.FunctionComponent<AgreementForAdmin> = ({
   );
 };
 
-export default Agreement;
+export default Task;

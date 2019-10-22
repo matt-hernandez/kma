@@ -14,9 +14,9 @@ export const ME = gql`
   }
 `;
 
-export const POSSIBLE_PARTNERS_FOR_AGREEMENT = gql`
-  query PossiblePartnersForAgreement($name: String!, $agreementCid: String!) {
-    possiblePartnersForAgreement(name: $name, agreementCid: $agreementCid) {
+export const POSSIBLE_PARTNERS_FOR_TASK = gql`
+  query PossiblePartnersForTask($name: String!, $taskCid: String!) {
+    possiblePartnersForTask(name: $name, taskCid: $taskCid) {
       cid
       name
     }
@@ -24,17 +24,17 @@ export const POSSIBLE_PARTNERS_FOR_AGREEMENT = gql`
 `;
 
 export const USER_POOL = gql`
-  query UserPool($agreementCid: String!) {
-    userPool(agreementCid: $agreementCid) {
+  query UserPool($taskCid: String!) {
+    userPool(taskCid: $taskCid) {
       cid
       name
     }
   }
 `;
 
-export const OPEN_AGREEMENTS = gql`
-  query OpenAgreements {
-    openAgreements {
+export const OPEN_TASKS = gql`
+  query OpenTasks {
+    openTasks {
       cid
       templateCid
       title
@@ -48,9 +48,9 @@ export const OPEN_AGREEMENTS = gql`
   }
 `; 
 
-export const MY_AGREEMENTS = gql`
-  query MyAgreements {
-    myAgreements {
+export const MY_TASKS = gql`
+  query MyTasks {
+    myTasks {
       cid
       templateCid
       title
@@ -64,9 +64,9 @@ export const MY_AGREEMENTS = gql`
   }
 `;
 
-export const REQUESTED_PARTNER_AGREEMENTS = gql`
-  query RequestedPartnerAgreements {
-    requestedPartnerAgreements {
+export const REQUESTED_PARTNER_TASKS = gql`
+  query RequestedPartnerTasks {
+    requestedPartnerTasks {
       cid
       templateCid
       title
@@ -80,9 +80,9 @@ export const REQUESTED_PARTNER_AGREEMENTS = gql`
   }
 `;
 
-export const MY_PAST_AGREEMENTS = gql`
-  query MyPastAgreements {
-    myPastAgreements {
+export const MY_PAST_TASKS = gql`
+  query MyPastTasks {
+    myPastTasks {
       cid
       templateCid
       title
@@ -96,9 +96,9 @@ export const MY_PAST_AGREEMENTS = gql`
   }
 `;
 
-export const COMMIT_TO_AGREEMENT = gql`
-  mutation CommitToAgreement($agreementCid: String!) {
-    commitToAgreement(agreementCid: $agreementCid) {
+export const COMMIT_TO_TASK = gql`
+  mutation CommitToTask($taskCid: String!) {
+    commitToTask(taskCid: $taskCid) {
       cid
       templateCid
       title
@@ -112,9 +112,9 @@ export const COMMIT_TO_AGREEMENT = gql`
   }
 `;
 
-export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
-  mutation AddAgreementTemplateToSkipCommitConfirm($templateCid: String!) {
-    addAgreementTemplateToSkipCommitConfirm(templateCid: $templateCid) {
+export const ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
+  mutation AddTaskTemplateToSkipCommitConfirm($templateCid: String!) {
+    addTaskTemplateToSkipCommitConfirm(templateCid: $templateCid) {
       cid
       name 
       email 
@@ -126,9 +126,9 @@ export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
   }
 `;
 
-export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
-  mutation AddAgreementTemplateToSkipDoneConfirm($templateCid: String!) {
-    addAgreementTemplateToSkipDoneConfirm(templateCid: $templateCid) {
+export const ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
+  mutation AddTaskTemplateToSkipDoneConfirm($templateCid: String!) {
+    addTaskTemplateToSkipDoneConfirm(templateCid: $templateCid) {
       cid
       name 
       email 
@@ -140,9 +140,9 @@ export const ADD_AGREEMENT_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
   }
 `;
 
-export const REQUEST_PARTNER_FOR_AGREEMENT = gql`
-  mutation RequestPartnerForAgreement($agreementCid: String!, $partnerCid: String!) {
-    requestPartnerForAgreement(agreementCid: $agreementCid, partnerCid: $partnerCid) {
+export const REQUEST_PARTNER_FOR_TASK = gql`
+  mutation RequestPartnerForTask($taskCid: String!, $partnerCid: String!) {
+    requestPartnerForTask(taskCid: $taskCid, partnerCid: $partnerCid) {
       cid
       templateCid
       title
@@ -157,8 +157,8 @@ export const REQUEST_PARTNER_FOR_AGREEMENT = gql`
 `;
 
 export const CONFIRM_PARTNER_REQUEST = gql`
-  mutation ConfirmPartnerRequest($agreementCid: String!, $connectionCid: String!) {
-    confirmPartnerRequest(agreementCid: $agreementCid, connectionCid: $connectionCid) {
+  mutation ConfirmPartnerRequest($taskCid: String!, $connectionCid: String!) {
+    confirmPartnerRequest(taskCid: $taskCid, connectionCid: $connectionCid) {
       cid
       templateCid
       title
@@ -173,8 +173,8 @@ export const CONFIRM_PARTNER_REQUEST = gql`
 `;
 
 export const DENY_PARTNER_REQUEST = gql`
-  mutation DenyPartnerRequest($agreementCid: String!, $connectionCid: String!) {
-    denyPartnerRequest(agreementCid: $agreementCid, connectionCid: $connectionCid) {
+  mutation DenyPartnerRequest($taskCid: String!, $connectionCid: String!) {
+    denyPartnerRequest(taskCid: $taskCid, connectionCid: $connectionCid) {
       cid
       templateCid
       title
@@ -189,8 +189,8 @@ export const DENY_PARTNER_REQUEST = gql`
 `;
 
 export const REMOVE_BROKEN_PARTNERSHIP = gql`
-  mutation RemoveBrokenPartnership($agreementCid: String!, $connectionCid: String!) {
-    removeBrokenPartnership(agreementCid: $agreementCid, connectionCid: $connectionCid) {
+  mutation RemoveBrokenPartnership($taskCid: String!, $connectionCid: String!) {
+    removeBrokenPartnership(taskCid: $taskCid, connectionCid: $connectionCid) {
       cid
       templateCid
       title
@@ -204,9 +204,9 @@ export const REMOVE_BROKEN_PARTNERSHIP = gql`
   }
 `;
 
-export const CANCEL_AGREEMENT = gql`
-  mutation CancelAgreement($agreementCid: String!) {
-    cancelAgreement(agreementCid: $agreementCid) {
+export const CANCEL_TASK = gql`
+  mutation CancelTask($taskCid: String!) {
+    cancelTask(taskCid: $taskCid) {
       cid
       templateCid
       title
@@ -220,9 +220,9 @@ export const CANCEL_AGREEMENT = gql`
   }
 `;
 
-export const BREAK_AGREEMENT = gql`
-  mutation BreakAgreement($agreementCid: String!) {
-    breakAgreement(agreementCid: $agreementCid) {
+export const BREAK_TASK = gql`
+  mutation BreakTask($taskCid: String!) {
+    breakTask(taskCid: $taskCid) {
       cid
       templateCid
       title
@@ -236,9 +236,9 @@ export const BREAK_AGREEMENT = gql`
   }
 `;
 
-export const MARK_AGREEMENT_AS_DONE = gql`
-  mutation MarkAgreementAsDone($agreementCid: String!) {
-    markAgreementAsDone(agreementCid: $agreementCid) {
+export const MARK_TASK_AS_DONE = gql`
+  mutation MarkTaskAsDone($taskCid: String!) {
+    markTaskAsDone(taskCid: $taskCid) {
       cid
       templateCid
       title

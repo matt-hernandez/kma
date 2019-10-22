@@ -9,10 +9,10 @@ import LargeCopy from '../../../components/LargeCopy';
 import Spacer from '../../../components/Spacer';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { ourConnect, StateProps, requestPartnerForAgreement, clearSearchQuery } from '../../../util/state';
+import { ourConnect, StateProps, requestPartnerForTask, clearSearchQuery } from '../../../util/state';
 import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
 
-const slug = '/confirm-partner/:agreementCid';
+const slug = '/confirm-partner/:taskCid';
 const title = 'Confirm Partner';
 
 const Half = styled(FlexCell)`
@@ -27,11 +27,11 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
     match,
     history,
     dispatch,
-    state: { myAgreements, userToConfirm }
+    state: { myTasks, userToConfirm }
   }) => {
-  const agreementCid = (match.params as RouteParams)['agreementCid'];
-  const agreement = myAgreements.find(({cid}) => cid === agreementCid);
-  const title = agreement ? agreement.title : '';
+  const taskCid = (match.params as RouteParams)['taskCid'];
+  const task = myTasks.find(({cid}) => cid === taskCid);
+  const title = task ? task.title : '';
   if (!title || userToConfirm === null) {
     return <Redirect to="/404" />
   }
@@ -50,7 +50,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
           <Spacer height="4px" />
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
-              // dispatch(requestPartnerForAgreement(agreementCid, partnerCid));
+              // dispatch(requestPartnerForTask(taskCid, partnerCid));
               dispatch(clearSearchQuery());
               history.push('/main/request-sent');
             }}>

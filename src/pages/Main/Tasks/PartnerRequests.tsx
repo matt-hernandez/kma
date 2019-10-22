@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import Agreement from '../../../components/Agreement';
+import Task from '../../../components/Task';
 import { StateProps, ourConnect, denyPartnerRequest, confirmPartnerRequest } from '../../../util/state';
 import { addPageData } from '../../../util/add-page-data';
 
@@ -14,7 +14,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps & StateProps>
   }) => (
   <>
     {requestsToBePartner.map(({ cid, partnerUpDeadline, connections, title, due, description }) => (
-      <Agreement
+      <Task
         key={cid}
         isCommitted={false}
         partnerUpDeadline={partnerUpDeadline}

@@ -16,7 +16,7 @@ type OutcomeType = 'FULFILLED' | 'BROKEN' | 'PENDING';
 
 export interface Outcome {
   cid: string;
-  agreementCid: string;
+  taskCid: string;
   userCid: string;
   type: OutcomeType;
 }
@@ -45,7 +45,7 @@ export interface PossiblePartner {
   name: string
 }
 
-interface Agreement {
+interface Task {
   cid: string
   templateCid?: string
   title: string
@@ -57,7 +57,7 @@ interface Agreement {
   wasCompleted: boolean | null
 }
 
-export interface AgreementForAdmin {
+export interface TaskForAdmin {
   cid: string;
   templateCid?: string;
   title: string;
@@ -74,14 +74,14 @@ export interface State {
   me: User;
   isLoadingScreenVisible: boolean;
   loadingScreenText: string;
-  openAgreements: Agreement[];
-  myAgreements: Agreement[];
-  requestsToBePartner: Agreement[];
+  openTasks: Task[];
+  myTasks: Task[];
+  requestsToBePartner: Task[];
   usersInSearch: PossiblePartner[];
   userToConfirm: PossiblePartner | null;
   userPool: PossiblePartner[];
   savedSearchQuery: string;
-  closedAgreements: Agreement[];
+  closedTasks: Task[];
   today: number;
 }
 
@@ -102,14 +102,14 @@ class StateConstructor implements State {
   };
   isLoadingScreenVisible = false;
   loadingScreenText = 'Please wait...'
-  openAgreements = [];
-  myAgreements = [];
+  openTasks = [];
+  myTasks = [];
   requestsToBePartner = [];
   usersInSearch = [];
   userToConfirm = null;
   userPool = [];
   savedSearchQuery = '';
-  closedAgreements = [];
+  closedTasks = [];
   today = Date.now();
 };
 
@@ -117,23 +117,23 @@ let initialState: State = new StateConstructor();
 
 export function reducer(state: State = initialState, action: any): State {
   const { type, payload } = action;
-  if (type === 'COMMIT_TO_AGREEMENT') {
-    const { agreementCid } = payload;
-    const agreement = state.openAgreements.find(({cid: aCid }) => aCid === agreementCid);
-    if (!agreement) {
+  if (type === 'COMMIT_TO_TASK') {
+    const { taskCid } = payload;
+    const task = state.openTasks.find(({cid: aCid }) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.openAgreements.indexOf(agreement);
+    const index = state.openTasks.indexOf(task);
     return {
       ...state,
-      openAgreements: [
-        ...state.openAgreements.slice(0, index),
-        ...state.openAgreements.slice(index + 1)
+      openTasks: [
+        ...state.openTasks.slice(0, index),
+        ...state.openTasks.slice(index + 1)
       ],
-      myAgreements: [
-        ...state.myAgreements,
+      myTasks: [
+        ...state.myTasks,
         {
-          ...agreement
+          ...task
         }
       ]
     };
@@ -162,37 +162,37 @@ export function reducer(state: State = initialState, action: any): State {
       usersInSearch: []
     };
   } else if (type === 'REQUEST_PARTNER') {
-    const { agreementCid } = payload;
-    const agreement = state.myAgreements.find(({cid: aCid}) => aCid === agreementCid);
-    if (!agreement) {
+    const { taskCid } = payload;
+    const task = state.myTasks.find(({cid: aCid}) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.myAgreements.indexOf(agreement);
+    const index = state.myTasks.indexOf(task);
     return {
       ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, index),
+      myTasks: [
+        ...state.myTasks.slice(0, index),
         {
-          ...agreement
+          ...task
         },
-        ...state.myAgreements.slice(index + 1),
+        ...state.myTasks.slice(index + 1),
       ]
     };
   } else if (type === 'CONFIRM_PARTNER') {
-    const { agreementCid } = payload;
-    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
-    if (!agreement) {
+    const { taskCid } = payload;
+    const task = state.myTasks.find(({ cid: aCid }) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.myAgreements.indexOf(agreement);
+    const index = state.myTasks.indexOf(task);
     return {
       ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, index),
+      myTasks: [
+        ...state.myTasks.slice(0, index),
         {
-          ...agreement
+          ...task
         },
-        ...state.myAgreements.slice(index + 1),
+        ...state.myTasks.slice(index + 1),
       ]
     };
   } else if (type === 'SELECT_POSSIBLE_PARTNER_FOR_CONFIRM') {
@@ -202,56 +202,56 @@ export function reducer(state: State = initialState, action: any): State {
       userToConfirm
     };
   } else if (type === 'CONFIRM_PARTNER_REQUEST') {
-    const { agreementCid } = payload;
-    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
-    if (!agreement) {
+    const { taskCid } = payload;
+    const task = state.myTasks.find(({ cid: aCid }) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.myAgreements.indexOf(agreement);
+    const index = state.myTasks.indexOf(task);
     return {
       ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, index),
+      myTasks: [
+        ...state.myTasks.slice(0, index),
         {
-          ...agreement
+          ...task
         },
-        ...state.myAgreements.slice(index + 1),
+        ...state.myTasks.slice(index + 1),
       ]
     };
   } else if (type === 'DENY_PARTNER_REQUEST') {
-    const { agreementCid } = payload;
-    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
-    if (!agreement) {
+    const { taskCid } = payload;
+    const task = state.myTasks.find(({ cid: aCid }) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.myAgreements.indexOf(agreement);
+    const index = state.myTasks.indexOf(task);
     return {
       ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, index),
+      myTasks: [
+        ...state.myTasks.slice(0, index),
         {
-          ...agreement
+          ...task
         },
-        ...state.myAgreements.slice(index + 1),
+        ...state.myTasks.slice(index + 1),
       ]
     };
-  } else if (type === 'BREAK_AGREEMENT') {
-    const { agreementCid } = payload;
-    const agreement = state.myAgreements.find(({ cid: aCid }) => aCid === agreementCid);
-    if (!agreement) {
+  } else if (type === 'BREAK_TASK') {
+    const { taskCid } = payload;
+    const task = state.myTasks.find(({ cid: aCid }) => aCid === taskCid);
+    if (!task) {
       return state;
     }
-    const index = state.myAgreements.indexOf(agreement);
+    const index = state.myTasks.indexOf(task);
     return {
       ...state,
-      myAgreements: [
-        ...state.myAgreements.slice(0, index),
-        ...state.myAgreements.slice(index + 1),
+      myTasks: [
+        ...state.myTasks.slice(0, index),
+        ...state.myTasks.slice(index + 1),
       ],
-      closedAgreements: [
-        ...state.closedAgreements,
+      closedTasks: [
+        ...state.closedTasks,
         {
-          ...agreement
+          ...task
         },
       ]
     };
@@ -288,21 +288,21 @@ export function reducer(state: State = initialState, action: any): State {
   return state;
 }
 
-export function commitToAgreement(payload: Agreement) {
+export function commitToTask(payload: Task) {
   return {
-    type: 'COMMIT_TO_AGREEMENT',
+    type: 'COMMIT_TO_TASK',
     payload
   };
 }
 
-export function addAgreementTemplateToSkip(payload: User) {
+export function addTaskTemplateToSkip(payload: User) {
   return {
     type: 'SKIP_CONFIRM',
     payload
   };
 }
 
-export function searchForPartnerForAgreement(payload: PossiblePartner[]) {
+export function searchForPartnerForTask(payload: PossiblePartner[]) {
   return {
     type: 'SEARCH_FOR_PARTNER',
     payload
@@ -322,14 +322,14 @@ export function clearSearchQuery() {
   };
 }
 
-export function requestPartnerForAgreement(payload: Agreement) {
+export function requestPartnerForTask(payload: Task) {
   return {
     type: 'REQUEST_PARTNER',
     payload
   };
 }
 
-export function confirmPartnerForAgreement(payload: Agreement) {
+export function confirmPartnerForTask(payload: Task) {
   return {
     type: 'CONFIRM_PARTNER',
     payload
@@ -343,23 +343,23 @@ export function selectPossiblePartnerForConfirm(payload: PossiblePartner) {
   };
 }
 
-export function confirmPartnerRequest(payload: Agreement) {
+export function confirmPartnerRequest(payload: Task) {
   return {
     type: 'CONFIRM_PARTNER_REQUEST',
     payload
   };
 }
 
-export function denyPartnerRequest(payload: Agreement) {
+export function denyPartnerRequest(payload: Task) {
   return {
     type: 'DENY_PARTNER_REQUEST',
     payload
   };
 }
 
-export function breakAgreement(payload: Agreement) {
+export function breakTask(payload: Task) {
   return {
-    type: 'BREAK_AGREEMENT',
+    type: 'BREAK_TASK',
     payload
   };
 }

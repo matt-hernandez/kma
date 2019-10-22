@@ -23,17 +23,17 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
     match,
     history,
     dispatch,
-    state: { myAgreements, userPool }
+    state: { myTasks, userPool }
   }) => {
-  const agreementCid = (match.params as RouteParams)['cid'];
-  const agreement = myAgreements.find(({cid: aCid}) => aCid === agreementCid);
-  if (!agreement) {
+  const taskCid = (match.params as RouteParams)['cid'];
+  const task = myTasks.find(({cid: aCid}) => aCid === taskCid);
+  if (!task) {
     return <Redirect to="/404" />
   }
   return (
     <PageWrapper>
       <Spacer height="12px" />
-      <H1 centered>For "{`${agreement.title}`}"</H1>
+      <H1 centered>For "{`${task.title}`}"</H1>
       <Spacer height="16px" />
       <LargeCopy centered>You can choose from these partners</LargeCopy>
       <Spacer height="24px" />
@@ -44,7 +44,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         { userPool.map((user) => (
           <UserItem key={user.cid} name={user.name} onClick={() => {
             dispatch(selectPossiblePartnerForConfirm(user));
-            history.push(`/main/confirm-partner/${agreementCid}`);
+            history.push(`/main/confirm-partner/${taskCid}`);
           }} />
         )) }
       </IonList>

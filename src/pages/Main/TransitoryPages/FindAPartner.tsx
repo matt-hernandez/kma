@@ -24,14 +24,14 @@ const PageContent = styled.div`
 const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     history,
     match,
-    state: { myAgreements }
+    state: { myTasks }
   }) => {
-  const agreementId = (match.params as RouteParams)['cid'];
-  const agreement = myAgreements.find(({cid}) => cid === agreementId);
-  if (!agreement) {
+  const taskId = (match.params as RouteParams)['cid'];
+  const task = myTasks.find(({cid}) => cid === taskId);
+  if (!task) {
     return <Redirect to="/404" />
   }
-  const myConnections = agreement.connections;
+  const myConnections = task.connections;
   const canRequestPartner = myConnections.length < 2;
   const hasSentRequest = myConnections.some(({ type }) => type === 'REQUEST_TO');
   const hasConfirmedPartner = myConnections.some(({ type }) => type === 'CONFIRMED');
@@ -47,7 +47,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                     It's time to find a partner for:
                   </LargeCopy>
                   <LargeCopy centered>
-                    <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                    <InlineBold>{`"${task.title}."`}</InlineBold>
                   </LargeCopy>
                   <LargeCopy centered>
                     You can do one of two things.
@@ -62,7 +62,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                         You already have a pending partner request for:
                       </LargeCopy>
                       <LargeCopy centered>
-                        <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                        <InlineBold>{`"${task.title}."`}</InlineBold>
                       </LargeCopy>
                       <LargeCopy centered>
                         You are allowed to send one more additional request.
@@ -75,7 +75,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                         You already have a confirmed partner for:
                       </LargeCopy>
                       <LargeCopy centered>
-                        <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                        <InlineBold>{`"${task.title}."`}</InlineBold>
                       </LargeCopy>
                       <LargeCopy centered>
                         You are allowed to request one more additional partner.
@@ -88,7 +88,7 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                         You have already received a partner request for:
                       </LargeCopy>
                       <LargeCopy centered>
-                        <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                        <InlineBold>{`"${task.title}."`}</InlineBold>
                       </LargeCopy>
                       <LargeCopy centered>
                         You are allowed to send one more request of your own to an additional partner.
@@ -105,22 +105,22 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
                 You have reached the maximum number of partners for:
               </LargeCopy>
               <LargeCopy centered>
-                <InlineBold>{`"${agreement.title}."`}</InlineBold>
+                <InlineBold>{`"${task.title}."`}</InlineBold>
               </LargeCopy>
             </>
           )}
         {canRequestPartner && (
           <>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${agreementId}`)}>Direct message a person</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${taskId}`)}>Direct message a person</IonButton>
             <LargeCopy centered>Or</LargeCopy>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${agreementId}`)}>Choose from others who have made the same agreement</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${taskId}`)}>Choose from others who have made the same task</IonButton>
           </>
         )}
         {!canRequestPartner && (
           <IonButton expand="block" color="primary" onClick={() => {
-            history.push('/main/agreements/my');
+            history.push('/main/tasks/my');
           }}>
-            Go to My Agreements
+            Go to My Tasks
           </IonButton>
         )}
       </PageContent>

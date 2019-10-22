@@ -1,20 +1,20 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import Agreement from '../../../components/Agreement';
+import Task from '../../../components/Task';
 import { StateProps, ourConnect, confirmPartnerRequest, denyPartnerRequest } from '../../../util/state';
 import { addPageData } from '../../../util/add-page-data';
 
 const slug = '/my';
-const title = 'My Agreements';
+const title = 'My Tasks';
 
-const MyAgreements: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const MyTasks: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     dispatch,
     history,
-    state: { myAgreements, today, me }
+    state: { myTasks, today, me }
   }) => (
   <>
-    {myAgreements.map(({ cid, partnerUpDeadline, title, due, description, connections }) => (
-      <Agreement
+    {myTasks.map(({ cid, partnerUpDeadline, title, due, description, connections }) => (
+      <Task
         key={cid}
         isCommitted={true}
         partnerUpDeadline={partnerUpDeadline}
@@ -37,4 +37,4 @@ const MyAgreements: React.FunctionComponent<RouteComponentProps & StateProps> = 
   </>
 );
 
-export default addPageData(withRouter(ourConnect()(MyAgreements)), { slug, title });
+export default addPageData(withRouter(ourConnect()(MyTasks)), { slug, title });

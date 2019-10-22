@@ -12,37 +12,37 @@ import { Redirect, Route } from 'react-router-dom';
 import { list, rewind, fastforward, addCircle, person } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
-import CreateAgreement from './CreateAgreement';
-import CurrentAgreements from './CurrentAgreements';
-import PastAgreements from './PastAgreements';
-import UpcomingAgreements from './UpcomingAgreements';
+import CreateTask from './CreateTask';
+import CurrentTasks from './CurrentTasks';
+import PastTasks from './PastTasks';
+import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
 
 const adminPages: AppPage[] = [
   {
-    title: CurrentAgreements.pageData.title,
-    url: `/admin${CurrentAgreements.pageData.slug}`,
+    title: CurrentTasks.pageData.title,
+    url: `/admin${CurrentTasks.pageData.slug}`,
     icon: list,
-    component: CurrentAgreements
+    component: CurrentTasks
   },
   {
-    title: PastAgreements.pageData.title,
-    url: `/admin${PastAgreements.pageData.slug}`,
+    title: PastTasks.pageData.title,
+    url: `/admin${PastTasks.pageData.slug}`,
     icon: rewind,
-    component: PastAgreements
+    component: PastTasks
   },
   {
-    title: UpcomingAgreements.pageData.title,
-    url: `/admin${UpcomingAgreements.pageData.slug}`,
+    title: UpcomingTasks.pageData.title,
+    url: `/admin${UpcomingTasks.pageData.slug}`,
     icon: fastforward,
-    component: UpcomingAgreements
+    component: UpcomingTasks
   },
   {
-    title: CreateAgreement.pageData.title,
-    url: `/admin${CreateAgreement.pageData.slug}`,
+    title: CreateTask.pageData.title,
+    url: `/admin${CreateTask.pageData.slug}`,
     icon: addCircle,
-    component: (CreateAgreement as any)
+    component: (CreateTask as any)
   },
   {
     title: Users.pageData.title,
@@ -67,7 +67,7 @@ const Admin: React.FunctionComponent = () => {
         </IonHeader>
         <InflateContent top={56} as="main">
           {adminPages.map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
-          <Route path="/admin" exact render={() => <Redirect to="/admin/agreements/current" />} />
+          <Route path="/admin" exact render={() => <Redirect to="/admin/tasks/current" />} />
         </InflateContent>
       </IonPage>
     </IonSplitPane>

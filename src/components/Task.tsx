@@ -9,9 +9,9 @@ import {
   IonChip,
   IonLabel
   } from '@ionic/react';
-import InlineItalic from '../components/InlineItalic';
-import CustomLink from '../components/CustomLink';
-import InlineColor from '../components/InlineColor';
+import InlineItalic from './InlineItalic';
+import CustomLink from './CustomLink';
+import InlineColor from './InlineColor';
 import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time-helpers';
 import { colors } from '../styles/colors';
 import { Connection } from '../util/state';
@@ -35,7 +35,7 @@ type PropTypes = {
   debugNow?: number;
 };
 
-const Agreement: React.FunctionComponent<PropTypes> = ({
+const Task: React.FunctionComponent<PropTypes> = ({
   title,
   due,
   partnerUpDeadline,
@@ -122,11 +122,11 @@ const Agreement: React.FunctionComponent<PropTypes> = ({
           {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
           {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
           {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
-          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break agreement</IonButton>}
+          {(isCommitted && confirmedPartners.length > 0) && <IonButton expand="block" color="danger" onClick={onBreak}>Break task</IonButton>}
         </IonCardContent>
       </IonCard>
     </>
   );
 };
 
-export default Agreement;
+export default Task;

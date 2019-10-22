@@ -16,11 +16,11 @@ import { ReactComponent as Question } from '../../assets/question.svg';
 import Tooltip from '../../components/Tooltip';
 import { addPageData } from '../../util/add-page-data';
 import { ONE_HOUR_MILLISECONDS, ONE_DAY_MILLISECONDS, TODAY_DATE_ZONED, TOMORROW_AT_NOON_MILLISECONDS_ZONED, TODAY_MILLISECONDS_ZONED, TIME_ZONE_DIFFERENCE } from '../../constants/date';
-import { CREATE_AGREEMENT, CREATE_AGREEMENT_TEMPLATE } from '../../constants/graphql/admin';
+import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../constants/graphql/admin';
 import { StateProps, ourConnect, dismissLoadingScreen, triggerLoadingScreen } from '../../util/state';
 import { isBeforeNow, getUTCTimeInMilliseconds } from '../../util/date-time-helpers';
 
-const slug = '/agreements/create';
+const slug = '/tasks/create';
 const title = 'Create Task';
 
 const TODAY_DATE_WITH_TIME_DIFFERENCE = new Date(TODAY_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
@@ -54,12 +54,12 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps> = ({
+const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
     dispatch,
     history
   }) => {
-  const [ createAgreement ] = useMutation(CREATE_AGREEMENT);
-  const [ createAgreementTemplate ] = useMutation(CREATE_AGREEMENT_TEMPLATE)
+  const [ createTask ] = useMutation(CREATE_TASK);
+  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE)
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState(TOMORROW_AT_NOON_DATE.toISOString());
@@ -71,9 +71,9 @@ const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps>
     return title.trim() && due && partnerUpDeadline;
   };
   const isFormValid = checkFormValidity();
-  const createAgreementListener = () => {
+  const createTaskListener = () => {
     const now = TODAY_MILLISECONDS_ZONED;
-    const agreementData = {
+    const taskData = {
       title,
       description,
       due: getUTCTimeInMilliseconds(due),
@@ -81,41 +81,41 @@ const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps>
       publishDate: getUTCTimeInMilliseconds(publishDate) || now
     };
     dispatch(triggerLoadingScreen());
-    let agreementCreationHasError = false;
-    let agreementTemplateCreationHasError = false;
-    const createAgreementPromise = createAgreement({ variables: agreementData }).catch(() => {agreementCreationHasError = true});
+    let taskCreationHasError = false;
+    let taskTemplateCreationHasError = false;
+    const createTaskPromise = createTask({ variables: taskData }).catch(() => {taskCreationHasError = true});
     if (repeatFrequency) {
-      createAgreementPromise.then((agreement) => createAgreementTemplate({
+      createTaskPromise.then((task) => createTaskTemplate({
           variables: {
-            ...agreementData,
+            ...taskData,
             repeatFrequency,
             nextPublishDate: getUTCTimeInMilliseconds(due),
             nextDueDate: getUTCTimeInMilliseconds(due) + Number(repeatFrequency)
           }
-        }).then(() => agreement).catch(() => {
-          agreementTemplateCreationHasError = true;
-          return agreement;
+        }).then(() => task).catch(() => {
+          taskTemplateCreationHasError = true;
+          return task;
         })
       );
     }
-    createAgreementPromise.then((agreement: any) => {
+    createTaskPromise.then((task: any) => {
       dispatch(dismissLoadingScreen());
-      if (agreementCreationHasError) {
+      if (taskCreationHasError) {
         setToastData({
           color: 'danger',
           message: 'There was an error creating your task!'
         });
-      } else if (agreementTemplateCreationHasError) {
+      } else if (taskTemplateCreationHasError) {
         setToastData({
           color: 'warning',
           message: 'Your task was created, but there was a problem setting up recurring tasks.'
         });
       } else {
         let url: string;
-        if (agreement.publishDate > TODAY_MILLISECONDS_ZONED) {
-          url = '/admin/agreements/upcoming';
+        if (task.publishDate > TODAY_MILLISECONDS_ZONED) {
+          url = '/admin/tasks/upcoming';
         } else {
-          url = '/admin/agreements/current';
+          url = '/admin/tasks/current';
         }
         setToastData({
           color: 'success',
@@ -139,7 +139,7 @@ const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps>
         <IonTextarea placeholder="Description" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
       </IonItem>
       <IonItem>
-        <IonLabel slot="start">Due date &amp; time* <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their agreements will be broken automatically.']}><Question /></Tooltip></IonLabel>
+        <IonLabel slot="start">Due date &amp; time* <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their tasks will be broken automatically.']}><Question /></Tooltip></IonLabel>
         <IonDatetime value={due} min={TOMORROW_MIDNIGHT.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} slot="end" />
       </IonItem>
       <IonItem>
@@ -164,7 +164,7 @@ const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps>
           <IonSelectOption value={ONE_DAY_MILLISECONDS * 7}>End of the month</IonSelectOption>
         </IonSelect>
       </IonItem>
-      <IonButton expand="block" color="primary" onClick={createAgreementListener} disabled={!isFormValid}>Create task</IonButton>
+      <IonButton expand="block" color="primary" onClick={createTaskListener} disabled={!isFormValid}>Create task</IonButton>
       {toastData !== null && (
         <IonToast
           isOpen
@@ -179,4 +179,4 @@ const CreateAgreement: React.FunctionComponent<StateProps & RouteComponentProps>
   )
 };
 
-export default addPageData(withRouter(ourConnect()(CreateAgreement)), { slug, title });
+export default addPageData(withRouter(ourConnect()(CreateTask)), { slug, title });

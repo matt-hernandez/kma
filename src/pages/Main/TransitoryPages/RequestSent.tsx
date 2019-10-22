@@ -37,9 +37,9 @@ const RequestSent: React.FunctionComponent<RouteComponentProps> = ({
         <FlexColumn shouldInflate centeredHorizontal>
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
-              history.push('/main/agreements/my');
+              history.push('/main/tasks/my');
             }}>
-              Go to My Agreements
+              Go to My Tasks
             </IonButton>
           </ButtonsContainer>
         </FlexColumn>

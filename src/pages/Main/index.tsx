@@ -12,7 +12,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { contacts, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
-import Agreements from './Agreements';
+import Tasks from './Tasks';
 import CommitmentConfirmed from './TransitoryPages/CommitmentConfirmed';
 import PartnerSearch from './TransitoryPages/PartnerSearch';
 import ConfirmPartnerRequest from './TransitoryPages/ConfirmPartnerRequest';
@@ -23,18 +23,18 @@ import { AppPage } from '../../declarations';
 
 const mainPages: AppPage[] = [
   {
-    title: 'Open Agreements',
-    url: '/main/agreements/open',
+    title: 'Open Tasks',
+    url: '/main/tasks/open',
     icon: list
   },
   {
     title: 'Partner Requests',
-    url: '/main/agreements/requests',
+    url: '/main/tasks/requests',
     icon: personAdd
   },
   {
-    title: 'My Agreements',
-    url: '/main/agreements/my',
+    title: 'My Tasks',
+    url: '/main/tasks/my',
     icon: contacts
   },
   {
@@ -64,7 +64,7 @@ const Main: React.FunctionComponent = () => {
         </IonHeader>
         <InflateContent top={56} as="main">
           <Switch>
-            <Route path={`/main${Agreements.pageData.slug}`} component={Agreements} />
+            <Route path={`/main${Tasks.pageData.slug}`} component={Tasks} />
             <Route path={`/main${CommitmentConfirmed.pageData.slug}`} component={CommitmentConfirmed} strict exact />
             <Route path={`/main${PartnerSearch.pageData.slug}`} component={PartnerSearch} strict exact />
             <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
@@ -72,7 +72,7 @@ const Main: React.FunctionComponent = () => {
             <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
             <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
             <Route path="/main/score" component={() => <div />} strict exact />
-            <Route path="/main" exact render={() => <Redirect to="/main/agreements/open" />} />
+            <Route path="/main" exact render={() => <Redirect to="/main/tasks/open" />} />
           </Switch>
         </InflateContent>
       </IonPage>

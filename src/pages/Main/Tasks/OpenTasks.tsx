@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { IonModal, IonButton, IonCheckbox, IonLabel } from '@ionic/react';
-import Agreement from '../../../components/Agreement';
+import Task from '../../../components/Task';
 import H1 from '../../../components/H1';
 import LargeCopy from '../../../components/LargeCopy';
 import RegularCopy from '../../../components/RegularCopy';
@@ -10,7 +10,7 @@ import InlineColor from '../../../components/InlineColor';
 import InlineBold from '../../../components/InlineBold';
 import Spacer from '../../../components/Spacer';
 import MarginWrapper from '../../../components/MarginWrapper';
-import { StateProps, ourConnect, commitToAgreement, addAgreementTemplateToSkip, State } from '../../../util/state';
+import { StateProps, ourConnect, commitToTask, addTaskTemplateToSkip, State } from '../../../util/state';
 import { formatDueDate } from '../../../util/date-time-helpers';
 import { addPageData } from '../../../util/add-page-data';
 import { useStateHelper, listenerTypes } from '../../../util/use-state-helper';
@@ -19,28 +19,28 @@ import { ArrayUnpacked } from '../../../declarations';
 import { colors } from '../../../styles/colors';
 
 const slug = '/open';
-const title = 'Open Agreements';
+const title = 'Open Tasks';
 
 const ModalPadding = styled.div`
   padding: 20px;
 `;
 
-const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> = ({
+const OpenTasks: React.FunctionComponent<StateProps & RouteComponentProps> = ({
     dispatch,
-    state: { openAgreements, me: { templatesToSkipCommitConfirm }, today },
+    state: { openTasks, me: { templatesToSkipCommitConfirm }, today },
     history
   }) => {
   const [ showModal, setShowModal ] = useState(false);
   const [ commitOnModalDismiss, setCommitOnModalDismiss ] = useState(false);
-  const commitOnModalDismissRef = useRef(commitOnModalDismiss); // using a ref for modal dismissal because of old callback being called when user commits to agreement
-  const [ agreementToConfirm, setAgreementToConfirm ] = useState<ArrayUnpacked<State['openAgreements']>>();
+  const commitOnModalDismissRef = useRef(commitOnModalDismiss); // using a ref for modal dismissal because of old callback being called when user commits to task
+  const [ taskToConfirm, setTaskToConfirm ] = useState<ArrayUnpacked<State['openTasks']>>();
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
   return (
     <>
-      {openAgreements.map((agreement) => {
-        const { cid, partnerUpDeadline, title, due, description, templateCid } = agreement;
+      {openTasks.map((task) => {
+        const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
-          <Agreement
+          <Task
             key={cid}
             isCommitted={false}
             partnerUpDeadline={partnerUpDeadline}
@@ -49,10 +49,10 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
             description={description}
             onCommit={() => {
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
-                // dispatch(commitToAgreement(cid));
+                // dispatch(commitToTask(cid));
                 history.push(`/main/confirmed/${cid}`);
               } else {
-                setAgreementToConfirm(agreement);
+                setTaskToConfirm(task);
                 setShowModal(true);
               }
             }}
@@ -60,21 +60,21 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
           />
         )
       })}
-      {(agreementToConfirm !== undefined &&
+      {(taskToConfirm !== undefined &&
         <IonModal isOpen={showModal} onDidDismiss={() => {
           setShowModal(false);
           if (commitOnModalDismissRef.current) {
-            history.push(`/main/confirmed/${agreementToConfirm.cid}`);
+            history.push(`/main/confirmed/${taskToConfirm.cid}`);
           }
         }}>
           <ModalPadding>
             <H1 grayLevel={8}>Ready to commit to this?</H1>
             <Spacer height="6px" />
-            <LargeCopy grayLevel={8} marginTop>{agreementToConfirm.title}</LargeCopy>
-            <RegularCopy grayLevel={7}><InlineBold>{formatDueDate(agreementToConfirm.due)}</InlineBold></RegularCopy>
-            {typeof agreementToConfirm.description === 'string' && (
+            <LargeCopy grayLevel={8} marginTop>{taskToConfirm.title}</LargeCopy>
+            <RegularCopy grayLevel={7}><InlineBold>{formatDueDate(taskToConfirm.due)}</InlineBold></RegularCopy>
+            {typeof taskToConfirm.description === 'string' && (
               <RegularCopy grayLevel={7}>
-                {agreementToConfirm.description}
+                {taskToConfirm.description}
               </RegularCopy>
             )}
             <Spacer height="20px" />
@@ -82,17 +82,17 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
               <IonCheckbox checked={skipConfirm} onChange={toggleSkipConfirm} />
               <IonLabel onClick={toggleSkipConfirm}>
                 <InlineColor color={colors.gray8}>
-                  Don't ask again to confirm for this type of agreement
+                  Don't ask again to confirm for this type of task
                 </InlineColor>
               </IonLabel>
             </FlexRow>
             <Spacer height="6px" />
             <MarginWrapper marginTop marginBottom>
               <IonButton expand="block" color="primary" onClick={() => {
-                if (skipConfirm && agreementToConfirm.templateCid) {
-                  // dispatch(addAgreementTemplateToSkip(agreementToConfirm.templateCid));
+                if (skipConfirm && taskToConfirm.templateCid) {
+                  // dispatch(addTaskTemplateToSkip(taskToConfirm.templateCid));
                 }
-                // dispatch(commitToAgreement(agreementToConfirm.cid));
+                // dispatch(commitToTask(taskToConfirm.cid));
                 setCommitOnModalDismiss(true);
                 setShowModal(false);
                 commitOnModalDismissRef.current = true;
@@ -108,7 +108,7 @@ const OpenAgreements: React.FunctionComponent<StateProps & RouteComponentProps> 
 
 export default addPageData(
   ourConnect()(
-    withRouter(OpenAgreements)
+    withRouter(OpenTasks)
   ),
   { slug, title }
 );

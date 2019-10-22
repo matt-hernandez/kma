@@ -23,11 +23,11 @@ const PageContent = styled.div`
 const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StateProps> = ({
     history,
     match,
-    state: { myAgreements }
+    state: { myTasks }
   }) => {
-  const agreementCid = (match.params as RouteParams)['cid'];
-  const agreement = myAgreements.find(({cid}) => cid === agreementCid);
-  if (!agreement) {
+  const taskCid = (match.params as RouteParams)['cid'];
+  const task = myTasks.find(({cid}) => cid === taskCid);
+  if (!task) {
     return <Redirect to="/404" />
   }
   return (
@@ -35,9 +35,9 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StatePr
       <PageContent>
         <H1 centered>You have committed!</H1>
         <LargeCopy centered>Now it's time to find a partner. You can do one of two things.</LargeCopy>
-        <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${agreementCid}`)}>Direct message a person</IonButton>
+        <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${taskCid}`)}>Direct message a person</IonButton>
         <LargeCopy centered>Or</LargeCopy>
-        <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${agreementCid}`)}>Choose from others who have made the same agreement</IonButton>
+        <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${taskCid}`)}>Choose from others who have made the same task</IonButton>
       </PageContent>
     </FlexColumn>
   );
