@@ -4,7 +4,6 @@ import { IonProgressBar } from '@ionic/react';
 import LargeCopy from '../components/LargeCopy';
 import Spacer from '../components/Spacer';
 import { colors } from '../styles/colors';
-import { ourConnect, StateProps } from '../util/state';
 
 const fadeIn = keyframes`
   from {
@@ -45,25 +44,17 @@ const LoadingContents = styled.div`
   width: 100%;
 `;
 
-const LoadingWrapper: React.FunctionComponent<StateProps> = ({
-    state
-  }) => {
-  const { isLoadingScreenVisible } = state;
-  const { loadingScreenText } = state;
-  return (
+const LoadingWrapper: React.FunctionComponent = () => (
     <>
-      {isLoadingScreenVisible && (
-        <Container>
-          <Background />
-          <LoadingContents>
-            <LargeCopy centered>{loadingScreenText}</LargeCopy>
-            <Spacer height="15px" />
-            <IonProgressBar type="indeterminate" />
-          </LoadingContents>
-        </Container>
-      )}
+      <Container>
+        <Background />
+        <LoadingContents>
+          <LargeCopy centered>Please wait...</LargeCopy>
+          <Spacer height="15px" />
+          <IonProgressBar type="indeterminate" />
+        </LoadingContents>
+      </Container>
     </>
   );
-};
 
-export default ourConnect()(LoadingWrapper);
+export default LoadingWrapper;

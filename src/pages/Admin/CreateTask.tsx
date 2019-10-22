@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   IonButton,
   IonLabel,
@@ -17,8 +17,9 @@ import Tooltip from '../../components/Tooltip';
 import { addPageData } from '../../util/add-page-data';
 import { ONE_HOUR_MILLISECONDS, ONE_DAY_MILLISECONDS, TODAY_DATE_ZONED, TOMORROW_AT_NOON_MILLISECONDS_ZONED, TODAY_MILLISECONDS_ZONED, TIME_ZONE_DIFFERENCE } from '../../constants/date';
 import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../constants/graphql/admin';
-import { StateProps, ourConnect, dismissLoadingScreen, triggerLoadingScreen } from '../../util/state';
+import { StateProps, ourConnect } from '../../util/state';
 import { isBeforeNow, getUTCTimeInMilliseconds } from '../../util/date-time-helpers';
+import { LoadingContext } from '../../util/loading-context';
 
 const slug = '/tasks/create';
 const title = 'Create Task';
@@ -67,6 +68,7 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
   const [ publishDate, setPublishDate ] = useState(TODAY_DATE_ZONED.toISOString());
   const [ repeatFrequency, setRepeatFrequency ] = useState(0);
   const [ toastData, setToastData ] = useState<any>(null);
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const checkFormValidity = () => {
     return title.trim() && due && partnerUpDeadline;
   };
@@ -80,7 +82,7 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
       partnerUpDeadline,
       publishDate: getUTCTimeInMilliseconds(publishDate) || now
     };
-    dispatch(triggerLoadingScreen());
+    showLoadingScreen();
     let taskCreationHasError = false;
     let taskTemplateCreationHasError = false;
     const createTaskPromise = createTask({ variables: taskData }).catch(() => {taskCreationHasError = true});
@@ -99,7 +101,7 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
       );
     }
     createTaskPromise.then((task: any) => {
-      dispatch(dismissLoadingScreen());
+      hideLoadingScreen();
       if (taskCreationHasError) {
         setToastData({
           color: 'danger',

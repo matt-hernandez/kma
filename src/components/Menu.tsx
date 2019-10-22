@@ -97,7 +97,7 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
               <IonSelectOption value="Dave Goode">Dave Goode</IonSelectOption>
               <IonSelectOption value="Norbi Zylberberg">Norbi Zylberberg</IonSelectOption>
             </IonSelect>
-            <IonButton expand="block" color="medium" fill="outline" onClick={() => {
+            <IonButton expand="block" color="primary" onClick={() => {
               const cookieName = 'lkma__at';
               if (userToBe === 'Matt Hernandez') {
                 cookies.setItem(
