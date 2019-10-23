@@ -15,7 +15,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ReactComponent as Question } from '../../assets/question.svg';
 import Tooltip from '../../components/Tooltip';
 import { addPageData } from '../../util/add-page-data';
-import { ONE_HOUR_MILLISECONDS, ONE_DAY_MILLISECONDS, TODAY_DATE_ZONED, TOMORROW_AT_NOON_MILLISECONDS_ZONED, TODAY_MILLISECONDS_ZONED, TIME_ZONE_DIFFERENCE } from '../../constants/date';
+import { ONE_HOUR_MILLISECONDS, ONE_DAY_MILLISECONDS, TODAY_ISO_STRING, TOMORROW_AT_NOON_MILLISECONDS_ZONED, TODAY_MILLISECONDS_ZONED, TIME_ZONE_DIFFERENCE } from '../../constants/date';
 import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../constants/graphql/admin';
 import { StateProps, ourConnect } from '../../util/state';
 import { isBeforeNow, getUTCTimeInMilliseconds } from '../../util/date-time-helpers';
@@ -65,7 +65,7 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState(TOMORROW_AT_NOON_DATE.toISOString());
   const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(ONE_HOUR_MILLISECONDS);
-  const [ publishDate, setPublishDate ] = useState(TODAY_DATE_ZONED.toISOString());
+  const [ publishDate, setPublishDate ] = useState(TODAY_ISO_STRING);
   const [ repeatFrequency, setRepeatFrequency ] = useState(0);
   const [ toastData, setToastData ] = useState<any>(null);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
