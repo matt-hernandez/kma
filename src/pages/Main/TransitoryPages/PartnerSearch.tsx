@@ -1,25 +1,34 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
 import PageWrapper from '../../../components/PageWrapper';
 import UserItem from '../../../components/UserItem';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { ourConnect, StateProps, searchForPartnerForTask, clearSearchQuery, saveSearchQuery } from '../../../util/state';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK } from '../../../apollo-client/queries/user';
 
 const slug = '/partner-search/:cid';
 const title = 'Partner Search';
 
-const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     match,
-    history,
-    dispatch,
-    state: { usersInSearch, myTasks, savedSearchQuery }
+    history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const task = myTasks.find(({cid: aCid}) => aCid === taskCid);
-  const queryRef = useRef(savedSearchQuery);
-  const [ query, setQuery ] = useState('');
+  const myTasks = readCachedQuery<TaskInterface[]>({
+    query: MY_TASKS
+  }, 'myTasks');
+  const task = myTasks.find(({cid}) => cid === taskCid);
+  const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
+  const [ query, setQuery ] = useState(savedSearchQuery);
+  const isQueryBlank = query.trim() === '';
+  const { loading, error, data }= useQuery<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, {
+    variables: { name: query, taskCid },
+    skip: isQueryBlank
+  });
   if (!task) {
     return <Redirect to="/404" />
   }
@@ -30,38 +39,36 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         animated
         placeholder="Search for partners"
         autocomplete="off"
-        value={savedSearchQuery || query}
+        value={query}
         onIonInput={({ target }) => {
           if (!target) {
             return;
           }
           const { value } = (target as any);
-          queryRef.current = value;
           setQuery(value);
           if (value.length === 0) {
-            dispatch(clearSearchQuery());
+            localStorage.setItem('lkma__saved-search-query', '');
             return;
           }
           if (value.length > 0) {
-            dispatch(saveSearchQuery(queryRef.current));
-            // dispatch(searchForPartnerForTask(value, taskCid));
+            localStorage.setItem('lkma__saved-search-query', value);
           }
         }}
         onIonClear={() => {
-          queryRef.current = '';
-          dispatch(clearSearchQuery());
+          localStorage.setItem('lkma__saved-search-query', '');
         }}
       />
       <IonList>
-        { usersInSearch.map(({ cid: userCid, name }) => (
+        {isQueryBlank ? [] : <></>}
+        {loading && !isQueryBlank ? 'Please wait' : <></>}
+        {(!loading && !error && !isQueryBlank && data) ? data.map(({ cid: userCid, name }) => (
           <UserItem key={userCid} name={name} onClick={() => {
-            dispatch(saveSearchQuery(queryRef.current));
             history.push(`/main/confirm-partner/${taskCid}/${userCid}`);
           }} />
-        )) }
+        )) : <></> }
       </IonList>
     </PageWrapper>
   );
 };
 
-export default addPageData((withRouter(ourConnect()(PartnerSearch))), { slug, title });
+export default addPageData(withRouter(PartnerSearch), { slug, title });

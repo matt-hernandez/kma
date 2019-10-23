@@ -12,9 +12,9 @@ import {
 import InlineItalic from './InlineItalic';
 import CustomLink from './CustomLink';
 import InlineColor from './InlineColor';
-import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time-helpers';
+import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time';
 import { colors } from '../styles/colors';
-import { Connection } from '../util/state';
+import { Connection } from '../apollo-client/types/user';
 
 type PropTypes = {
   title: string;

@@ -9,10 +9,12 @@ import LargeCopy from '../../../components/LargeCopy';
 import Spacer from '../../../components/Spacer';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { ourConnect, StateProps, requestPartnerForTask, clearSearchQuery } from '../../../util/state';
 import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
+import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK } from '../../../apollo-client/queries/user';
 
-const slug = '/confirm-partner/:taskCid';
+const slug = '/confirm-partner/:taskCid/:userCid';
 const title = 'Confirm Partner';
 
 const Half = styled(FlexCell)`
@@ -23,16 +25,21 @@ const ButtonsContainer = styled.div`
   width: 50%;
 `;
 
-const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
     match,
     history,
-    dispatch,
-    state: { myTasks, userToConfirm }
   }) => {
   const taskCid = (match.params as RouteParams)['taskCid'];
+  const userCid = (match.params as RouteParams)['userCid'];
+  const myTasks = readCachedQuery<TaskInterface[]>({
+    query: MY_TASKS
+  }, 'myTasks');
   const task = myTasks.find(({cid}) => cid === taskCid);
-  const title = task ? task.title : '';
-  if (!title || userToConfirm === null) {
+  const possiblePartnersForTask = readCachedQuery<PossiblePartners[]>({
+    query: POSSIBLE_PARTNERS_FOR_TASK
+  }, 'possiblePartnersForTask');
+  const userToConfirm = possiblePartnersForTask.find(({cid}) => cid === userCid);
+  if (!task || !userToConfirm) {
     return <Redirect to="/404" />
   }
   return (
@@ -41,7 +48,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
         <FlexColumn shouldInflate alignBottom centeredHorizontal>
           <UserPic />
           <PageWrapper>
-            <LargeCopy centered>Send a partner request to {userToConfirm.name} for "{title}?"</LargeCopy>
+            <LargeCopy centered>Send a partner request to {userToConfirm.name} for "{task.title}?"</LargeCopy>
           </PageWrapper>
         </FlexColumn>
       </Half>
@@ -50,8 +57,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
           <Spacer height="4px" />
           <ButtonsContainer>
             <IonButton expand="block" color="primary" onClick={() => {
-              // dispatch(requestPartnerForTask(taskCid, partnerCid));
-              dispatch(clearSearchQuery());
+              localStorage.setItem('lkma__saved-search-query', '');
               history.push('/main/request-sent');
             }}>
               Yes, send!
@@ -65,4 +71,4 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps & State
   );
 };
 
-export default addPageData((withRouter(ourConnect()(ConfirmPartnerRequest))), { slug, title });
+export default addPageData(withRouter(ConfirmPartnerRequest), { slug, title });

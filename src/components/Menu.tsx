@@ -19,9 +19,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { unlock } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
-import { ourConnect, StateProps, jumpAheadTwoDays, jumpAheadOneDay } from '../util/state';
 import { useStateHelper, listenerTypes } from '../util/use-state-helper';
 import cookies from '../util/cookies';
+import { readCachedQuery } from '../apollo-client/client';
+import { User } from '../apollo-client/types/user';
+import { ME } from '../apollo-client/queries/user';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
@@ -31,15 +33,15 @@ const ModalPadding = styled.div`
   padding: 20px;
 `;
 
-const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
+const Menu: React.FunctionComponent<MenuProps> = ({
     appPages,
-    location,
-    dispatch,
-    state: { openTasks, myTasks, me }
+    location
   }) => {
+  const me = readCachedQuery<User>({
+    query: ME
+  }, 'me');
   const [ userToBe, setUserToBe ] = useState('');
   const [ isDevToolsModalVisible, showDevToolsModal, hideDevToolsModal ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
-  const firstTask = myTasks[0];
   return (
     <IonMenu contentId="main">
       <IonHeader>
@@ -58,25 +60,6 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
                 </IonItem>
               );
             })}
-            {!!firstTask && (
-              <IonItem button={true} onClick={() => {
-                dispatch(jumpAheadTwoDays());
-              }}>
-                <IonLabel>Jump Ahead 2 Days</IonLabel>
-              </IonItem>
-            )}
-            {!!firstTask && (
-              <IonItem button={true} onClick={() => {
-                dispatch(jumpAheadOneDay());
-              }}>
-                <IonLabel>Jump Ahead 1 Day</IonLabel>
-              </IonItem>
-            )}
-            {!!openTasks.length && (
-              <IonItem button={true}>
-                <IonLabel>Receive partner request</IonLabel>
-              </IonItem>
-            )}
             {me.isAdmin && (
               <IonItem href={'/admin'} color={location.pathname === '/admin' ? 'primary' : undefined}>
                 <IonIcon slot="start" icon={unlock} />
@@ -134,4 +117,4 @@ const Menu: React.FunctionComponent<MenuProps & StateProps> = ({
   );
 };
 
-export default withRouter(ourConnect()(Menu));
+export default withRouter(Menu);

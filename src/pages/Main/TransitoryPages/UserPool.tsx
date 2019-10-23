@@ -10,7 +10,10 @@ import UserItem from '../../../components/UserItem';
 import HorizontalRule from '../../../components/HorizontalRule';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { ourConnect, StateProps, selectPossiblePartnerForConfirm } from '../../../util/state';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { MY_TASKS, USER_POOL } from '../../../apollo-client/queries/user';
+import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { useQuery } from '@apollo/react-hooks';
 
 const slug = '/user-pool/:cid';
 const title = 'User Pool';
@@ -19,14 +22,18 @@ const HorizontalRuleContainer = styled.div`
   padding-left: 16px;
 `;
 
-const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     match,
-    history,
-    dispatch,
-    state: { myTasks, userPool }
+    history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const task = myTasks.find(({cid: aCid}) => aCid === taskCid);
+  const myTasks = readCachedQuery<TaskInterface[]>({
+    query: MY_TASKS
+  }, 'myTasks');
+  const task = myTasks.find(({cid}) => cid === taskCid);
+  const { loading, error, data }= useQuery<PossiblePartners[]>(USER_POOL, {
+    variables: { taskCid }
+  });
   if (!task) {
     return <Redirect to="/404" />
   }
@@ -41,15 +48,15 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps & StateProps> =
         <HorizontalRule borderWidth={1} grayLevel={2} />
       </HorizontalRuleContainer>
       <IonList>
-        { userPool.map((user) => (
+        {loading ? 'Please wait' : <></>}
+        {(!loading && !error && data) ? data.map((user) => (
           <UserItem key={user.cid} name={user.name} onClick={() => {
-            dispatch(selectPossiblePartnerForConfirm(user));
             history.push(`/main/confirm-partner/${taskCid}`);
           }} />
-        )) }
+        )) : <></> }
       </IonList>
     </PageWrapper>
   );
 };
 
-export default addPageData((withRouter(ourConnect()(PartnerSearch))), { slug, title });
+export default addPageData(withRouter(PartnerSearch), { slug, title });

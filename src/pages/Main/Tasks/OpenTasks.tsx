@@ -10,16 +10,15 @@ import InlineColor from '../../../components/InlineColor';
 import InlineBold from '../../../components/InlineBold';
 import Spacer from '../../../components/Spacer';
 import MarginWrapper from '../../../components/MarginWrapper';
-import { StateProps, ourConnect, commitToTask, addTaskTemplateToSkip, State, User } from '../../../util/state';
-import { formatDueDate } from '../../../util/date-time-helpers';
+import { formatDueDate } from '../../../util/date-time';
 import { addPageData } from '../../../util/add-page-data';
 import { useStateHelper, listenerTypes } from '../../../util/use-state-helper';
-import apolloClient from '../../../util/apollo-client';
+import { readCachedQuery } from '../../../apollo-client/client';
 import FlexRow from '../../../components/FlexRow';
-import { ArrayUnpacked } from '../../../declarations';
 import { colors } from '../../../styles/colors';
-import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS } from '../../../constants/graphql/user';
+import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS } from '../../../apollo-client/queries/user';
 import { useMutation } from '@apollo/react-hooks';
+import { Task as TaskInterace, User } from '../../../apollo-client/types/user';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -34,14 +33,14 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   const [ showModal, setShowModal ] = useState(false);
   const [ commitOnModalDismiss, setCommitOnModalDismiss ] = useState(false);
   const commitOnModalDismissRef = useRef(commitOnModalDismiss); // using a ref for modal dismissal because of old callback being called when user commits to task
-  const [ taskToConfirm, setTaskToConfirm ] = useState<ArrayUnpacked<State['openTasks']>>();
+  const [ taskToConfirm, setTaskToConfirm ] = useState<TaskInterace>();
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
-  const { openTasks } = apolloClient.readQuery({
+  const openTasks = readCachedQuery<TaskInterace[]>({
     query: OPEN_TASKS
-  }) as any;
-  const { me } = apolloClient.readQuery({
+  }, 'openTasks');
+  const me = readCachedQuery<User>({
     query: ME
-  }) as any;
+  }, 'me');
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK);
   const refetchQueries = [
     { query: OPEN_TASKS },
@@ -50,7 +49,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   const templatesToSkipCommitConfirm = me.templatesToSkipCommitConfirm;
   return (
     <>
-      {openTasks.map((task: any) => {
+      {openTasks.map((task) => {
         const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
           <Task
@@ -126,9 +125,4 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   )
 };
 
-export default addPageData(
-  ourConnect()(
-    withRouter(OpenTasks)
-  ),
-  { slug, title }
-);
+export default addPageData(withRouter(OpenTasks), { slug, title });

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { addPageData } from '../../util/add-page-data';
-import { ALL_CURRENT_TASKS } from '../../constants/graphql/admin';
+import { ALL_CURRENT_TASKS } from '../../apollo-client/queries/admin';
 import TaskForAdmin from '../../components/TaskForAdmin';
-import { TaskForAdmin as TaskForAdminInterface } from '../../util/state';
+import { TaskForAdmin as TaskForAdminInterface } from '../../apollo-client/types/admin';
 
 const slug = '/tasks/current';
 const title = 'Current Tasks';

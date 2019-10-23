@@ -7,7 +7,9 @@ import FlexColumn from '../../../components/FlexColumn';
 import InlineBold from '../../../components/InlineBold';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { StateProps, ourConnect } from '../../../util/state';
+import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { MY_TASKS } from '../../../apollo-client/queries/user';
 
 const slug = '/find-a-partner/:cid';
 const title = 'Find a Partner';
@@ -21,13 +23,15 @@ const PageContent = styled.div`
   margin-top: 60px;
 `;
 
-const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const FindAPartner: React.FunctionComponent<RouteComponentProps> = ({
     history,
-    match,
-    state: { myTasks }
+    match
   }) => {
-  const taskId = (match.params as RouteParams)['cid'];
-  const task = myTasks.find(({cid}) => cid === taskId);
+  const taskCid = (match.params as RouteParams)['cid'];
+  const myTasks = readCachedQuery<TaskInterface[]>({
+    query: MY_TASKS
+  }, 'myTasks');
+  const task = myTasks.find(({cid}) => cid === taskCid);
   if (!task) {
     return <Redirect to="/404" />
   }
@@ -111,9 +115,9 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
           )}
         {canRequestPartner && (
           <>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${taskId}`)}>Direct message a person</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${task.cid}`)}>Direct message a person</IonButton>
             <LargeCopy centered>Or</LargeCopy>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${taskId}`)}>Choose from others who have made the same task</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${task.cid}`)}>Choose from others who have made the same task</IonButton>
           </>
         )}
         {!canRequestPartner && (
@@ -128,4 +132,4 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps & StateProps> = 
   );
 };
 
-export default addPageData(ourConnect()(withRouter(FindAPartner)), { slug, title });
+export default addPageData(withRouter(FindAPartner), { slug, title });

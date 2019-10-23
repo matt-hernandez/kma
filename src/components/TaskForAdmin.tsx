@@ -5,14 +5,12 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
-  IonCardContent,
-  IonChip,
-  IonLabel
+  IonCardContent
   } from '@ionic/react';
-import styled, { css } from 'styled-components/macro';
-import InlineItalic from './InlineItalic';
-import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time-helpers';
-import { Connection, ConnectionForAdmin, User, Outcome, ConnectionType, TaskForAdmin } from '../util/state';
+import styled from 'styled-components/macro';
+import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time';
+import { ConnectionForAdmin, Outcome, TaskForAdmin } from '../apollo-client/types/admin';
+import { User, ConnectionType } from '../apollo-client/types/user';
 import { ReactComponent as UserPic } from '../assets/user-pic.svg';
 import { colors } from '../styles/colors';
 

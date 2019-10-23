@@ -7,7 +7,9 @@ import LargeCopy from '../../../components/LargeCopy';
 import FlexColumn from '../../../components/FlexColumn';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { StateProps, ourConnect } from '../../../util/state';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { Task as TaskInterface } from '../../../apollo-client/types/user';
+import { MY_TASKS } from '../../../apollo-client/queries/user';
 
 const slug = '/confirmed/:cid';
 const title = 'You Have Committed!';
@@ -20,12 +22,14 @@ const PageContent = styled.div`
   margin-top: 60px;
 `;
 
-const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StateProps> = ({
+const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps> = ({
     history,
-    match,
-    state: { myTasks }
+    match
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
+  const myTasks = readCachedQuery<TaskInterface[]>({
+    query: MY_TASKS
+  }, 'myTasks');
   const task = myTasks.find(({cid}) => cid === taskCid);
   if (!task) {
     return <Redirect to="/404" />
@@ -43,4 +47,4 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps & StatePr
   );
 };
 
-export default addPageData(ourConnect()(withRouter(CommitmentConfirmed)), { slug, title });
+export default addPageData(withRouter(CommitmentConfirmed), { slug, title });

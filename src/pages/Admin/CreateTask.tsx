@@ -15,10 +15,17 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ReactComponent as Question } from '../../assets/question.svg';
 import Tooltip from '../../components/Tooltip';
 import { addPageData } from '../../util/add-page-data';
-import { ONE_HOUR_MILLISECONDS, ONE_DAY_MILLISECONDS, TODAY_ISO_STRING, TOMORROW_AT_NOON_MILLISECONDS_ZONED, TODAY_MILLISECONDS_ZONED, TIME_ZONE_DIFFERENCE } from '../../constants/date';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../constants/graphql/admin';
-import { StateProps, ourConnect } from '../../util/state';
-import { isBeforeNow, getUTCTimeInMilliseconds } from '../../util/date-time-helpers';
+import {
+  ONE_HOUR_MILLISECONDS,
+  ONE_DAY_MILLISECONDS,
+  TODAY_ISO_STRING,
+  TOMORROW_AT_NOON_MILLISECONDS_ZONED,
+  TODAY_MILLISECONDS_ZONED,
+  TIME_ZONE_DIFFERENCE,
+  isBeforeNow,
+  getUTCTimeInMilliseconds
+  } from '../../util/date-time';
+import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/queries/admin';
 import { LoadingContext } from '../../util/loading-context';
 
 const slug = '/tasks/create';
@@ -55,8 +62,7 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
-    dispatch,
+const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const [ createTask ] = useMutation(CREATE_TASK);
@@ -80,7 +86,7 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
       description,
       due: getUTCTimeInMilliseconds(due),
       partnerUpDeadline,
-      publishDate: getUTCTimeInMilliseconds(publishDate) || now
+      publishDate: getUTCTimeInMilliseconds(publishDate) || getUTCTimeInMilliseconds(now)
     };
     showLoadingScreen();
     let taskCreationHasError = false;
@@ -181,4 +187,4 @@ const CreateTask: React.FunctionComponent<StateProps & RouteComponentProps> = ({
   )
 };
 
-export default addPageData(withRouter(ourConnect()(CreateTask)), { slug, title });
+export default addPageData(withRouter(CreateTask), { slug, title });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ApolloProvider, useQuery } from '@apollo/react-hooks';
@@ -9,7 +8,7 @@ import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
 import LoadingWrapper from './subpages/LoadingWrapper';
 import { Provider as LoadingProvider } from './util/loading-context';
-import apolloClient from './util/apollo-client';
+import apolloClient from './apollo-client/client';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -31,9 +30,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
-import { store } from './util/state';
 import { listenerTypes, useStateHelper } from './util/use-state-helper';
-import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './constants/graphql/user';
+import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/queries/user';
 
 const InnerApp = () => {
   const { loading: loadingMe, error: errorMe, data: me } = useQuery(ME);
@@ -63,9 +61,7 @@ const App: React.FunctionComponent = () => {
     <IonApp>
       <LoadingProvider value={{ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen }}>
         <ApolloProvider client={apolloClient}>
-          <Provider store={store}>
-            <InnerApp />
-          </Provider>
+          <InnerApp />
         </ApolloProvider>
       </LoadingProvider>
     </IonApp>

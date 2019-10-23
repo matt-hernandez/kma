@@ -1,37 +1,44 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Task from '../../../components/Task';
-import { StateProps, ourConnect, denyPartnerRequest, confirmPartnerRequest } from '../../../util/state';
 import { addPageData } from '../../../util/add-page-data';
+import { readCachedQuery } from '../../../apollo-client/client';
+import { REQUESTED_PARTNER_TASKS, ME } from '../../../apollo-client/queries/user';
+import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 
 const slug = '/requests';
 const title = 'Partner Requests';
 
-const PartnerRequests: React.FunctionComponent<RouteComponentProps & StateProps> = ({
-    dispatch,
+const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     history,
-    state: { requestsToBePartner, today, me }
-  }) => (
-  <>
-    {requestsToBePartner.map(({ cid, partnerUpDeadline, connections, title, due, description }) => (
-      <Task
-        key={cid}
-        isCommitted={false}
-        partnerUpDeadline={partnerUpDeadline}
-        title={title}
-        due={due}
-        description={description}
-        partnerRequestsToMe={connections.filter(({ type }) => type === 'REQUEST_FROM')}
-        debugNow={today}
-        onConfirmRequest={(partnerId) => {
-          // dispatch(confirmPartnerRequest(''))
-        }}
-        onDenyRequest={(partnerId) => {
-          // dispatch(denyPartnerRequest(''))
-        }}
-      />
-    ))}
-  </>
-);
+  }) => {
+  const requestedPartnerTasks = readCachedQuery<TaskInterface[]>({
+    query: REQUESTED_PARTNER_TASKS
+  }, 'requestedPartnerTasks');
+  const me = readCachedQuery<User>({
+    query: ME
+  }, 'me');
+  return (
+    <>
+      {requestedPartnerTasks.map(({ cid, partnerUpDeadline, connections, title, due, description }) => (
+        <Task
+          key={cid}
+          isCommitted={false}
+          partnerUpDeadline={partnerUpDeadline}
+          title={title}
+          due={due}
+          description={description}
+          partnerRequestsToMe={connections.filter(({ type }) => type === 'REQUEST_FROM')}
+          onConfirmRequest={(partnerId) => {
+            // dispatch(confirmPartnerRequest(''))
+          }}
+          onDenyRequest={(partnerId) => {
+            // dispatch(denyPartnerRequest(''))
+          }}
+        />
+      ))}
+    </>
+  )
+};
 
-export default addPageData(withRouter(ourConnect()(PartnerRequests)), { slug, title });
+export default addPageData(withRouter(PartnerRequests), { slug, title });
