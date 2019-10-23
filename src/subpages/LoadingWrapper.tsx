@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { IonProgressBar } from '@ionic/react';
 import LargeCopy from '../components/LargeCopy';
 import Spacer from '../components/Spacer';
 import { colors } from '../styles/colors';
+import { LoadingContext } from '../util/loading-context';
 
 const fadeIn = keyframes`
   from {
@@ -44,17 +45,22 @@ const LoadingContents = styled.div`
   width: 100%;
 `;
 
-const LoadingWrapper: React.FunctionComponent = () => (
+const LoadingWrapper: React.FunctionComponent = () => {
+  const { shouldShowLoadingScreen } = useContext(LoadingContext);
+  return (
     <>
-      <Container>
-        <Background />
-        <LoadingContents>
-          <LargeCopy centered>Please wait...</LargeCopy>
-          <Spacer height="15px" />
-          <IonProgressBar type="indeterminate" />
-        </LoadingContents>
-      </Container>
+      {shouldShowLoadingScreen && (
+        <Container>
+          <Background />
+          <LoadingContents>
+            <LargeCopy centered>Please wait...</LargeCopy>
+            <Spacer height="15px" />
+            <IonProgressBar type="indeterminate" />
+          </LoadingContents>
+        </Container>
+      )}
     </>
   );
+};
 
 export default LoadingWrapper;

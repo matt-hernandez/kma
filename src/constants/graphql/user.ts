@@ -42,7 +42,12 @@ export const OPEN_TASKS = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -58,7 +63,12 @@ export const MY_TASKS = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -74,7 +84,12 @@ export const REQUESTED_PARTNER_TASKS = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -90,7 +105,12 @@ export const MY_PAST_TASKS = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -106,7 +126,12 @@ export const COMMIT_TO_TASK = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }

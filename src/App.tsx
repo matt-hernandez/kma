@@ -1,16 +1,15 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloProvider, useQuery } from '@apollo/react-hooks';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
 import LoadingWrapper from './subpages/LoadingWrapper';
 import { Provider as LoadingProvider } from './util/loading-context';
+import apolloClient from './util/apollo-client';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,32 +33,38 @@ import './theme/variables.css';
 import './overrides.css';
 import { store } from './util/state';
 import { listenerTypes, useStateHelper } from './util/use-state-helper';
+import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './constants/graphql/user';
 
-const client = new ApolloClient({
-  uri: 'http://localhost:4000',
-  credentials: 'include',
-  cache: new InMemoryCache({
-    dataIdFromObject: (object: any) => object.cid || null
-  })
-});
+const InnerApp = () => {
+  const { loading: loadingMe, error: errorMe, data: me } = useQuery(ME);
+  const { loading: loadingOpenTasks, error: errorOpenTasks, data: openTasks } = useQuery(OPEN_TASKS);
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery(MY_TASKS);
+  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks, data: requestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
+  if (loadingMe || loadingOpenTasks || loadingMyTasks || loadingRequestedPartnerTasks) {
+    return <></>;
+  }
+  return (
+    <IonReactRouter>
+      <Switch>
+        <Route path="/" exact render={() => <Redirect to="/main" />} />
+        <Route path="/main" component={Main} />
+        <Route path="/admin" component={Admin} />
+        <Route component={PageDoesNotExist} />
+        <Route path="/404" strict exact component={PageDoesNotExist} />
+      </Switch>
+      <LoadingWrapper />
+    </IonReactRouter>
+  )
+}
 
 const App: React.FunctionComponent = () => {
   const [ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
   return (
     <IonApp>
       <LoadingProvider value={{ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen }}>
-        <ApolloProvider client={client}>
+        <ApolloProvider client={apolloClient}>
           <Provider store={store}>
-            <IonReactRouter>
-              <Switch>
-                <Route path="/" exact render={() => <Redirect to="/main" />} />
-                <Route path="/main" component={Main} />
-                <Route path="/admin" component={Admin} />
-                <Route component={PageDoesNotExist} />
-                <Route path="/404" strict exact component={PageDoesNotExist} />
-              </Switch>
-              <LoadingWrapper />
-            </IonReactRouter>
+            <InnerApp />
           </Provider>
         </ApolloProvider>
       </LoadingProvider>

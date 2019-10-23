@@ -10,13 +10,16 @@ import InlineColor from '../../../components/InlineColor';
 import InlineBold from '../../../components/InlineBold';
 import Spacer from '../../../components/Spacer';
 import MarginWrapper from '../../../components/MarginWrapper';
-import { StateProps, ourConnect, commitToTask, addTaskTemplateToSkip, State } from '../../../util/state';
+import { StateProps, ourConnect, commitToTask, addTaskTemplateToSkip, State, User } from '../../../util/state';
 import { formatDueDate } from '../../../util/date-time-helpers';
 import { addPageData } from '../../../util/add-page-data';
 import { useStateHelper, listenerTypes } from '../../../util/use-state-helper';
+import apolloClient from '../../../util/apollo-client';
 import FlexRow from '../../../components/FlexRow';
 import { ArrayUnpacked } from '../../../declarations';
 import { colors } from '../../../styles/colors';
+import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS } from '../../../constants/graphql/user';
+import { useMutation } from '@apollo/react-hooks';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -25,9 +28,7 @@ const ModalPadding = styled.div`
   padding: 20px;
 `;
 
-const OpenTasks: React.FunctionComponent<StateProps & RouteComponentProps> = ({
-    dispatch,
-    state: { openTasks, me: { templatesToSkipCommitConfirm }, today },
+const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const [ showModal, setShowModal ] = useState(false);
@@ -35,9 +36,21 @@ const OpenTasks: React.FunctionComponent<StateProps & RouteComponentProps> = ({
   const commitOnModalDismissRef = useRef(commitOnModalDismiss); // using a ref for modal dismissal because of old callback being called when user commits to task
   const [ taskToConfirm, setTaskToConfirm ] = useState<ArrayUnpacked<State['openTasks']>>();
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
+  const { openTasks } = apolloClient.readQuery({
+    query: OPEN_TASKS
+  }) as any;
+  const { me } = apolloClient.readQuery({
+    query: ME
+  }) as any;
+  const [ commitToTask ] = useMutation(COMMIT_TO_TASK);
+  const refetchQueries = [
+    { query: OPEN_TASKS },
+    { query: MY_TASKS }
+  ];
+  const templatesToSkipCommitConfirm = me.templatesToSkipCommitConfirm;
   return (
     <>
-      {openTasks.map((task) => {
+      {openTasks.map((task: any) => {
         const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
           <Task
@@ -49,14 +62,18 @@ const OpenTasks: React.FunctionComponent<StateProps & RouteComponentProps> = ({
             description={description}
             onCommit={() => {
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
-                // dispatch(commitToTask(cid));
-                history.push(`/main/confirmed/${cid}`);
+                commitToTask({
+                  variables: { taskCid: cid },
+                  refetchQueries
+                })
+                  .then(() => {
+                    history.push(`/main/confirmed/${cid}`);
+                  });
               } else {
                 setTaskToConfirm(task);
                 setShowModal(true);
               }
             }}
-            debugNow={today}
           />
         )
       })}
@@ -89,13 +106,16 @@ const OpenTasks: React.FunctionComponent<StateProps & RouteComponentProps> = ({
             <Spacer height="6px" />
             <MarginWrapper marginTop marginBottom>
               <IonButton expand="block" color="primary" onClick={() => {
-                if (skipConfirm && taskToConfirm.templateCid) {
-                  // dispatch(addTaskTemplateToSkip(taskToConfirm.templateCid));
-                }
-                // dispatch(commitToTask(taskToConfirm.cid));
-                setCommitOnModalDismiss(true);
-                setShowModal(false);
-                commitOnModalDismissRef.current = true;
+                commitToTask({
+                  variables: { taskCid: taskToConfirm.cid },
+                  refetchQueries
+                })
+                  .then(() => {
+                    history.push(`/main/confirmed/${taskToConfirm.cid}`);
+                    setCommitOnModalDismiss(true);
+                    setShowModal(false);
+                    commitOnModalDismissRef.current = true;
+                  });
               }}>Yes, commit!</IonButton>
             </MarginWrapper>
             <IonButton expand="block" color="medium" fill="outline" onClick={() => setShowModal(false)}>Nevermind</IonButton>
