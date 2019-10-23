@@ -7,7 +7,7 @@ import FlexColumn from '../../../components/FlexColumn';
 import InlineBold from '../../../components/InlineBold';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { Task as TaskInterface } from '../../../apollo-client/types/user';
 import { readCachedQuery } from '../../../apollo-client/client';
 import { MY_TASKS } from '../../../apollo-client/queries/user';
 

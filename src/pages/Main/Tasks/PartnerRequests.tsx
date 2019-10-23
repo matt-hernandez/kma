@@ -3,8 +3,8 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { readCachedQuery } from '../../../apollo-client/client';
-import { REQUESTED_PARTNER_TASKS, ME } from '../../../apollo-client/queries/user';
-import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
+import { REQUESTED_PARTNER_TASKS } from '../../../apollo-client/queries/user';
+import { Task as TaskInterface } from '../../../apollo-client/types/user';
 
 const slug = '/requests';
 const title = 'Partner Requests';
@@ -15,9 +15,6 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
   const requestedPartnerTasks = readCachedQuery<TaskInterface[]>({
     query: REQUESTED_PARTNER_TASKS
   }, 'requestedPartnerTasks');
-  const me = readCachedQuery<User>({
-    query: ME
-  }, 'me');
   return (
     <>
       {requestedPartnerTasks.map(({ cid, partnerUpDeadline, connections, title, due, description }) => (

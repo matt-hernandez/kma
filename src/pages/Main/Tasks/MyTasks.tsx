@@ -2,9 +2,9 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { MY_TASKS, ME } from '../../../apollo-client/queries/user';
+import { MY_TASKS } from '../../../apollo-client/queries/user';
 import { readCachedQuery } from '../../../apollo-client/client';
-import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
+import { Task as TaskInterface } from '../../../apollo-client/types/user';
 
 const slug = '/my';
 const title = 'My Tasks';
@@ -15,9 +15,6 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
   const myTasks = readCachedQuery<TaskInterface[]>({
     query: MY_TASKS
   }, 'myTasks');
-  const me = readCachedQuery<User>({
-    query: ME
-  }, 'me');
   return (
     <>
       {myTasks.map(({ cid, partnerUpDeadline, title, due, description, connections }) =>  (
