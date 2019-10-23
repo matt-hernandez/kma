@@ -25,7 +25,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
   const [ query, setQuery ] = useState(savedSearchQuery);
   const isQueryBlank = query.trim() === '';
-  const { loading, error, data }= useQuery<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, {
+  const { loading, error, data }= useQuery<{ possiblePartnersForTask: PossiblePartners[]}>(POSSIBLE_PARTNERS_FOR_TASK, {
     variables: { name: query, taskCid },
     skip: isQueryBlank
   });
@@ -61,7 +61,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       <IonList>
         {isQueryBlank ? [] : <></>}
         {loading && !isQueryBlank ? 'Please wait' : <></>}
-        {(!loading && !error && !isQueryBlank && data) ? data.map(({ cid: userCid, name }) => (
+        {(!loading && !error && !isQueryBlank && data) ? data.possiblePartnersForTask.map(({ cid: userCid, name }) => (
           <UserItem key={userCid} name={name} onClick={() => {
             history.push(`/main/confirm-partner/${taskCid}/${userCid}`);
           }} />

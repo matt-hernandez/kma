@@ -31,7 +31,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     query: MY_TASKS
   }, 'myTasks');
   const task = myTasks.find(({cid}) => cid === taskCid);
-  const { loading, error, data }= useQuery<PossiblePartners[]>(USER_POOL, {
+  const { loading, error, data }= useQuery<{ userPool: PossiblePartners[] }>(USER_POOL, {
     variables: { taskCid }
   });
   if (!task) {
@@ -49,7 +49,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       </HorizontalRuleContainer>
       <IonList>
         {loading ? 'Please wait' : <></>}
-        {(!loading && !error && data) ? data.map((user) => (
+        {(!loading && !error && data) ? data.userPool.map((user) => (
           <UserItem key={user.cid} name={user.name} onClick={() => {
             history.push(`/main/confirm-partner/${taskCid}`);
           }} />
