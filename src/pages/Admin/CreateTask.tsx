@@ -26,7 +26,7 @@ import {
   getUTCTimeInMilliseconds
   } from '../../util/date-time';
 import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/queries/admin';
-import { LoadingContext } from '../../util/loading-context';
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const slug = '/tasks/create';
 const title = 'Create Task';

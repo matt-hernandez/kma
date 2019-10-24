@@ -1,10 +1,18 @@
-import React, { useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 import { IonProgressBar } from '@ionic/react';
 import LargeCopy from '../components/LargeCopy';
 import Spacer from '../components/Spacer';
 import { colors } from '../styles/colors';
-import { LoadingContext } from '../util/loading-context';
+import { useStateHelper, listenerTypes } from '../util/use-state-helper';
+
+export const LoadingContext = createContext({
+  shouldShowLoadingScreen: false,
+  showLoadingScreen: () => {},
+  hideLoadingScreen: () => {}
+});
+
+const Provider = LoadingContext.Provider;
 
 const fadeIn = keyframes`
   from {
@@ -44,6 +52,15 @@ const LoadingContents = styled.div`
   z-index: 1;
   width: 100%;
 `;
+
+export const LoadingProvider: React.FunctionComponent = ({children}) => {
+  const [ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
+  return (
+    <Provider value={{ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen }}>
+      {children}
+    </Provider>
+  );
+};
 
 const LoadingWrapper: React.FunctionComponent = () => {
   const { shouldShowLoadingScreen } = useContext(LoadingContext);

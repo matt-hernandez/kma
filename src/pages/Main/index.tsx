@@ -28,14 +28,14 @@ const mainPages: AppPage[] = [
     icon: list
   },
   {
-    title: 'Partner Requests',
-    url: '/main/tasks/requests',
-    icon: personAdd
-  },
-  {
     title: 'My Tasks',
     url: '/main/tasks/my',
     icon: contacts
+  },
+  {
+    title: 'Partner Requests',
+    url: '/main/tasks/requests',
+    icon: personAdd
   },
   {
     title: 'Score',

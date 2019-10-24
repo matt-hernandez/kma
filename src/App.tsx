@@ -6,8 +6,8 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
-import LoadingWrapper from './subpages/LoadingWrapper';
-import { Provider as LoadingProvider } from './util/loading-context';
+import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
+import ModalWrapper, { ModalProvider } from './contexts/ModalContext';
 import apolloClient from './apollo-client/client';
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,14 +30,13 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
-import { listenerTypes, useStateHelper } from './util/use-state-helper';
 import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/queries/user';
 
 const InnerApp = () => {
-  const { loading: loadingMe, error: errorMe, data: me } = useQuery(ME);
-  const { loading: loadingOpenTasks, error: errorOpenTasks, data: openTasks } = useQuery(OPEN_TASKS);
-  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery(MY_TASKS);
-  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks, data: requestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
+  const { loading: loadingMe, error: errorMe } = useQuery(ME);
+  const { loading: loadingOpenTasks, error: errorOpenTasks } = useQuery(OPEN_TASKS);
+  const { loading: loadingMyTasks, error: errorMyTasks } = useQuery(MY_TASKS);
+  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
   if (loadingMe || loadingOpenTasks || loadingMyTasks || loadingRequestedPartnerTasks) {
     return <></>;
   }
@@ -50,19 +49,21 @@ const InnerApp = () => {
         <Route component={PageDoesNotExist} />
         <Route path="/404" strict exact component={PageDoesNotExist} />
       </Switch>
+      <ModalWrapper />
       <LoadingWrapper />
     </IonReactRouter>
   )
 }
 
 const App: React.FunctionComponent = () => {
-  const [ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
   return (
     <IonApp>
-      <LoadingProvider value={{ shouldShowLoadingScreen, showLoadingScreen, hideLoadingScreen }}>
-        <ApolloProvider client={apolloClient}>
-          <InnerApp />
-        </ApolloProvider>
+      <LoadingProvider>
+        <ModalProvider>
+          <ApolloProvider client={apolloClient}>
+            <InnerApp />
+          </ApolloProvider>
+        </ModalProvider>
       </LoadingProvider>
     </IonApp>
   )
