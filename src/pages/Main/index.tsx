@@ -9,7 +9,7 @@ import {
     IonSplitPane
   } from '@ionic/react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { contacts, list, stats, settings, personAdd } from 'ionicons/icons';
+import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import Tasks from './Tasks';
@@ -30,7 +30,7 @@ const mainPages: AppPage[] = [
   {
     title: 'My Tasks',
     url: '/main/tasks/my',
-    icon: contacts
+    icon: checkmark
   },
   {
     title: 'Partner Requests',

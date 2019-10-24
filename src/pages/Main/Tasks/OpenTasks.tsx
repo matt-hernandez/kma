@@ -4,9 +4,10 @@ import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { readCachedQuery } from '../../../apollo-client/client';
-import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS } from '../../../apollo-client/queries/user';
+import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../../apollo-client/queries/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import { ModalContext } from '../../../contexts/ModalContext';
+import generateCacheUpdate from '../../../util/generate-cache-update';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -21,27 +22,25 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   const { templatesToSkipCommitConfirm } = readCachedQuery<User>({
     query: ME
   }, 'me');
+  const [ skipFutureTasksWithTemplate ] = useMutation(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, {
+    update: generateCacheUpdate<User>(
+      'OVERWRITE_SINGLE_ITEM',
+      { name: 'me', query: ME },
+      'addTaskTemplateToSkipCommitConfirm'
+    )
+  });
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK, {
-    update(cache, { data: { commitToTask } }) {
-      const cachedOpenTasks = readCachedQuery<TaskInterface[]>({
-        query: OPEN_TASKS
-      }, 'openTasks');
-      let cachedMyTasks = readCachedQuery<TaskInterface[]>({
-        query: MY_TASKS
-      }, 'myTasks');
-      cache.writeQuery({
-        query: OPEN_TASKS,
-        data: { openTasks: cachedOpenTasks.filter(({cid}) => cid !== commitToTask.cid) },
-      });
-      cachedMyTasks = [ ...cachedMyTasks, commitToTask ];
-      cachedMyTasks.sort((d1, d2) => {
-        return d1.due - d2.due;
-      });
-      cache.writeQuery({
-        query: MY_TASKS,
-        data: { myTasks: cachedMyTasks },
-      });
-    }
+    update: generateCacheUpdate<TaskInterface>(
+      'TRANSFER_ITEM',
+      {
+        from: 'openTasks',
+        fromQuery: OPEN_TASKS,
+        to: 'myTasks',
+        toQuery: MY_TASKS,
+        sort: (d1, d2) => d1.due - d2.due
+      },
+      'commitToTask'
+    )
   });
   return (
     <>
@@ -56,7 +55,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
             due={due}
             description={description}
             onCommit={() => {
-              const onConfirm = () => {
+              const commit = () => {
                 commitToTask({
                   variables: { taskCid: cid }
                 })
@@ -66,13 +65,20 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
                   });
               };
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
-                onConfirm();
+                commit();
               } else {
                 showModal({
                   type: 'TASK_CONFIRM_COMMIT',
                   content: task,
                   manualDismiss: true,
-                  onConfirm
+                  onConfirm: ({ skipConfirm }) => {
+                    if (skipConfirm) {
+                      skipFutureTasksWithTemplate()
+                        .then(commit);
+                    } else {
+                      commit();
+                    }
+                  }
                 });
               }
             }}

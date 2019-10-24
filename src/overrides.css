@@ -10,6 +10,10 @@ ion-menu ion-icon {
   margin-right: 20px;
 }
 
+ion-menu-toggle ion-item {
+  cursor: pointer;
+}
+
 ion-item {
   --ion-color-contrast: #393939;
 }

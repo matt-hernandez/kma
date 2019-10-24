@@ -11,7 +11,7 @@ import {
   IonToolbar
 } from '@ionic/react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { unlock } from 'ionicons/icons';
+import { unlock, codeWorking } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
 import { readCachedQuery } from '../apollo-client/client';
@@ -23,9 +23,10 @@ interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
 }
 
-const Menu: React.FunctionComponent<MenuProps> = ({
+const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     appPages,
-    location
+    location,
+    history
   }) => {
   const me = readCachedQuery<User>({
     query: ME
@@ -43,16 +44,28 @@ const Menu: React.FunctionComponent<MenuProps> = ({
           <IonMenuToggle autoHide={false}>
             {appPages.map((appPage, index) => {
               return (
-                <IonItem key={index} href={appPage.url} color={location.pathname === appPage.url ? 'primary' : undefined}>
+                <IonItem key={index} type="button" onClick={() => {
+                  history.push(appPage.url);
+                }} color={location.pathname === appPage.url ? 'primary' : undefined}>
                   <IonIcon slot="start" icon={appPage.icon} />
                   <IonLabel>{appPage.title}</IonLabel>
                 </IonItem>
               );
             })}
-            {me.isAdmin && (
-              <IonItem href={'/admin'} color={location.pathname === '/admin' ? 'primary' : undefined}>
+            {(me.isAdmin && !location.pathname.includes('/admin')) && (
+              <IonItem type="button" onClick={() => {
+                history.push('/admin');
+              }}>
                 <IonIcon slot="start" icon={unlock} />
                 <IonLabel>Admin</IonLabel>
+              </IonItem>
+            )}
+            {(me.isAdmin && location.pathname.includes('/admin')) && (
+              <IonItem type="button" onClick={() => {
+                history.push('/');
+              }}>
+                <IonIcon slot="start" icon={codeWorking} />
+                <IonLabel>Main app</IonLabel>
               </IonItem>
             )}
             <IonItem onClick={() => {
