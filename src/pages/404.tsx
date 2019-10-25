@@ -30,7 +30,7 @@ const PageDoesNotExist: React.FunctionComponent<RouteComponentProps> = ({
       <Half shouldInflate>
         <FlexColumn shouldInflate centeredHorizontal>
           <PageWrapper>
-            <IonButton expand="block" color="primary" onClick={() => history.goBack()}>Go back</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => history.replace('/')}>Go to the home page</IonButton>
           </PageWrapper>
         </FlexColumn>
       </Half>

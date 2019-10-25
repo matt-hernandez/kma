@@ -8,8 +8,9 @@ import InlineBold from '../../../components/InlineBold';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
-import { readCachedQuery } from '../../../apollo-client/client';
+import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { MY_TASKS } from '../../../apollo-client/queries/user';
+import { DefaultTask } from '../../../apollo-client/defaults/user';
 
 const slug = '/find-a-partner/:cid';
 const title = 'Find a Partner';
@@ -28,10 +29,13 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps> = ({
     match
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const myTasks = readCachedQuery<TaskInterface[]>({
+  const myTasks = readCachedQueryWithDefault<TaskInterface[]>({
     query: MY_TASKS
-  }, 'myTasks');
-  const task = myTasks.find(({cid}) => cid === taskCid);
+  }, 'myTasks', [ new DefaultTask() ]);
+  let task = myTasks.find(({cid}) => cid === taskCid);
+  if (myTasks.length === 1 && myTasks[0].cid.includes('default')) {
+    task = myTasks[0];
+  }
   if (!task) {
     return <Redirect to="/404" />
   }
@@ -115,9 +119,17 @@ const FindAPartner: React.FunctionComponent<RouteComponentProps> = ({
           )}
         {canRequestPartner && (
           <>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/partner-search/${task.cid}`)}>Direct message a person</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => {
+              if (task) {
+                history.push(`/main/partner-search/${task.cid}`);
+              }
+            }}>Direct message a person</IonButton>
             <LargeCopy centered>Or</LargeCopy>
-            <IonButton expand="block" color="primary" onClick={() => history.push(`/main/user-pool/${task.cid}`)}>Choose from others who have made the same task</IonButton>
+            <IonButton expand="block" color="primary" onClick={() => {
+              if (task) {
+                history.push(`/main/user-pool/${task.cid}`)
+              }
+            }}>Choose from others who have made the same task</IonButton>
           </>
         )}
         {!canRequestPartner && (

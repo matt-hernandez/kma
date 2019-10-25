@@ -25,8 +25,10 @@ import {
   isBeforeNow,
   getUTCTimeInMilliseconds
   } from '../../util/date-time';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/queries/admin';
+import { CREATE_TASK, CREATE_TASK_TEMPLATE, ALL_CURRENT_TASKS } from '../../apollo-client/queries/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
+import generateCacheUpdate from '../../util/generate-cache-update';
+import { TaskForAdmin } from '../../apollo-client/types/admin';
 
 const slug = '/tasks/create';
 const title = 'Create Task';
@@ -65,7 +67,17 @@ const partnerUpDeadlineMilliseconds = [
 const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
-  const [ createTask ] = useMutation(CREATE_TASK);
+  const [ createTask ] = useMutation(CREATE_TASK, {
+    update: generateCacheUpdate<TaskForAdmin>(
+      'INSERT_ITEM',
+      {
+        name: 'allCurrentTasks',
+        query: ALL_CURRENT_TASKS,
+        sort: (d1, d2) => d1.due - d2.due
+      },
+      'createTask'
+    )
+  });
   const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE)
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');

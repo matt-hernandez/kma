@@ -1,11 +1,18 @@
 import { MutationUpdaterFn } from 'apollo-boost';
 import { readCachedQuery } from '../apollo-client/client';
 
-type OperationTypes = 'OVERWRITE_SINGLE_ITEM' | 'OVERWRITE_ITEM_IN_ARRAY' | 'TRANSFER_ITEM';
+type OperationTypes = 'OVERWRITE_SINGLE_ITEM' | 'OVERWRITE_ITEM_IN_ARRAY' | 'TRANSFER_ITEM' | 'INSERT_ITEM';
 interface OverwriteItemConfig {
   name: string;
   query: any;
   variables?: any;
+}
+
+interface InsertItemConfig<T> {
+  name: string;
+  query: any;
+  variables?: any;
+  sort?: (a: T, b: T) => number;
 }
 
 interface TransferItemConfig<T> {
@@ -18,7 +25,10 @@ interface TransferItemConfig<T> {
   sort?: (a: T, b: T) => number;
 }
 
-export default function <T extends { cid: string, [key: string]: any }>(operation: OperationTypes, config: OverwriteItemConfig | TransferItemConfig<T>, resultName: string): MutationUpdaterFn<T> {
+export default function <T extends { cid: string, [key: string]: any }>(
+  operation: OperationTypes,
+  config: OverwriteItemConfig | TransferItemConfig<T> | InsertItemConfig<T>,
+  resultName: string): MutationUpdaterFn<T> {
   const {
     name,
     query,
@@ -79,6 +89,20 @@ export default function <T extends { cid: string, [key: string]: any }>(operatio
         query: toQuery,
         variables: toVariables,
         data: { [to]: cachedTo },
+      });
+    } else if (operation === 'INSERT_ITEM') {
+      let items = readCachedQuery<T[]>({
+        query,
+        variables
+      }, name);
+      items = [ ...items, item ];
+      if (sort) {
+        items.sort(sort);
+      }
+      cache.writeQuery({
+        query: query,
+        variables,
+        data: { [name]: items }
       });
     }
   };

@@ -24,12 +24,22 @@ export const ALL_CURRENT_TASKS = gql`
       description
       committedUsers {
         cid
+        name
+        email
       }
       connections {
         cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
       }
       outcomes {
         cid
+        taskCid
+        userCid
+        type
       }
     }
   }
@@ -45,9 +55,25 @@ export const ALL_PAST_TASKS = gql`
       publishDate
       partnerUpDeadline
       description
-      committedUsers
-      connections
-      outcomes
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
     }
   }
 `;
@@ -62,9 +88,25 @@ export const ALL_UPCOMING_TASKS = gql`
       publishDate
       partnerUpDeadline
       description
-      committedUsers
-      connections
-      outcomes
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
     }
   }
 `;
@@ -91,6 +133,25 @@ export const CREATE_TASK = gql`
       publishDate
       partnerUpDeadline
       description
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
     }
   }
 `;
@@ -105,9 +166,25 @@ export const DELETE_TASK = gql`
       publishDate
       partnerUpDeadline
       description
-      committedUsers
-      connections
-      outcomes
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
     }
   }
 `;

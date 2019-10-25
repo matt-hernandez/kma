@@ -14,10 +14,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { unlock, codeWorking } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
-import { readCachedQuery } from '../apollo-client/client';
+import { readCachedQueryWithDefault } from '../apollo-client/client';
 import { User } from '../apollo-client/types/user';
 import { ME } from '../apollo-client/queries/user';
 import { ModalContext } from '../contexts/ModalContext';
+import { DefaultUser } from '../apollo-client/defaults/user';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
@@ -28,9 +29,9 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     location,
     history
   }) => {
-  const me = readCachedQuery<User>({
+  const me = readCachedQueryWithDefault<User>({
     query: ME
-  }, 'me');
+  }, 'me', new DefaultUser());
   const { showModal } = useContext(ModalContext);
   return (
     <IonMenu contentId="main">

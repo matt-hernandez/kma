@@ -3,11 +3,12 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { readCachedQuery } from '../../../apollo-client/client';
+import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { OPEN_TASKS, ME, COMMIT_TO_TASK, MY_TASKS, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../../apollo-client/queries/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import { ModalContext } from '../../../contexts/ModalContext';
 import generateCacheUpdate from '../../../util/generate-cache-update';
+import { DefaultUser } from '../../../apollo-client/defaults/user';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -16,12 +17,12 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const { showModal, hideModalRef } = useContext(ModalContext);
-  const openTasks = readCachedQuery<TaskInterface[]>({
+  const openTasks = readCachedQueryWithDefault<TaskInterface[]>({
     query: OPEN_TASKS
-  }, 'openTasks');
-  const { templatesToSkipCommitConfirm } = readCachedQuery<User>({
+  }, 'openTasks', []);
+  const { templatesToSkipCommitConfirm } = readCachedQueryWithDefault<User>({
     query: ME
-  }, 'me');
+  }, 'me', new DefaultUser());
   const [ skipFutureTasksWithTemplate ] = useMutation(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, {
     update: generateCacheUpdate<User>(
       'OVERWRITE_SINGLE_ITEM',

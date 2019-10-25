@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     IonPage,
     IonHeader,
@@ -18,6 +18,9 @@ import PastTasks from './PastTasks';
 import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
+import { useQuery } from '@apollo/react-hooks';
+import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/queries/admin';
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const adminPages: AppPage[] = [
   {
@@ -53,10 +56,28 @@ const adminPages: AppPage[] = [
 ];
 
 const Admin: React.FunctionComponent = () => {
+  const { loading: loadingCurrentTasks, error: errorCurrentTasks } = useQuery(ALL_CURRENT_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  const { loading: loadingUpcomingTasks, error: errorUpcomingTasks } = useQuery(ALL_UPCOMING_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  const { loading: loadingPastTasks, error: errorPastTasks } = useQuery(ALL_PAST_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  const { loading: loadingUsers, error: errorUsers } = useQuery(USERS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
+  if (loadingCurrentTasks || loadingUpcomingTasks || loadingPastTasks || loadingUsers) {
+    showLoadingScreen();
+  } else {
+    hideLoadingScreen();
+  }
   return (
-    <IonSplitPane contentId="admin">
+    <IonSplitPane contentId="main">
       <Menu appPages={adminPages} />
-      <IonPage id="admin">
+      <IonPage id="main">
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">

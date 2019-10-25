@@ -31,8 +31,8 @@ const ConnectionPerson = styled.div<ConnectionPersonProps>`
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: auto;
-  width: 100px;
-  margin-right: 25px;
+  width: 85px;
+  margin-right: 20px;
 
   &:last-child {
     margin-right: 0;
@@ -54,6 +54,7 @@ const ConnectionPerson = styled.div<ConnectionPersonProps>`
 const ConnectionPersonName = styled.div`
   padding-top: 12px;
   font-weight: bold;
+  text-align: center;
 `;
 
 type ConnectionsProps = {

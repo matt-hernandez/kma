@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ApolloProvider, useQuery } from '@apollo/react-hooks';
@@ -6,7 +6,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
-import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
+import LoadingWrapper, { LoadingProvider, LoadingContext } from './contexts/LoadingContext';
 import ModalWrapper, { ModalProvider } from './contexts/ModalContext';
 import apolloClient from './apollo-client/client';
 
@@ -37,8 +37,11 @@ const InnerApp = () => {
   const { loading: loadingOpenTasks, error: errorOpenTasks } = useQuery(OPEN_TASKS);
   const { loading: loadingMyTasks, error: errorMyTasks } = useQuery(MY_TASKS);
   const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   if (loadingMe || loadingOpenTasks || loadingMyTasks || loadingRequestedPartnerTasks) {
-    return <></>;
+    showLoadingScreen();
+  } else {
+    hideLoadingScreen();
   }
   return (
     <IonReactRouter>

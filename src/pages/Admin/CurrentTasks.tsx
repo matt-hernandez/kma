@@ -1,25 +1,23 @@
 import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
 import { addPageData } from '../../util/add-page-data';
 import { ALL_CURRENT_TASKS } from '../../apollo-client/queries/admin';
 import TaskForAdmin from '../../components/TaskForAdmin';
 import { TaskForAdmin as TaskForAdminInterface } from '../../apollo-client/types/admin';
+import { readCachedQueryWithDefault } from '../../apollo-client/client';
 
 const slug = '/tasks/current';
 const title = 'Current Tasks';
 
 export default addPageData(() => {
-  const { loading, error, data } = useQuery(ALL_CURRENT_TASKS);
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
-
-  const tasks: TaskForAdminInterface[] = data.allCurrentTasks;
+  const tasks = readCachedQueryWithDefault<TaskForAdminInterface[]>({
+    query: ALL_CURRENT_TASKS
+  }, 'allCurrentTasks', []);
 
   return (
-    <div>
+    <>
       {tasks.map((task) => (
-        <TaskForAdmin {...task} />
+        <TaskForAdmin key={task.cid} {...task} />
       ))}
-    </div>
+    </>
   )
 }, { slug, title });

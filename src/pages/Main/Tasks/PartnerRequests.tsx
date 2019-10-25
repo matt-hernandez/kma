@@ -3,9 +3,11 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { readCachedQuery } from '../../../apollo-client/client';
+import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { REQUESTED_PARTNER_TASKS, ME, COMMIT_TO_TASK, MY_TASKS } from '../../../apollo-client/queries/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
+import { DefaultUser } from '../../../apollo-client/defaults/user';
+import generateCacheUpdate from '../../../util/generate-cache-update';
 
 const slug = '/requests';
 const title = 'Partner Requests';
@@ -13,33 +15,24 @@ const title = 'Partner Requests';
 const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     history,
   }) => {
-  const { templatesToSkipCommitConfirm } = readCachedQuery<User>({
+  const { templatesToSkipCommitConfirm } = readCachedQueryWithDefault<User>({
     query: ME
-  }, 'me');
-  const requestedPartnerTasks = readCachedQuery<TaskInterface[]>({
+  }, 'me', new DefaultUser());
+  const requestedPartnerTasks = readCachedQueryWithDefault<TaskInterface[]>({
     query: REQUESTED_PARTNER_TASKS
-  }, 'requestedPartnerTasks');
+  }, 'requestedPartnerTasks', []);
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK, {
-    update(cache, { data: { commitToTask } }) {
-      const cachedRequestedPartnerTasks = readCachedQuery<TaskInterface[]>({
-        query: REQUESTED_PARTNER_TASKS
-      }, 'requestedPartnerTasks');
-      let cachedMyTasks = readCachedQuery<TaskInterface[]>({
-        query: MY_TASKS
-      }, 'myTasks');
-      cache.writeQuery({
-        query: REQUESTED_PARTNER_TASKS,
-        data: { requestedPartnerTasks: cachedRequestedPartnerTasks.filter(({cid}) => cid !== commitToTask.cid) },
-      });
-      cachedMyTasks = [ ...cachedMyTasks, commitToTask ];
-      cachedMyTasks.sort((d1, d2) => {
-        return d1.due - d2.due;
-      });
-      cache.writeQuery({
-        query: MY_TASKS,
-        data: { myTasks: cachedMyTasks },
-      });
-    }
+    update: generateCacheUpdate<TaskInterface>(
+      'TRANSFER_ITEM',
+      {
+        from: 'requestedPartnerTasks',
+        fromQuery: REQUESTED_PARTNER_TASKS,
+        to: 'myTasks',
+        toQuery: MY_TASKS,
+        sort: (d1, d2) => d1.due - d2.due
+      },
+      'commitToTask'
+    )
   });
   return (
     <>
