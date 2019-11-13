@@ -12,7 +12,7 @@ import { RouteParams } from '../../../util/interface-overrides';
 import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
 import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL } from '../../../apollo-client/query/user';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/confirm-partner/:taskCid/:userCid';
 const title = 'Confirm Partner';
@@ -31,10 +31,10 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
   }) => {
   const taskCid = (match.params as RouteParams)['taskCid'];
   const userCid = (match.params as RouteParams)['userCid'];
-  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   const task = (myTasks || []).find(({cid}) => cid === taskCid);
-  const { loading: loadingPossiblePartnersForTask, error: errorPossiblePartnersForTask, data: possiblePartnersForTask } = useQuery<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK);
-  const { loading, error, data: userPool } = useQuery<PossiblePartners[]>(USER_POOL, {
+  const { loading: loadingPossiblePartnersForTask, error: errorPossiblePartnersForTask, data: possiblePartnersForTask } = useQueryHelper<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask');
+  const { loading, error, data: userPool } = useQueryHelper<PossiblePartners[]>(USER_POOL, 'userPool', {
     variables: { taskCid }
   });
   const userToConfirm = [...(possiblePartnersForTask || []), ...(userPool || [])].find(({cid}) => cid === userCid);

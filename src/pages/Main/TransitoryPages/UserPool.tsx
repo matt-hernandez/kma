@@ -12,7 +12,7 @@ import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { MY_TASKS, USER_POOL } from '../../../apollo-client/query/user';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/user-pool/:cid';
 const title = 'User Pool';
@@ -26,8 +26,8 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
-  const { loading, error, data } = useQuery<{ userPool: PossiblePartners[] }>(USER_POOL, {
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
+  const { loading, error, data: userPool } = useQueryHelper<PossiblePartners[]>(USER_POOL, 'userPool', {
     variables: { taskCid }
   });
   if (loadingMyTasks || !myTasks) {
@@ -49,7 +49,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       </HorizontalRuleContainer>
       <IonList>
         {loading ? 'Please wait' : <></>}
-        {(!loading && !error && data) ? data.userPool.map((user) => (
+        {(!loading && !error && userPool) ? userPool.map((user) => (
           <UserItem key={user.cid} name={user.name} onClick={() => {
             history.push(`/main/confirm-partner/${taskCid}/${user.cid}`);
           }} />

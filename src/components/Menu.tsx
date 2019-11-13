@@ -16,7 +16,7 @@ import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
 import { ME } from '../apollo-client/query/user';
 import { ModalContext } from '../contexts/ModalContext';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../util/use-query-helper';
 
 interface MenuProps {
   appPages: AppPage[];
@@ -27,7 +27,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     location,
     history
   }) => {
-  const { loading, error, data: me } = useQuery(ME);
+  const { loading, error, data: me } = useQueryHelper(ME, 'me');
   const { showModal } = useContext(ModalContext);
   return (
     <IonMenu contentId="main">

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { OPEN_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
@@ -8,6 +8,7 @@ import { COMMIT_TO_TASK, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import { ModalContext } from '../../../contexts/ModalContext';
 import generateCacheUpdate from '../../../util/generate-cache-update';
+import useQueryHelperHelper from '../../../util/use-query-helper';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -16,8 +17,8 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const { showModal, hideModalRef } = useContext(ModalContext);
-  const { loading: openTasksLoading, error: errorOpenTasks, data } = useQuery<{ openTasks: TaskInterface[]}>(OPEN_TASKS);
-  const { loading: loadingMe, error: errorMe, data: me } = useQuery(ME);
+  const { loading: openTasksLoading, error: errorOpenTasks, data: openTasks } = useQueryHelperHelper<TaskInterface[]>(OPEN_TASKS, 'openTasks');
+  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelperHelper(ME, 'me');
   const { templatesToSkipCommitConfirm = [] } = (me || {});
   const [ skipFutureTasksWithTemplate ] = useMutation(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, {
     update: generateCacheUpdate<User>(
@@ -41,7 +42,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   });
   return (
     <>
-      {data && data.openTasks && data.openTasks.map((task) => {
+      {openTasks && openTasks.map((task) => {
         const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
           <Task

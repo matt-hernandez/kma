@@ -4,7 +4,7 @@ import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { MY_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/my';
 const title = 'My Tasks';
@@ -12,7 +12,7 @@ const title = 'My Tasks';
 const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
-    const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+    const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   return (
     <>
       {myTasks && myTasks.map(({ cid, partnerUpDeadline, title, due, description, connections }) =>  (

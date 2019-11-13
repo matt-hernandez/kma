@@ -10,7 +10,7 @@ import { colors } from '../../../styles/colors';
 import { addPageData } from '../../../util/add-page-data';
 import { REQUESTED_PARTNER_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterace } from '../../../apollo-client/types/user';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const TabsContainer = styled(FlexRow)`
   margin-bottom: 14px;
@@ -40,7 +40,7 @@ const Tasks: React.FunctionComponent<RouteComponentProps> = ({
     location,
     match,
   }) => {
-  const { loading, error, data: requestedPartnerTasks } = useQuery<TaskInterace[]>(REQUESTED_PARTNER_TASKS);
+  const { loading, error, data: requestedPartnerTasks } = useQueryHelper<TaskInterace[]>(REQUESTED_PARTNER_TASKS, 'requestedPartnerTasks');
   if (loading || !requestedPartnerTasks) {
     return <></>;
   }

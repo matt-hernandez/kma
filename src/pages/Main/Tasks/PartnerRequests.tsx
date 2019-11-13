@@ -1,12 +1,13 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { REQUESTED_PARTNER_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
 import { COMMIT_TO_TASK } from '../../../apollo-client/mutation/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import generateCacheUpdate from '../../../util/generate-cache-update';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/requests';
 const title = 'Partner Requests';
@@ -14,8 +15,8 @@ const title = 'Partner Requests';
 const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     history,
   }) => {
-  const { loading: loadingMe, error: errorMe, data: me } = useQuery<User>(ME);
-  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks, data: requestedPartnerTasks } = useQuery<TaskInterface[]>(REQUESTED_PARTNER_TASKS);
+  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelper<User>(ME, 'me');
+  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks, data: requestedPartnerTasks } = useQueryHelper<TaskInterface[]>(REQUESTED_PARTNER_TASKS, 'requestedPartnerTasks');
   const { templatesToSkipCommitConfirm = [] } = (me || {});
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK, {
     update: generateCacheUpdate<TaskInterface>(

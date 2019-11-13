@@ -9,7 +9,7 @@ import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
 import { MY_TASKS } from '../../../apollo-client/query/user';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/confirmed/:cid';
 const title = 'You Have Committed!';
@@ -27,7 +27,7 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps> = ({
     match
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const { loading, error, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  const { loading, error, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   if (loading || !myTasks) {
     return <></>;
   }

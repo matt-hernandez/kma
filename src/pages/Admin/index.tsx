@@ -9,6 +9,7 @@ import {
     IonSplitPane
   } from '@ionic/react';
 import { Redirect, Route } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
 import { list, rewind, fastforward, addCircle, person } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
@@ -18,7 +19,6 @@ import PastTasks from './PastTasks';
 import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
-import { useQuery } from '@apollo/react-hooks';
 import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import useQueryHelper from '../../../util/use-query-helper';
 import PageWrapper from '../../../components/PageWrapper';
 import UserItem from '../../../components/UserItem';
 import { addPageData } from '../../../util/add-page-data';
@@ -17,12 +17,12 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   let task = (myTasks || []).find(({cid}) => cid === taskCid);
   const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
   const [ query, setQuery ] = useState(savedSearchQuery);
   const isQueryBlank = query.trim() === '';
-  const { loading, error, data } = useQuery<{ possiblePartnersForTask: PossiblePartners[]}>(POSSIBLE_PARTNERS_FOR_TASK, {
+  const { loading, error, data: possiblePartnersForTask } = useQueryHelper<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask', {
     variables: { name: query, taskCid },
     skip: isQueryBlank
   });
@@ -58,7 +58,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       <IonList>
         {isQueryBlank ? [] : <></>}
         {loading && !isQueryBlank ? 'Please wait' : <></>}
-        {(!loading && !error && !isQueryBlank && data) ? data.possiblePartnersForTask.map(({ cid: userCid, name }) => (
+        {(!loading && !error && !isQueryBlank && possiblePartnersForTask) ? possiblePartnersForTask.map(({ cid: userCid, name }) => (
           <UserItem key={userCid} name={name} onClick={() => {
             history.push(`/main/confirm-partner/${taskCid}/${userCid}`);
           }} />
