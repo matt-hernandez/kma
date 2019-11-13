@@ -18,14 +18,6 @@ export function readCachedQuery<T = any>(query: DataProxy.Query<any>, attributeN
   return result[attributeName];
 }
 
-export function readCachedQueryWithDefault<T = any>(query: DataProxy.Query<any>, attributeName: string, defaultResponse: T): T {
-  try {
-    return readCachedQuery(query, attributeName);
-  } catch (e) {
-    return defaultResponse;
-  }
-}
-
 export function writeCachedQuery<T = any>(query: any, attributeName: string, value: any, variables: any = {}): void {
   client.writeQuery<{ [key: string]: T}>({
     query,

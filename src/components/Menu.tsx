@@ -14,10 +14,9 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { unlock, codeWorking } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
-import { User } from '../apollo-client/types/user';
 import { ME } from '../apollo-client/query/user';
 import { ModalContext } from '../contexts/ModalContext';
-import { useCache } from '../contexts/QueryTrackerContext';
+import { useQuery } from '@apollo/react-hooks';
 
 interface MenuProps {
   appPages: AppPage[];
@@ -28,10 +27,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     location,
     history
   }) => {
-  const { loading, error, data: me } = useCache<User>({
-    query: ME,
-    propName: 'me'
-  });
+  const { loading, error, data: me } = useQuery(ME);
   const { showModal } = useContext(ModalContext);
   return (
     <IonMenu contentId="main">
@@ -41,46 +37,56 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
         </IonToolbar>
       </IonHeader>
       <InflateContent top={56}>
-        {loading && <IonList /> }
+        {loading && (
+          <IonList>
+            <IonMenuToggle autoHide={false}>
+              <IonItem>
+                Loading
+              </IonItem>
+            </IonMenuToggle>
+          </IonList>
+        )}
         {error && <div>Error</div>}
-        {me && <IonList>
-          <IonMenuToggle autoHide={false}>
-            {appPages.map((appPage, index) => {
-              return (
-                <IonItem key={index} type="button" onClick={() => {
-                  history.push(appPage.url);
-                }} color={location.pathname === appPage.url ? 'primary' : undefined}>
-                  <IonIcon slot="start" icon={appPage.icon} />
-                  <IonLabel>{appPage.title}</IonLabel>
+        {me && (
+          <IonList>
+            <IonMenuToggle autoHide={false}>
+              {appPages.map((appPage, index) => {
+                return (
+                  <IonItem key={index} type="button" onClick={() => {
+                    history.push(appPage.url);
+                  }} color={location.pathname === appPage.url ? 'primary' : undefined}>
+                    <IonIcon slot="start" icon={appPage.icon} />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                );
+              })}
+              {(me.isAdmin && !location.pathname.includes('/admin')) && (
+                <IonItem type="button" onClick={() => {
+                  history.push('/admin');
+                }}>
+                  <IonIcon slot="start" icon={unlock} />
+                  <IonLabel>Admin</IonLabel>
                 </IonItem>
-              );
-            })}
-            {(me.isAdmin && !location.pathname.includes('/admin')) && (
-              <IonItem type="button" onClick={() => {
-                history.push('/admin');
+              )}
+              {(me.isAdmin && location.pathname.includes('/admin')) && (
+                <IonItem type="button" onClick={() => {
+                  history.push('/');
+                }}>
+                  <IonIcon slot="start" icon={codeWorking} />
+                  <IonLabel>Main app</IonLabel>
+                </IonItem>
+              )}
+              <IonItem onClick={() => {
+                showModal({
+                  type: 'DEV_TOOLS',
+                  content: <></>
+                });
               }}>
-                <IonIcon slot="start" icon={unlock} />
-                <IonLabel>Admin</IonLabel>
+                Developer Tools
               </IonItem>
-            )}
-            {(me.isAdmin && location.pathname.includes('/admin')) && (
-              <IonItem type="button" onClick={() => {
-                history.push('/');
-              }}>
-                <IonIcon slot="start" icon={codeWorking} />
-                <IonLabel>Main app</IonLabel>
-              </IonItem>
-            )}
-            <IonItem onClick={() => {
-              showModal({
-                type: 'DEV_TOOLS',
-                content: <></>
-              });
-            }}>
-              Developer Tools
-            </IonItem>
-          </IonMenuToggle>
-        </IonList>}
+            </IonMenuToggle>
+          </IonList>
+        )}
       </InflateContent>
     </IonMenu>
   );

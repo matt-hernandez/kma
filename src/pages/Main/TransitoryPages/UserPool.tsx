@@ -10,11 +10,9 @@ import UserItem from '../../../components/UserItem';
 import HorizontalRule from '../../../components/HorizontalRule';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { MY_TASKS, USER_POOL } from '../../../apollo-client/query/user';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
 import { useQuery } from '@apollo/react-hooks';
-import { DefaultTask } from '../../../apollo-client/defaults/user';
 
 const slug = '/user-pool/:cid';
 const title = 'User Pool';
@@ -28,19 +26,14 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const myTasks = readCachedQueryWithDefault<TaskInterface[]>({
-    query: MY_TASKS
-  }, 'myTasks', [ new DefaultTask() ]);
-  let task = myTasks.find(({cid}) => cid === taskCid);
-  const { loading, error, data }= useQuery<{ userPool: PossiblePartners[] }>(USER_POOL, {
-    variables: { taskCid },
-    onCompleted() {
-      
-    }
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  const { loading, error, data } = useQuery<{ userPool: PossiblePartners[] }>(USER_POOL, {
+    variables: { taskCid }
   });
-  if (myTasks.length === 1 && myTasks[0].cid.includes('default')) {
-    task = myTasks[0];
+  if (loadingMyTasks || !myTasks) {
+    return <></>;
   }
+  let task = myTasks.find(({cid}) => cid === taskCid);
   if (!task) {
     return <Redirect to="/404" />
   }

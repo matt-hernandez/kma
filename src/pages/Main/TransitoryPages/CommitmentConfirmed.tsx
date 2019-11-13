@@ -7,10 +7,9 @@ import LargeCopy from '../../../components/LargeCopy';
 import FlexColumn from '../../../components/FlexColumn';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
 import { MY_TASKS } from '../../../apollo-client/query/user';
-import { DefaultTask } from '../../../apollo-client/defaults/user';
+import { useQuery } from '@apollo/react-hooks';
 
 const slug = '/confirmed/:cid';
 const title = 'You Have Committed!';
@@ -28,13 +27,11 @@ const CommitmentConfirmed: React.FunctionComponent<RouteComponentProps> = ({
     match
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const myTasks = readCachedQueryWithDefault<TaskInterface[]>({
-    query: MY_TASKS
-  }, 'myTasks', [ new DefaultTask() ]);
-  let task = myTasks.find(({cid}) => cid === taskCid);
-  if (myTasks.length === 1 && myTasks[0].cid.includes('default')) {
-    task = myTasks[0];
+  const { loading, error, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  if (loading || !myTasks) {
+    return <></>;
   }
+  let task = myTasks.find(({cid}) => cid === taskCid);
   if (!task) {
     return <Redirect to="/404" />
   }

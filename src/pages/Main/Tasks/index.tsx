@@ -10,7 +10,7 @@ import { colors } from '../../../styles/colors';
 import { addPageData } from '../../../util/add-page-data';
 import { REQUESTED_PARTNER_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterace } from '../../../apollo-client/types/user';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
+import { useQuery } from '@apollo/react-hooks';
 
 const TabsContainer = styled(FlexRow)`
   margin-bottom: 14px;
@@ -40,15 +40,16 @@ const Tasks: React.FunctionComponent<RouteComponentProps> = ({
     location,
     match,
   }) => {
-  const requestedPartnerTasks = readCachedQueryWithDefault<TaskInterace[]>({
-    query: REQUESTED_PARTNER_TASKS
-  }, 'requestedPartnerTasks', []);
+  const { loading, error, data: requestedPartnerTasks } = useQuery<TaskInterace[]>(REQUESTED_PARTNER_TASKS);
+  if (loading || !requestedPartnerTasks) {
+    return <></>;
+  }
   return (
     <>
       <TabsContainer>
         {tabs.map(({ title, slug }, i) => {
           return (
-            <Tab key={slug} showBadge={title === PartnerRequests.pageData.title} badgeNumber={requestedPartnerTasks.length} name={title} isActive={`${match.url}${slug}` === location.pathname} onClick={() => history.push(`${match.url}${slug}`)} />
+            <Tab key={slug} showBadge={title === PartnerRequests.pageData.title} badgeNumber={(requestedPartnerTasks || []).length} name={title} isActive={`${match.url}${slug}` === location.pathname} onClick={() => history.push(`${match.url}${slug}`)} />
           );
         })}
       </TabsContainer>

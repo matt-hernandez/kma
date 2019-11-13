@@ -1,15 +1,13 @@
 import React, { useContext } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { OPEN_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
 import { COMMIT_TO_TASK, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../../apollo-client/mutation/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import { ModalContext } from '../../../contexts/ModalContext';
 import generateCacheUpdate from '../../../util/generate-cache-update';
-import { DefaultUser } from '../../../apollo-client/defaults/user';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -18,12 +16,9 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const { showModal, hideModalRef } = useContext(ModalContext);
-  const openTasks = readCachedQueryWithDefault<TaskInterface[]>({
-    query: OPEN_TASKS
-  }, 'openTasks', []);
-  const { templatesToSkipCommitConfirm } = readCachedQueryWithDefault<User>({
-    query: ME
-  }, 'me', new DefaultUser());
+  const { loading: openTasksLoading, error: errorOpenTasks, data } = useQuery<{ openTasks: TaskInterface[]}>(OPEN_TASKS);
+  const { loading: loadingMe, error: errorMe, data: me } = useQuery(ME);
+  const { templatesToSkipCommitConfirm = [] } = (me || {});
   const [ skipFutureTasksWithTemplate ] = useMutation(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, {
     update: generateCacheUpdate<User>(
       'OVERWRITE_SINGLE_ITEM',
@@ -46,7 +41,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   });
   return (
     <>
-      {openTasks.map((task) => {
+      {data && data.openTasks && data.openTasks.map((task) => {
         const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
           <Task

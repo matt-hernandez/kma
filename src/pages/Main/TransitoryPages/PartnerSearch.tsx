@@ -6,10 +6,8 @@ import PageWrapper from '../../../components/PageWrapper';
 import UserItem from '../../../components/UserItem';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
 import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK } from '../../../apollo-client/query/user';
-import { DefaultTask } from '../../../apollo-client/defaults/user';
 
 const slug = '/partner-search/:cid';
 const title = 'Partner Search';
@@ -19,20 +17,15 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
-  const myTasks = readCachedQueryWithDefault<TaskInterface[]>({
-    query: MY_TASKS
-  }, 'myTasks', [ new DefaultTask() ]);
-  let task = myTasks.find(({cid}) => cid === taskCid);
+  const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQuery<TaskInterface[]>(MY_TASKS);
+  let task = (myTasks || []).find(({cid}) => cid === taskCid);
   const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
   const [ query, setQuery ] = useState(savedSearchQuery);
   const isQueryBlank = query.trim() === '';
-  const { loading, error, data }= useQuery<{ possiblePartnersForTask: PossiblePartners[]}>(POSSIBLE_PARTNERS_FOR_TASK, {
+  const { loading, error, data } = useQuery<{ possiblePartnersForTask: PossiblePartners[]}>(POSSIBLE_PARTNERS_FOR_TASK, {
     variables: { name: query, taskCid },
     skip: isQueryBlank
   });
-  if (myTasks.length === 1 && myTasks[0].cid.includes('default')) {
-    task = myTasks[0];
-  }
   if (!task) {
     return <Redirect to="/404" />
   }

@@ -1,13 +1,11 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { REQUESTED_PARTNER_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
 import { COMMIT_TO_TASK } from '../../../apollo-client/mutation/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
-import { DefaultUser } from '../../../apollo-client/defaults/user';
 import generateCacheUpdate from '../../../util/generate-cache-update';
 
 const slug = '/requests';
@@ -16,12 +14,9 @@ const title = 'Partner Requests';
 const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     history,
   }) => {
-  const { templatesToSkipCommitConfirm } = readCachedQueryWithDefault<User>({
-    query: ME
-  }, 'me', new DefaultUser());
-  const requestedPartnerTasks = readCachedQueryWithDefault<TaskInterface[]>({
-    query: REQUESTED_PARTNER_TASKS
-  }, 'requestedPartnerTasks', []);
+  const { loading: loadingMe, error: errorMe, data: me } = useQuery<User>(ME);
+  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks, data: requestedPartnerTasks } = useQuery<TaskInterface[]>(REQUESTED_PARTNER_TASKS);
+  const { templatesToSkipCommitConfirm = [] } = (me || {});
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK, {
     update: generateCacheUpdate<TaskInterface>(
       'TRANSFER_ITEM',
@@ -37,7 +32,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
   });
   return (
     <>
-      {requestedPartnerTasks.map(({ cid, partnerUpDeadline, templateCid, connections, title, due, description }) => (
+      {requestedPartnerTasks && requestedPartnerTasks.map(({ cid, partnerUpDeadline, templateCid, connections, title, due, description }) => (
         <Task
           key={cid}
           isCommitted={false}
