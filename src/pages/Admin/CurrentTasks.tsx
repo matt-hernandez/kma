@@ -1,6 +1,6 @@
 import React from 'react';
 import { addPageData } from '../../util/add-page-data';
-import { ALL_CURRENT_TASKS } from '../../apollo-client/queries/admin';
+import { ALL_CURRENT_TASKS } from '../../apollo-client/query/admin';
 import TaskForAdmin from '../../components/TaskForAdmin';
 import { TaskForAdmin as TaskForAdminInterface } from '../../apollo-client/types/admin';
 import { readCachedQueryWithDefault } from '../../apollo-client/client';

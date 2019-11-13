@@ -8,7 +8,7 @@ import MyTasks from './MyTasks';
 import PartnerRequests from './PartnerRequests';
 import { colors } from '../../../styles/colors';
 import { addPageData } from '../../../util/add-page-data';
-import { REQUESTED_PARTNER_TASKS } from '../../../apollo-client/queries/user';
+import { REQUESTED_PARTNER_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterace } from '../../../apollo-client/types/user';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 

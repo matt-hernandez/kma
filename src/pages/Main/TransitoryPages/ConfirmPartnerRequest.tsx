@@ -12,7 +12,7 @@ import { RouteParams } from '../../../util/interface-overrides';
 import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
-import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL } from '../../../apollo-client/queries/user';
+import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL } from '../../../apollo-client/query/user';
 import { DefaultTask, DefaultUser } from '../../../apollo-client/defaults/user';
 
 const slug = '/confirm-partner/:taskCid/:userCid';

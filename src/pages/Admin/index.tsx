@@ -19,7 +19,7 @@ import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
 import { useQuery } from '@apollo/react-hooks';
-import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/queries/admin';
+import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 
 const adminPages: AppPage[] = [

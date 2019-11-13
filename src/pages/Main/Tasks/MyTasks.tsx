@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Task from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { MY_TASKS } from '../../../apollo-client/queries/user';
+import { MY_TASKS } from '../../../apollo-client/query/user';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
 

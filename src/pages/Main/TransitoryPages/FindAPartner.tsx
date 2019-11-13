@@ -9,7 +9,7 @@ import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
-import { MY_TASKS } from '../../../apollo-client/queries/user';
+import { MY_TASKS } from '../../../apollo-client/query/user';
 import { DefaultTask } from '../../../apollo-client/defaults/user';
 
 const slug = '/find-a-partner/:cid';

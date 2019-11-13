@@ -25,7 +25,8 @@ import {
   isBeforeNow,
   getUTCTimeInMilliseconds
   } from '../../util/date-time';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE, ALL_CURRENT_TASKS } from '../../apollo-client/queries/admin';
+import { ALL_CURRENT_TASKS } from '../../apollo-client/query/admin';
+import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin } from '../../apollo-client/types/admin';

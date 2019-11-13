@@ -14,13 +14,12 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { unlock, codeWorking } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
-import { readCachedQueryWithDefault } from '../apollo-client/client';
 import { User } from '../apollo-client/types/user';
-import { ME } from '../apollo-client/queries/user';
+import { ME } from '../apollo-client/query/user';
 import { ModalContext } from '../contexts/ModalContext';
-import { DefaultUser } from '../apollo-client/defaults/user';
+import { useCache } from '../contexts/QueryTrackerContext';
 
-interface MenuProps extends RouteComponentProps {
+interface MenuProps {
   appPages: AppPage[];
 }
 
@@ -29,9 +28,10 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     location,
     history
   }) => {
-  const me = readCachedQueryWithDefault<User>({
-    query: ME
-  }, 'me', new DefaultUser());
+  const { loading, error, data: me } = useCache<User>({
+    query: ME,
+    propName: 'me'
+  });
   const { showModal } = useContext(ModalContext);
   return (
     <IonMenu contentId="main">
@@ -41,7 +41,9 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
         </IonToolbar>
       </IonHeader>
       <InflateContent top={56}>
-        <IonList>
+        {loading && <IonList /> }
+        {error && <div>Error</div>}
+        {me && <IonList>
           <IonMenuToggle autoHide={false}>
             {appPages.map((appPage, index) => {
               return (
@@ -78,7 +80,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
               Developer Tools
             </IonItem>
           </IonMenuToggle>
-        </IonList>
+        </IonList>}
       </InflateContent>
     </IonMenu>
   );

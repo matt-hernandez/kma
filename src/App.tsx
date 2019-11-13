@@ -1,12 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
-import LoadingWrapper, { LoadingProvider, LoadingContext } from './contexts/LoadingContext';
+import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
+import { QueryTrackerProvider, useQueryHelper } from './contexts/QueryTrackerContext';
 import ModalWrapper, { ModalProvider } from './contexts/ModalContext';
 import apolloClient from './apollo-client/client';
 
@@ -30,19 +31,13 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
-import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/queries/user';
+import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/query/user';
 
 const InnerApp = () => {
-  const { loading: loadingMe, error: errorMe } = useQuery(ME);
-  const { loading: loadingOpenTasks, error: errorOpenTasks } = useQuery(OPEN_TASKS);
-  const { loading: loadingMyTasks, error: errorMyTasks } = useQuery(MY_TASKS);
-  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
-  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
-  if (loadingMe || loadingOpenTasks || loadingMyTasks || loadingRequestedPartnerTasks) {
-    showLoadingScreen();
-  } else {
-    hideLoadingScreen();
-  }
+  const { loading: loadingMe, error: errorMe } = useQueryHelper(ME);
+  const { loading: loadingOpenTasks, error: errorOpenTasks } = useQueryHelper(OPEN_TASKS);
+  const { loading: loadingMyTasks, error: errorMyTasks } = useQueryHelper(MY_TASKS);
+  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks } = useQueryHelper(REQUESTED_PARTNER_TASKS);
   return (
     <IonReactRouter>
       <Switch>
@@ -63,9 +58,11 @@ const App: React.FunctionComponent = () => {
     <IonApp>
       <LoadingProvider>
         <ModalProvider>
-          <ApolloProvider client={apolloClient}>
-            <InnerApp />
-          </ApolloProvider>
+          <QueryTrackerProvider>
+            <ApolloProvider client={apolloClient}>
+              <InnerApp />
+            </ApolloProvider>
+          </QueryTrackerProvider>
         </ModalProvider>
       </LoadingProvider>
     </IonApp>

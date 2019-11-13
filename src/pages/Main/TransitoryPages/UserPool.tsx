@@ -11,7 +11,7 @@ import HorizontalRule from '../../../components/HorizontalRule';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
-import { MY_TASKS, USER_POOL } from '../../../apollo-client/queries/user';
+import { MY_TASKS, USER_POOL } from '../../../apollo-client/query/user';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
 import { useQuery } from '@apollo/react-hooks';
 import { DefaultTask } from '../../../apollo-client/defaults/user';

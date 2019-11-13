@@ -10,11 +10,8 @@ const client = new ApolloClient({
   })
 });
 
-export function readCachedQuery<T = any>(query: any, attributeName: string, variables: any = {}): T {
-  const result = client.readQuery<{ [key: string]: T}>({
-    query,
-    variables
-  });
+export function readCachedQuery<T = any>(query: DataProxy.Query<any>, attributeName: string, variables: any = {}): T {
+  const result = client.readQuery<{ [key: string]: T}>(query);
   if (result === null) {
     throw new Error('Attempted to read cache, but found null value');
   }

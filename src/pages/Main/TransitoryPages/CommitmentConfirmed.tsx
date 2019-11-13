@@ -9,7 +9,7 @@ import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { readCachedQueryWithDefault } from '../../../apollo-client/client';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
-import { MY_TASKS } from '../../../apollo-client/queries/user';
+import { MY_TASKS } from '../../../apollo-client/query/user';
 import { DefaultTask } from '../../../apollo-client/defaults/user';
 
 const slug = '/confirmed/:cid';
