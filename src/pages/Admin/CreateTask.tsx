@@ -8,7 +8,6 @@ import {
   IonDatetime,
   IonSelect,
   IonSelectOption,
-  IonToast
   } from '@ionic/react';
 import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -30,6 +29,7 @@ import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const slug = '/tasks/create';
 const title = 'Create Task';
@@ -86,8 +86,8 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(ONE_HOUR_MILLISECONDS);
   const [ publishDate, setPublishDate ] = useState(TODAY_ISO_STRING);
   const [ repeatFrequency, setRepeatFrequency ] = useState(0);
-  const [ toastData, setToastData ] = useState<any>(null);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
+  const { showToast } = useContext(ToastContext);
   const checkFormValidity = () => {
     return title.trim() && due && partnerUpDeadline;
   };
@@ -102,43 +102,42 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       publishDate: getUTCTimeInMilliseconds(publishDate) || getUTCTimeInMilliseconds(now)
     };
     showLoadingScreen();
-    let taskCreationHasError = false;
     let taskTemplateCreationHasError = false;
-    const createTaskPromise = createTask({ variables: taskData }).catch(() => {taskCreationHasError = true});
+    let createdTask: TaskForAdmin | null = null;
+    const createTaskPromise = createTask({ variables: taskData }).then((task) => createdTask = task.data || null);
     if (repeatFrequency) {
-      createTaskPromise.then((task) => createTaskTemplate({
+      createTaskPromise.then(() => createTaskTemplate({
           variables: {
             ...taskData,
             repeatFrequency,
             nextPublishDate: getUTCTimeInMilliseconds(due),
             nextDueDate: getUTCTimeInMilliseconds(due) + Number(repeatFrequency)
           }
-        }).then(() => task).catch(() => {
+        }).catch(() => {
           taskTemplateCreationHasError = true;
-          return task;
         })
       );
     }
-    createTaskPromise.then((task: any) => {
+    createTaskPromise.then(() => {
       hideLoadingScreen();
-      if (taskCreationHasError) {
-        setToastData({
+      if (!createdTask) {
+        showToast({
           color: 'danger',
           message: 'There was an error creating your task!'
         });
       } else if (taskTemplateCreationHasError) {
-        setToastData({
+        showToast({
           color: 'warning',
           message: 'Your task was created, but there was a problem setting up recurring tasks.'
         });
       } else {
         let url: string;
-        if (task.publishDate > TODAY_MILLISECONDS_ZONED) {
+        if (createdTask.publishDate > TODAY_MILLISECONDS_ZONED) {
           url = '/admin/tasks/upcoming';
         } else {
           url = '/admin/tasks/current';
         }
-        setToastData({
+        showToast({
           color: 'success',
           message: 'Your task was created successfully!',
           buttons: [{
@@ -186,16 +185,6 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         </IonSelect>
       </IonItem>
       <IonButton expand="block" color="primary" onClick={createTaskListener} disabled={!isFormValid}>Create task</IonButton>
-      {toastData !== null && (
-        <IonToast
-          isOpen
-          color={toastData.color}
-          onDidDismiss={() => setToastData(null)}
-          message={toastData.message}
-          duration={5000}
-          buttons={toastData.buttons ? toastData.buttons : []}
-        />
-      )}
     </>
   )
 };

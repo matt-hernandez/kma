@@ -68,12 +68,6 @@ const Admin: React.FunctionComponent = () => {
   const { loading: loadingUsers, error: errorUsers } = useQuery(USERS, {
     fetchPolicy: 'cache-and-network'
   });
-  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
-  if (loadingCurrentTasks || loadingUpcomingTasks || loadingPastTasks || loadingUsers) {
-    showLoadingScreen();
-  } else {
-    hideLoadingScreen();
-  }
   return (
     <IonSplitPane contentId="main">
       <Menu appPages={adminPages} />

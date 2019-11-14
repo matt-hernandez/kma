@@ -9,10 +9,7 @@ const slug = '/tasks/current';
 const title = 'Current Tasks';
 
 export default addPageData(() => {
-  const { loading, error, data: allCurrentTasks } = useQueryHelper<TaskForAdminInterface[]>(ALL_CURRENT_TASKS, 'allCurrentTasks', {
-    fetchPolicy: 'cache-and-network'
-  });
-
+  const { loading, error, data: allCurrentTasks } = useQueryHelper<TaskForAdminInterface[]>(ALL_CURRENT_TASKS, 'allCurrentTasks');
   return (
     <>
       {allCurrentTasks && allCurrentTasks.map((task) => (

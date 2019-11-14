@@ -7,6 +7,7 @@ import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
 import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
+import ToastWrapper, { ToastProvider } from './contexts/ToastContext';
 import apolloClient from './apollo-client/client';
 
 /* Core CSS required for Ionic components to work properly */
@@ -46,6 +47,7 @@ const InnerApp = () => {
         <Route path="/404" strict exact component={PageDoesNotExist} />
       </Switch>
       <LoadingWrapper />
+      <ToastWrapper />
     </IonReactRouter>
   )
 }
@@ -53,11 +55,13 @@ const InnerApp = () => {
 const App: React.FunctionComponent = () => {
   return (
     <IonApp>
-      <LoadingProvider>
-        <ApolloProvider client={apolloClient}>
-          <InnerApp />
-        </ApolloProvider>
-      </LoadingProvider>
+      <ToastProvider>
+        <LoadingProvider>
+          <ApolloProvider client={apolloClient}>
+            <InnerApp />
+          </ApolloProvider>
+        </LoadingProvider>
+      </ToastProvider>
     </IonApp>
   )
 };
