@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import {
   IonHeader,
   IonIcon,
@@ -15,7 +15,7 @@ import { unlock, codeWorking } from 'ionicons/icons';
 import InflateContent from '../components/InflateContent';
 import { AppPage } from '../declarations';
 import { ME } from '../apollo-client/query/user';
-import { ModalContext } from '../contexts/ModalContext';
+import { DevToolsModal } from '../components/Modal';
 import useQueryHelper from '../util/use-query-helper';
 
 interface MenuProps {
@@ -28,67 +28,67 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     history
   }) => {
   const { loading, error, data: me } = useQueryHelper(ME, 'me');
-  const { showModal } = useContext(ModalContext);
+  const [ isDevToolsModalOpen, setIsDevToolsModalOpen ] = useState(false);
   return (
-    <IonMenu contentId="main">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Menu</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <InflateContent top={56}>
-        {loading && (
-          <IonList>
-            <IonMenuToggle autoHide={false}>
-              <IonItem>
-                Loading
-              </IonItem>
-            </IonMenuToggle>
-          </IonList>
-        )}
-        {error && <div>Error</div>}
-        {me && (
-          <IonList>
-            <IonMenuToggle autoHide={false}>
-              {appPages.map((appPage, index) => {
-                return (
-                  <IonItem key={index} type="button" onClick={() => {
-                    history.push(appPage.url);
-                  }} color={location.pathname === appPage.url ? 'primary' : undefined}>
-                    <IonIcon slot="start" icon={appPage.icon} />
-                    <IonLabel>{appPage.title}</IonLabel>
+    <>
+      <IonMenu contentId="main">
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Menu</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <InflateContent top={56}>
+          {loading && (
+            <IonList>
+              <IonMenuToggle autoHide={false}>
+                <IonItem>
+                  Loading
+                </IonItem>
+              </IonMenuToggle>
+            </IonList>
+          )}
+          {error && <div>Error</div>}
+          {me && (
+            <IonList>
+              <IonMenuToggle autoHide={false}>
+                {appPages.map((appPage, index) => {
+                  return (
+                    <IonItem key={index} type="button" onClick={() => {
+                      history.push(appPage.url);
+                    }} color={location.pathname === appPage.url ? 'primary' : undefined}>
+                      <IonIcon slot="start" icon={appPage.icon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  );
+                })}
+                {(me.isAdmin && !location.pathname.includes('/admin')) && (
+                  <IonItem type="button" onClick={() => {
+                    history.push('/admin');
+                  }}>
+                    <IonIcon slot="start" icon={unlock} />
+                    <IonLabel>Admin</IonLabel>
                   </IonItem>
-                );
-              })}
-              {(me.isAdmin && !location.pathname.includes('/admin')) && (
-                <IonItem type="button" onClick={() => {
-                  history.push('/admin');
+                )}
+                {(me.isAdmin && location.pathname.includes('/admin')) && (
+                  <IonItem type="button" onClick={() => {
+                    history.push('/');
+                  }}>
+                    <IonIcon slot="start" icon={codeWorking} />
+                    <IonLabel>Main app</IonLabel>
+                  </IonItem>
+                )}
+                <IonItem onClick={() => {
+                  setIsDevToolsModalOpen(true);
                 }}>
-                  <IonIcon slot="start" icon={unlock} />
-                  <IonLabel>Admin</IonLabel>
+                  Developer Tools
                 </IonItem>
-              )}
-              {(me.isAdmin && location.pathname.includes('/admin')) && (
-                <IonItem type="button" onClick={() => {
-                  history.push('/');
-                }}>
-                  <IonIcon slot="start" icon={codeWorking} />
-                  <IonLabel>Main app</IonLabel>
-                </IonItem>
-              )}
-              <IonItem onClick={() => {
-                showModal({
-                  type: 'DEV_TOOLS',
-                  content: <></>
-                });
-              }}>
-                Developer Tools
-              </IonItem>
-            </IonMenuToggle>
-          </IonList>
-        )}
-      </InflateContent>
-    </IonMenu>
+              </IonMenuToggle>
+            </IonList>
+          )}
+        </InflateContent>
+      </IonMenu>
+      <DevToolsModal isOpen={isDevToolsModalOpen} onDismiss={() => {}} />
+    </>
   );
 };
 

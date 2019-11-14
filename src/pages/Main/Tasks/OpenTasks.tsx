@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import Task from '../../../components/Task';
@@ -6,9 +6,11 @@ import { addPageData } from '../../../util/add-page-data';
 import { OPEN_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
 import { COMMIT_TO_TASK, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../../apollo-client/mutation/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
-import { ModalContext } from '../../../contexts/ModalContext';
+import { TaskCommitConfirmationModal } from '../../../components/Modal';
 import generateCacheUpdate from '../../../util/generate-cache-update';
-import useQueryHelperHelper from '../../../util/use-query-helper';
+import useQueryHelper from '../../../util/use-query-helper';
+import { useStateHelper, listenerTypes } from '../../../util/use-state-helper';
+import { LoadingContext } from '../../../contexts/LoadingContext';
 
 const slug = '/open';
 const title = 'Open Tasks';
@@ -16,9 +18,11 @@ const title = 'Open Tasks';
 const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
-  const { showModal, hideModalRef } = useContext(ModalContext);
-  const { loading: openTasksLoading, error: errorOpenTasks, data: openTasks } = useQueryHelperHelper<TaskInterface[]>(OPEN_TASKS, 'openTasks');
-  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelperHelper(ME, 'me');
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
+  const [ taskToCommitTo, setTaskToCommitTo ] = useState<TaskInterface>();
+  const [ isModalOpen, showModal, hideModal ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
+  const { loading: openTasksLoading, error: errorOpenTasks, data: openTasks } = useQueryHelper<TaskInterface[]>(OPEN_TASKS, 'openTasks');
+  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelper(ME, 'me');
   const { templatesToSkipCommitConfirm = [] } = (me || {});
   const [ skipFutureTasksWithTemplate ] = useMutation(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, {
     update: generateCacheUpdate<User>(
@@ -40,6 +44,10 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
       'commitToTask'
     )
   });
+  const commit = (taskCid: string) => commitToTask({ variables: { taskCid } })
+    .then(() => {
+      history.push(`/main/confirmed/${taskCid}`);
+    });
   return (
     <>
       {openTasks && openTasks.map((task) => {
@@ -53,36 +61,45 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
             due={due}
             description={description}
             onCommit={() => {
-              const commit = () => {
-                commitToTask({
-                  variables: { taskCid: cid }
-                })
-                  .then(() => {
-                    hideModalRef.current();
-                    history.push(`/main/confirmed/${cid}`);
-                  });
-              };
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
-                commit();
+                showLoadingScreen();
+                commit(cid)
+                  .finally(() => hideLoadingScreen());
               } else {
-                showModal({
-                  type: 'TASK_CONFIRM_COMMIT',
-                  content: task,
-                  manualDismiss: true,
-                  onConfirm: ({ skipConfirm }) => {
-                    if (skipConfirm) {
-                      skipFutureTasksWithTemplate()
-                        .then(commit);
-                    } else {
-                      commit();
-                    }
-                  }
-                });
+                setTaskToCommitTo(task);
+                showModal();
               }
             }}
           />
         )
       })}
+      {taskToCommitTo && (
+        <TaskCommitConfirmationModal
+          isOpen={isModalOpen}
+          task={taskToCommitTo}
+          onConfirm={({ skipConfirm }) => {
+            if (taskToCommitTo) {
+              showLoadingScreen();
+              const commitAndHideModal = () => commit(taskToCommitTo.cid).then(() => hideModal());
+              if (skipConfirm) {
+                skipFutureTasksWithTemplate({
+                  variables: {
+                    templateCid: taskToCommitTo.templateCid
+                  }
+                })
+                  .then(commitAndHideModal)
+                  .finally(() => hideLoadingScreen());
+              } else {
+                commitAndHideModal()
+                  .finally(() => hideLoadingScreen());
+              }
+            }
+          }}
+          onDismiss={() => {
+            hideModal();
+          }}
+        />
+      )}
     </>
   )
 };

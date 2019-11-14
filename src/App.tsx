@@ -7,7 +7,6 @@ import Main from './pages/Main';
 import Admin from './pages/Admin';
 import PageDoesNotExist from './pages/404';
 import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
-import ModalWrapper, { ModalProvider } from './contexts/ModalContext';
 import apolloClient from './apollo-client/client';
 
 /* Core CSS required for Ionic components to work properly */
@@ -46,7 +45,6 @@ const InnerApp = () => {
         <Route component={PageDoesNotExist} />
         <Route path="/404" strict exact component={PageDoesNotExist} />
       </Switch>
-      <ModalWrapper />
       <LoadingWrapper />
     </IonReactRouter>
   )
@@ -56,11 +54,9 @@ const App: React.FunctionComponent = () => {
   return (
     <IonApp>
       <LoadingProvider>
-        <ModalProvider>
-          <ApolloProvider client={apolloClient}>
-            <InnerApp />
-          </ApolloProvider>
-        </ModalProvider>
+        <ApolloProvider client={apolloClient}>
+          <InnerApp />
+        </ApolloProvider>
       </LoadingProvider>
     </IonApp>
   )

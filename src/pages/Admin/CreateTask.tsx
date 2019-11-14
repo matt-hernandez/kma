@@ -79,7 +79,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       'createTask'
     )
   });
-  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE)
+  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE);
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState(TOMORROW_AT_NOON_DATE.toISOString());
