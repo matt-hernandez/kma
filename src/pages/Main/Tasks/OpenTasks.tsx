@@ -46,7 +46,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
   });
   const commit = (taskCid: string) => commitToTask({ variables: { taskCid } })
     .then(() => {
-      history.push(`/main/confirmed/${taskCid}`);
+      history.push(`/main/find-a-partner/${taskCid}`);
     });
   return (
     <>

@@ -98,7 +98,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       title,
       description,
       due: getUTCTimeInMilliseconds(due),
-      partnerUpDeadline,
+      partnerUpDeadline: getUTCTimeInMilliseconds(due) - partnerUpDeadline,
       publishDate: getUTCTimeInMilliseconds(publishDate) || getUTCTimeInMilliseconds(now)
     };
     showLoadingScreen();

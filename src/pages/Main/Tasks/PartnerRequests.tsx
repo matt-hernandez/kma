@@ -48,7 +48,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
                 variables: { taskCid: cid }
               })
                 .then(() => {
-                  history.push(`/main/confirmed/${cid}`);
+                  history.push(`/main/find-a-partner/${cid}`);
                 });
             } else {
               // setTaskToConfirm(task);

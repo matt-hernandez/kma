@@ -13,7 +13,6 @@ import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import Tasks from './Tasks';
-import CommitmentConfirmed from './TransitoryPages/CommitmentConfirmed';
 import PartnerSearch from './TransitoryPages/PartnerSearch';
 import ConfirmPartnerRequest from './TransitoryPages/ConfirmPartnerRequest';
 import RequestSent from './TransitoryPages/RequestSent';
@@ -65,7 +64,6 @@ const Main: React.FunctionComponent = () => {
         <InflateContent top={56} as="main">
           <Switch>
             <Route path={`/main${Tasks.pageData.slug}`} component={Tasks} />
-            <Route path={`/main${CommitmentConfirmed.pageData.slug}`} component={CommitmentConfirmed} strict exact />
             <Route path={`/main${PartnerSearch.pageData.slug}`} component={PartnerSearch} strict exact />
             <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
             <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
