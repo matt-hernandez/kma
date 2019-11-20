@@ -32,25 +32,19 @@ import './theme/variables.css';
 import './overrides.css';
 import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/query/user';
 
-const InnerApp = () => {
-  const { loading: loadingMe, error: errorMe } = useQuery(ME);
-  const { loading: loadingOpenTasks, error: errorOpenTasks } = useQuery(OPEN_TASKS);
-  const { loading: loadingMyTasks, error: errorMyTasks } = useQuery(MY_TASKS);
-  const { loading: loadingRequestedPartnerTasks, error: errorRequestedPartnerTasks } = useQuery(REQUESTED_PARTNER_TASKS);
-  return (
-    <IonReactRouter>
-      <Switch>
-        <Route path="/" exact render={() => <Redirect to="/main" />} />
-        <Route path="/main" component={Main} />
-        <Route path="/admin" component={Admin} />
-        <Route component={PageDoesNotExist} />
-        <Route path="/404" strict exact component={PageDoesNotExist} />
-      </Switch>
-      <LoadingWrapper />
-      <ToastWrapper />
-    </IonReactRouter>
-  )
-}
+const InnerApp = () => (
+  <IonReactRouter>
+    <Switch>
+      <Route path="/" exact render={() => <Redirect to="/main" />} />
+      <Route path="/main" component={Main} />
+      <Route path="/admin" component={Admin} />
+      <Route component={PageDoesNotExist} />
+      <Route path="/404" strict exact component={PageDoesNotExist} />
+    </Switch>
+    <LoadingWrapper />
+    <ToastWrapper />
+  </IonReactRouter>
+);
 
 const App: React.FunctionComponent = () => {
   return (

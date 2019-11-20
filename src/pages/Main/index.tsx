@@ -9,6 +9,7 @@ import {
     IonSplitPane
   } from '@ionic/react';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
 import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
@@ -19,6 +20,8 @@ import RequestSent from './TransitoryPages/RequestSent';
 import FindAPartner from './TransitoryPages/FindAPartner';
 import UserPool from './TransitoryPages/UserPool';
 import { AppPage } from '../../declarations';
+import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from '../../apollo-client/query/user';
+
 
 const mainPages: AppPage[] = [
   {
@@ -49,6 +52,18 @@ const mainPages: AppPage[] = [
 ];
 
 const Main: React.FunctionComponent = () => {
+  useQuery(ME, {
+    fetchPolicy: 'cache-and-network'
+  });
+  useQuery(OPEN_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  useQuery(MY_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
+  useQuery(REQUESTED_PARTNER_TASKS, {
+    fetchPolicy: 'cache-and-network'
+  });
   return (
     <IonSplitPane contentId="main">
       <Menu appPages={mainPages} />

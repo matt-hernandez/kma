@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import Task from '../../../components/Task';
+import Task, { TaskLoading } from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { MY_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterface } from '../../../apollo-client/types/user';
@@ -15,6 +15,13 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
     const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   return (
     <>
+      {loadingMyTasks && (
+        <>
+          <TaskLoading />
+          <TaskLoading />
+          <TaskLoading />
+        </>
+      )}
       {myTasks && myTasks.map(({ cid, partnerUpDeadline, title, due, description, connections }) =>  (
         <Task
           key={cid}

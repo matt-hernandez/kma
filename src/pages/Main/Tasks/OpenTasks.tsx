@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
-import Task from '../../../components/Task';
+import Task, { TaskLoading } from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
 import { OPEN_TASKS, ME, MY_TASKS } from '../../../apollo-client/query/user';
 import { COMMIT_TO_TASK, ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM } from '../../../apollo-client/mutation/user';
@@ -50,6 +50,13 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
     });
   return (
     <>
+      {openTasksLoading && (
+        <>
+          <TaskLoading />
+          <TaskLoading />
+          <TaskLoading />
+        </>
+      )}
       {openTasks && openTasks.map((task) => {
         const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
         return (
