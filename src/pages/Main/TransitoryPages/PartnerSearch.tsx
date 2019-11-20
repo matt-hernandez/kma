@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
+import styled from 'styled-components/macro';
 import useQueryHelper from '../../../util/use-query-helper';
 import PageWrapper from '../../../components/PageWrapper';
-import UserItem from '../../../components/UserItem';
+import UserItem, { UserItemLoading } from '../../../components/UserItem';
+import LoadingBlock from '../../../components/LoadingBlock';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
@@ -11,6 +13,24 @@ import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK } from '../../../apollo-client/que
 
 const slug = '/partner-search/:cid';
 const title = 'Partner Search';
+
+const SearchBarLoading = styled(LoadingBlock)`
+  width: 100%;
+  height: 45px;
+  margin: 10px;
+`;
+
+const LoadingScreen = () => (
+  <PageWrapper>
+    <SearchBarLoading />
+    <IonList>
+      <UserItemLoading />
+      <UserItemLoading />
+      <UserItemLoading />
+      <UserItemLoading />
+    </IonList>
+  </PageWrapper>
+);
 
 const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     match,
@@ -23,9 +43,12 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   const [ query, setQuery ] = useState(savedSearchQuery);
   const isQueryBlank = query.trim() === '';
   const { loading, error, data: possiblePartnersForTask } = useQueryHelper<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask', {
-    variables: { name: query, taskCid },
+    variables: { query, taskCid },
     skip: isQueryBlank
   });
+  if (loadingMyTasks) {
+    return <LoadingScreen />;
+  }
   if (!task) {
     return <Redirect to="/404" />
   }
@@ -57,8 +80,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       />
       <IonList>
         {isQueryBlank ? [] : <></>}
-        {loading && !isQueryBlank ? 'Please wait' : <></>}
-        {(!loading && !error && !isQueryBlank && possiblePartnersForTask) ? possiblePartnersForTask.map(({ cid: userCid, name }) => (
+        {(!isQueryBlank && possiblePartnersForTask) ? possiblePartnersForTask.map(({ cid: userCid, name }) => (
           <UserItem key={userCid} name={name} onClick={() => {
             history.push(`/main/confirm-partner/${taskCid}/${userCid}`);
           }} />

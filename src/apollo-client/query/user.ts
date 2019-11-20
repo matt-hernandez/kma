@@ -15,8 +15,8 @@ export const ME = gql`
 `;
 
 export const POSSIBLE_PARTNERS_FOR_TASK = gql`
-  query PossiblePartnersForTask($name: String!, $taskCid: String!) {
-    possiblePartnersForTask(name: $name, taskCid: $taskCid) {
+  query PossiblePartnersForTask($query: String!, $taskCid: String!) {
+    possiblePartnersForTask(query: $query, taskCid: $taskCid) {
       cid
       name
     }

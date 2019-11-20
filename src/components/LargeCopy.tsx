@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro';
 import { systemFontFamily } from '../styles/mixins';
 import { colors } from '../styles/colors';
+import LoadingBlock from './LoadingBlock';
 
 type ExtraProps = {
   marginTop?: boolean;
@@ -36,4 +37,9 @@ export default styled.h4<ExtraProps>`
     `
   }
   font-weight: 400;
+`;
+
+export const LargeCopyLoading = styled(LoadingBlock)`
+  width: 140px;
+  height: 24px;
 `;
