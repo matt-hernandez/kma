@@ -56,7 +56,7 @@ const LoadingScreen = () => (
       </FlexColumn>
     </Half>
   </FlexColumn>
-)
+);
 
 const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
     match,

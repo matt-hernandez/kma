@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { IonButton } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
-import LargeCopy from '../../../components/LargeCopy';
+import LargeCopy, { LargeCopyLoading } from '../../../components/LargeCopy';
+import ButtonLoading from '../../../components/ButtonLoading';
 import FlexColumn from '../../../components/FlexColumn';
 import InlineBold from '../../../components/InlineBold';
 import { addPageData } from '../../../util/add-page-data';
@@ -23,14 +24,26 @@ const PageContent = styled.div`
   margin-top: 60px;
 `;
 
+const LoadingScreen = () => (
+  <FlexColumn shouldInflate centeredHorizontal>
+    <PageContent>
+      <LargeCopyLoading />
+      <LargeCopyLoading />
+      <LargeCopyLoading />
+      <ButtonLoading />
+      <ButtonLoading />
+    </PageContent>
+  </FlexColumn>
+);
+
 const FindAPartner: React.FunctionComponent<RouteComponentProps> = ({
     history,
     match
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
   const { loading, error, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
-  if (loading || !myTasks) {
-    return <></>;
+  if (loading) {
+    return <LoadingScreen />;
   }
   let task = myTasks.find(({cid}) => cid === taskCid);
   if (!task) {
