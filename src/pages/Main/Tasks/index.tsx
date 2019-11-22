@@ -41,9 +41,6 @@ const Tasks: React.FunctionComponent<RouteComponentProps> = ({
     match,
   }) => {
   const { loading, error, data: requestedPartnerTasks } = useQueryHelper<TaskInterace[]>(REQUESTED_PARTNER_TASKS, 'requestedPartnerTasks');
-  if (loading || !requestedPartnerTasks) {
-    return <></>;
-  }
   return (
     <>
       <TabsContainer>
