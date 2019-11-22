@@ -40,6 +40,6 @@ export default styled.h4<ExtraProps>`
 `;
 
 export const LargeCopyLoading = styled(LoadingBlock)`
-  width: 140px;
-  height: 24px;
+  width: 100%;
+  height: 28px;
 `;

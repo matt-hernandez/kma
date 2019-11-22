@@ -16,7 +16,8 @@ import { Task as TaskInterface, PossiblePartner } from '../../../apollo-client/t
 import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL, ONE_POSSIBLE_PARTNER_FOR_TASK } from '../../../apollo-client/query/user';
 import useQueryHelper from '../../../util/use-query-helper';
 import useLazyQueryHelper from '../../../util/use-lazy-query-helper';
-import { readCachedQuery } from '../../../apollo-client/client';
+import client, { readCachedQuery } from '../../../apollo-client/client';
+import gql from 'graphql-tag';
 
 const slug = '/confirm-partner/:taskCid/:userCid';
 const title = 'Confirm Partner';
@@ -29,22 +30,27 @@ const ButtonsContainer = styled.div`
   width: 50%;
 `;
 
+const LargeCopyLoadingContainer = styled.div`
+  width: 65%;
+  margin-top: 20px;
+`;
+
 const LoadingScreen = () => (
   <FlexColumn centered shouldInflate>
     <Half shouldInflate>
       <FlexColumn shouldInflate alignBottom centeredHorizontal>
         <UserPic />
-        <PageWrapper>
+        <LargeCopyLoadingContainer>
           <LargeCopyLoading />
-        </PageWrapper>
+        </LargeCopyLoadingContainer>
       </FlexColumn>
     </Half>
     <Half shouldInflate>
       <FlexColumn shouldInflate centeredHorizontal>
-        <Spacer height="4px" />
+        <Spacer height="16px" />
         <ButtonsContainer>
           <ButtonLoading />
-          <Spacer height="4px" />
+          <Spacer height="12px" />
           <ButtonLoading />
         </ButtonsContainer>
       </FlexColumn>
@@ -65,21 +71,16 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
       taskCid
     }
   });
-  let userPoolEmpty = false;
-  let userSearchEmpty = false;
-  let userPool: PossiblePartner[] = [];
-  let possiblePartnersForTask: PossiblePartner[] = [];
-  try {
-    userPool = readCachedQuery<PossiblePartner[]>({ query: USER_POOL }, 'userPool');
-  } catch (e) {
-    userPoolEmpty = true;
-  }
-  try {
-    possiblePartnersForTask = readCachedQuery<PossiblePartner[]>({ query: POSSIBLE_PARTNERS_FOR_TASK }, 'possiblePartnersForTask');
-  } catch (e) {
-    userSearchEmpty = true;
-  }
-  if (userPoolEmpty && userSearchEmpty && !loadingOnePossiblePartner && !onePossiblePartner) {
+  const cachedPartner = client.readFragment({
+    id: userCid,
+    fragment: gql`
+      fragment cachedPartner on PossiblePartner {
+        cid
+        name
+      }
+    `
+  });
+  if (!cachedPartner && !loadingOnePossiblePartner && !onePossiblePartner) {
     getOnePossiblePartner();
     return <LoadingScreen />;
   }
@@ -87,7 +88,7 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
     return <LoadingScreen />;
   }
   const task = myTasks.find(({cid}) => cid === taskCid);
-  const userToConfirm = onePossiblePartner ? onePossiblePartner : [...possiblePartnersForTask, ...userPool].find(({cid}) => cid === userCid);
+  const userToConfirm = onePossiblePartner ? onePossiblePartner : cachedPartner;
   if (!task || !userToConfirm) {
     return <Redirect to="/404" />
   }
