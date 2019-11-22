@@ -12,9 +12,11 @@ import { LargeCopyLoading } from '../../../components/LargeCopy';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { ReactComponent as UserPic } from '../../../assets/large-user-pic.svg';
-import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
-import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL } from '../../../apollo-client/query/user';
+import { Task as TaskInterface, PossiblePartner } from '../../../apollo-client/types/user';
+import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK, USER_POOL, ONE_POSSIBLE_PARTNER_FOR_TASK } from '../../../apollo-client/query/user';
 import useQueryHelper from '../../../util/use-query-helper';
+import useLazyQueryHelper from '../../../util/use-lazy-query-helper';
+import { readCachedQuery } from '../../../apollo-client/client';
 
 const slug = '/confirm-partner/:taskCid/:userCid';
 const title = 'Confirm Partner';
@@ -57,15 +59,35 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
   const taskCid = (match.params as RouteParams)['taskCid'];
   const userCid = (match.params as RouteParams)['userCid'];
   const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
-  const { loading: loadingUserPool, error: errorUserPool, data: userPool } = useQueryHelper<PossiblePartners[]>(USER_POOL, 'userPool', {
-    variables: { taskCid }
+  const [ getOnePossiblePartner, { loading: loadingOnePossiblePartner, error: errorOnePossiblePartner, data: onePossiblePartner } ] = useLazyQueryHelper<PossiblePartner>(ONE_POSSIBLE_PARTNER_FOR_TASK, 'onePossiblePartnerForTask', {
+    variables: {
+      userCid,
+      taskCid
+    }
   });
-  const { loading: loadingPossiblePartnersForTask, error: errorPossiblePartnersForTask, data: possiblePartnersForTask } = useQueryHelper<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask');
-  if (loadingMyTasks || loadingUserPool || loadingPossiblePartnersForTask) {
+  let userPoolEmpty = false;
+  let userSearchEmpty = false;
+  let userPool: PossiblePartner[] = [];
+  let possiblePartnersForTask: PossiblePartner[] = [];
+  try {
+    userPool = readCachedQuery<PossiblePartner[]>({ query: USER_POOL }, 'userPool');
+  } catch (e) {
+    userPoolEmpty = true;
+  }
+  try {
+    possiblePartnersForTask = readCachedQuery<PossiblePartner[]>({ query: POSSIBLE_PARTNERS_FOR_TASK }, 'possiblePartnersForTask');
+  } catch (e) {
+    userSearchEmpty = true;
+  }
+  if (userPoolEmpty && userSearchEmpty && !loadingOnePossiblePartner && !onePossiblePartner) {
+    getOnePossiblePartner();
     return <LoadingScreen />;
   }
-  const task = (myTasks || []).find(({cid}) => cid === taskCid);
-  const userToConfirm = [...(possiblePartnersForTask || []), ...(userPool || [])].find(({cid}) => cid === userCid);
+  if (loadingMyTasks || loadingOnePossiblePartner) {
+    return <LoadingScreen />;
+  }
+  const task = myTasks.find(({cid}) => cid === taskCid);
+  const userToConfirm = onePossiblePartner ? onePossiblePartner : [...possiblePartnersForTask, ...userPool].find(({cid}) => cid === userCid);
   if (!task || !userToConfirm) {
     return <Redirect to="/404" />
   }

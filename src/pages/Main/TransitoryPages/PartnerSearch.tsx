@@ -8,7 +8,7 @@ import UserItem, { UserItemLoading } from '../../../components/UserItem';
 import LoadingBlock from '../../../components/LoadingBlock';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
-import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { Task as TaskInterface, PossiblePartner } from '../../../apollo-client/types/user';
 import { MY_TASKS, POSSIBLE_PARTNERS_FOR_TASK } from '../../../apollo-client/query/user';
 
 const slug = '/partner-search/:cid';
@@ -42,7 +42,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
   const [ query, setQuery ] = useState(savedSearchQuery);
   const isQueryBlank = query.trim() === '';
-  const { loading, error, data: possiblePartnersForTask } = useQueryHelper<PossiblePartners[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask', {
+  const { loading, error, data: possiblePartnersForTask } = useQueryHelper<PossiblePartner[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask', {
     variables: { query, taskCid },
     skip: isQueryBlank
   });

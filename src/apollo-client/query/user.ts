@@ -23,6 +23,15 @@ export const POSSIBLE_PARTNERS_FOR_TASK = gql`
   }
 `;
 
+export const ONE_POSSIBLE_PARTNER_FOR_TASK = gql`
+  query OnePossiblePartnerForTask($userCid: String!, $taskCid: String!) {
+    onePossiblePartnerForTask(userCid: $userCid, taskCid: $taskCid) {
+      cid
+      name
+    }
+  }
+`;
+
 export const USER_POOL = gql`
   query UserPool($taskCid: String!) {
     userPool(taskCid: $taskCid) {

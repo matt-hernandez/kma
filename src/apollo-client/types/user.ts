@@ -8,7 +8,7 @@ export interface User {
   templatesToSkipMarkAsDone: string[];
 }
 
-export interface PossiblePartners {
+export interface PossiblePartner {
   cid: string;
   name: string;
 }

@@ -11,7 +11,7 @@ import HorizontalRule from '../../../components/HorizontalRule';
 import { addPageData } from '../../../util/add-page-data';
 import { RouteParams } from '../../../util/interface-overrides';
 import { MY_TASKS, USER_POOL } from '../../../apollo-client/query/user';
-import { Task as TaskInterface, PossiblePartners } from '../../../apollo-client/types/user';
+import { Task as TaskInterface, PossiblePartner } from '../../../apollo-client/types/user';
 import useQueryHelper from '../../../util/use-query-helper';
 
 const slug = '/user-pool/:cid';
@@ -27,7 +27,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
   const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
-  const { loading, error, data: userPool } = useQueryHelper<PossiblePartners[]>(USER_POOL, 'userPool', {
+  const { loading, error, data: userPool } = useQueryHelper<PossiblePartner[]>(USER_POOL, 'userPool', {
     variables: { taskCid }
   });
   if (loadingMyTasks || !myTasks) {
