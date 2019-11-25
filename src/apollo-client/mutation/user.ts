@@ -59,7 +59,12 @@ export const REQUEST_PARTNER_FOR_TASK = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }

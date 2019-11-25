@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro';
 import { systemFontFamily } from '../styles/mixins';
 import { colors } from '../styles/colors';
+import LoadingBlock from './LoadingBlock';
 
 type ExtraProps = {
   centered?: boolean;
@@ -36,4 +37,9 @@ export default styled.h1<ExtraProps>`
       color: ${(colors as any)[`gray${grayLevel}`]};
     `
   }
+`;
+
+export const H1Loading = styled(LoadingBlock)`
+  width: 100%;
+  height: 32px;
 `;
