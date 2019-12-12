@@ -40,13 +40,14 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
           <TaskLoading />
         </>
       )}
-      {requestedPartnerTasks && requestedPartnerTasks.map(({ cid, partnerUpDeadline, templateCid, connections, title, due, description }) => (
+      {requestedPartnerTasks && requestedPartnerTasks.map(({ cid, partnerUpDeadline, templateCid, connections, title, due, pointValue, description }) => (
         <Task
           key={cid}
           isCommitted={false}
           partnerUpDeadline={partnerUpDeadline}
           title={title}
           due={due}
+          pointValue={pointValue}
           description={description}
           partnerRequestsToMe={connections.filter(({ type }) => type === 'REQUEST_FROM')}
           onCommit={() => {

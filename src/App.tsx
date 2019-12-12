@@ -1,10 +1,11 @@
 import React from 'react';
 import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ApolloProvider, useQuery } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Main from './pages/Main';
 import Admin from './pages/Admin';
+import Login from './pages/Login';
 import PageDoesNotExist from './pages/404';
 import LoadingWrapper, { LoadingProvider } from './contexts/LoadingContext';
 import ToastWrapper, { ToastProvider } from './contexts/ToastContext';
@@ -30,12 +31,11 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './overrides.css';
-import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from './apollo-client/query/user';
 
 const InnerApp = () => (
   <IonReactRouter>
     <Switch>
-      <Route path="/" exact render={() => <Redirect to="/main" />} />
+      <Route path="/login" exact component={Login} />
       <Route path="/main" component={Main} />
       <Route path="/admin" component={Admin} />
       <Route component={PageDoesNotExist} />

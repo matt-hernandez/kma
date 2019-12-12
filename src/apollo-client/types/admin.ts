@@ -26,6 +26,7 @@ export interface TaskForAdmin {
   title: string;
   due: number;
   publishDate: number;
+  pointValue: number;
   partnerUpDeadline: number;
   description?: string
   committedUsers: User[];

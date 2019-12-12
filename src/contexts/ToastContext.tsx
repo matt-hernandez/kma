@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useRef } from 'react';
 import { IonToast } from '@ionic/react';
 import { ToastButton } from '@ionic/core';
 
-interface Toast {
+export interface Toast {
   color: string;
   message: string;
   buttons?: string[] | ToastButton[];

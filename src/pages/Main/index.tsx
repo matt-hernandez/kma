@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useContext } from 'react';
 import {
     IonPage,
     IonHeader,
@@ -8,7 +8,7 @@ import {
     IonToolbar,
     IonSplitPane
   } from '@ionic/react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
@@ -21,6 +21,8 @@ import FindAPartner from './TransitoryPages/FindAPartner';
 import UserPool from './TransitoryPages/UserPool';
 import { AppPage } from '../../declarations';
 import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from '../../apollo-client/query/user';
+import { ApolloError } from 'apollo-boost';
+import { ToastContext } from '../../contexts/ToastContext';
 
 
 const mainPages: AppPage[] = [
@@ -51,18 +53,37 @@ const mainPages: AppPage[] = [
   }
 ];
 
-const Main: React.FunctionComponent = () => {
+const Main: React.FunctionComponent<RouteComponentProps> = ({
+    history
+  }) => {
+  const { showToast } = useContext(ToastContext);
+  const isRedirecting = useRef(false);
+  const onError = (error: ApolloError) => {
+    if (!isRedirecting.current && error.graphQLErrors) {
+      isRedirecting.current = true;
+      if (error.graphQLErrors.some((error) => error.message.includes('User is not authenticated'))) {
+        history.replace('/login');
+        showToast({
+          color: 'danger',
+          message: 'You need to log in.'
+        });
+      }
+    }
+  }
   useQuery(ME, {
-    fetchPolicy: 'cache-and-network'
+    onError
   });
   useQuery(OPEN_TASKS, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    onError
   });
   useQuery(MY_TASKS, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    onError
   });
   useQuery(REQUESTED_PARTNER_TASKS, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    onError
   });
   return (
     <IonSplitPane contentId="main">

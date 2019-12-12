@@ -13,12 +13,13 @@ export const DELETE_USER = gql`
 `;
 
 export const CREATE_TASK = gql`
-  mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $description: String) {
-    createTask(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, description: $description) {
+  mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $pointValue: Int!, $description: String) {
+    createTask(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, pointValue: $pointValue, description: $description) {
       cid
       templateCid
       title
       due
+      pointValue
       publishDate
       partnerUpDeadline
       description

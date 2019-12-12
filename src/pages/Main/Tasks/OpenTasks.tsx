@@ -58,7 +58,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
         </>
       )}
       {openTasks && openTasks.map((task) => {
-        const { cid, partnerUpDeadline, title, due, description, templateCid } = task;
+        const { cid, partnerUpDeadline, pointValue, title, due, description, templateCid } = task;
         return (
           <Task
             key={cid}
@@ -66,6 +66,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
             partnerUpDeadline={partnerUpDeadline}
             title={title}
             due={due}
+            pointValue={pointValue}
             description={description}
             onCommit={() => {
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {

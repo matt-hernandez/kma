@@ -27,6 +27,7 @@ export interface Task {
   templateCid?: string;
   title: string;
   due: number;
+  pointValue: number;
   partnerUpDeadline: number;
   description?: string;
   isCommitted: boolean;

@@ -22,6 +22,7 @@ type PropTypes = {
   title: string;
   due: number;
   partnerUpDeadline: number;
+  pointValue: number;
   description?: string;
   isCommitted: boolean;
   partnerRequestsToMe?: Connection[];
@@ -43,6 +44,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
   partnerUpDeadline,
   description,
   isCommitted,
+  pointValue,
   partnerRequestsToMe = [],
   pendingPartners = [],
   confirmedPartners = [],
@@ -73,6 +75,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
           {!shouldWarnPartnerUpDeadline && formattedCommitmentDeadline}
         </IonCardSubtitle>
         <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
+        <IonCardSubtitle>Points: {pointValue}</IonCardSubtitle>
       </IonCardHeader>
       {isCommitted && confirmedPartners.map(connection => (
         <IonCardContent key={`${title} ${due} ${connection.connectedUserName}`}>

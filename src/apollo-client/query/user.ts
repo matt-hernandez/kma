@@ -57,6 +57,7 @@ export const OPEN_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       partnerUpDeadline
       description
       isCommitted
@@ -78,6 +79,7 @@ export const MY_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       partnerUpDeadline
       description
       isCommitted
@@ -99,6 +101,7 @@ export const REQUESTED_PARTNER_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       partnerUpDeadline
       description
       isCommitted
@@ -120,6 +123,7 @@ export const MY_PAST_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       partnerUpDeadline
       description
       isCommitted

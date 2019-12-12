@@ -106,6 +106,7 @@ const Task: React.FunctionComponent<TaskForAdmin> = ({
   templateCid,
   title,
   publishDate,
+  pointValue,
   due,
   partnerUpDeadline,
   description,
@@ -124,6 +125,7 @@ const Task: React.FunctionComponent<TaskForAdmin> = ({
             {formattedCommitmentDeadline}
           </IonCardSubtitle>
           <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
+          <IonCardSubtitle>Points: {pointValue}</IonCardSubtitle>
         </IonCardHeader>
         {committedUsers.map(user => {
           const userConnections = connections.filter(({ fromCid, toCid }) => fromCid === user.cid || toCid === user.cid);

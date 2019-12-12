@@ -22,10 +22,11 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
           <TaskLoading />
         </>
       )}
-      {myTasks && myTasks.map(({ cid, partnerUpDeadline, title, due, description, connections }) =>  (
+      {myTasks && myTasks.map(({ cid, pointValue, partnerUpDeadline, title, due, description, connections }) =>  (
         <Task
           key={cid}
           isCommitted={true}
+          pointValue={pointValue}
           partnerUpDeadline={partnerUpDeadline}
           pendingPartners={connections.filter(({ type }) => type === 'REQUEST_TO')}
           confirmedPartners={connections.filter(({ type }) => type === 'CONFIRMED')}

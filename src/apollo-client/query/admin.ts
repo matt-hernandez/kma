@@ -19,6 +19,7 @@ export const ALL_CURRENT_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       publishDate
       partnerUpDeadline
       description
@@ -52,6 +53,7 @@ export const ALL_PAST_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       publishDate
       partnerUpDeadline
       description
@@ -85,6 +87,7 @@ export const ALL_UPCOMING_TASKS = gql`
       templateCid
       title
       due
+      pointValue
       publishDate
       partnerUpDeadline
       description

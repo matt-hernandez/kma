@@ -83,6 +83,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   const [ title, setTitle ] = useState('');
   const [ description, setDescription ] = useState('');
   const [ due, setDue ] = useState(TOMORROW_AT_NOON_DATE.toISOString());
+  const [ points, setPoints ] = useState(1);
   const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(ONE_HOUR_MILLISECONDS);
   const [ publishDate, setPublishDate ] = useState(TODAY_ISO_STRING);
   const [ repeatFrequency, setRepeatFrequency ] = useState(0);
@@ -161,6 +162,14 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       <IonItem>
         <IonLabel slot="start">Due date &amp; time* <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their tasks will be broken automatically.']}><Question /></Tooltip></IonLabel>
         <IonDatetime value={due} min={TOMORROW_MIDNIGHT.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} slot="end" />
+      </IonItem>
+      <IonItem>
+        <IonLabel slot="start">Points</IonLabel>
+        <IonSelect value={points} interface="popover" name="points" onIonChange={(e) => setPoints((e as any).target.value)} slot="end">
+          <IonSelectOption value={1}>1</IonSelectOption>
+          <IonSelectOption value={2}>2</IonSelectOption>
+          <IonSelectOption value={3}>3</IonSelectOption>
+        </IonSelect>
       </IonItem>
       <IonItem>
         <IonLabel slot="start">Sign-up deadline* <Tooltip text={['The deadline for people to agree to tasks and find partners.', 'After the deadline, uncommitted users will not be able to agree to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>

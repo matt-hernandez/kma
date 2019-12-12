@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import {
     IonPage,
     IonHeader,
@@ -8,8 +8,9 @@ import {
     IonToolbar,
     IonSplitPane
   } from '@ionic/react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
+import { ApolloError } from 'apollo-boost';
 import { list, rewind, fastforward, addCircle, person } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
@@ -20,7 +21,7 @@ import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
 import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
-import { LoadingContext } from '../../contexts/LoadingContext';
+import { ToastContext } from '../../contexts/ToastContext';
 
 const adminPages: AppPage[] = [
   {
@@ -55,18 +56,44 @@ const adminPages: AppPage[] = [
   }
 ];
 
-const Admin: React.FunctionComponent = () => {
-  const { loading: loadingCurrentTasks, error: errorCurrentTasks } = useQuery(ALL_CURRENT_TASKS, {
-    fetchPolicy: 'cache-and-network'
+const Admin: React.FunctionComponent<RouteComponentProps> = ({
+    history
+  }) => {
+  const { showToast } = useContext(ToastContext);
+  const isRedirecting = useRef(false);
+  const onError = (error: ApolloError) => {
+    if (!isRedirecting.current && error.graphQLErrors) {
+      isRedirecting.current = true;
+      if (error.graphQLErrors.some((error) => error.message.includes('User is not an admin'))) {
+        history.replace('/main');
+        showToast({
+          color: 'danger',
+          message: 'You are not authorized to view that page.'
+        });
+      } else if (error.graphQLErrors.some((error) => error.message.includes('User is not authenticated'))) {
+        history.replace('/login');
+        showToast({
+          color: 'danger',
+          message: 'You need to log in.'
+        });
+      }
+    }
+  }
+  useQuery(ALL_CURRENT_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
   });
-  const { loading: loadingUpcomingTasks, error: errorUpcomingTasks } = useQuery(ALL_UPCOMING_TASKS, {
-    fetchPolicy: 'cache-and-network'
+  useQuery(ALL_UPCOMING_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
   });
-  const { loading: loadingPastTasks, error: errorPastTasks } = useQuery(ALL_PAST_TASKS, {
-    fetchPolicy: 'cache-and-network'
+  useQuery(ALL_PAST_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
   });
-  const { loading: loadingUsers, error: errorUsers } = useQuery(USERS, {
-    fetchPolicy: 'cache-and-network'
+  useQuery(USERS, {
+    fetchPolicy: 'cache-and-network',
+    onError
   });
   return (
     <IonSplitPane contentId="main">
