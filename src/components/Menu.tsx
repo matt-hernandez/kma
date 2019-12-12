@@ -100,7 +100,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
                 )}
                 {(me.isAdmin && location.pathname.includes('/admin')) && (
                   <IonItem type="button" onClick={() => {
-                    history.push('/');
+                    history.push('/main');
                   }}>
                     <IonIcon slot="start" icon={codeWorking} />
                     <IonLabel>Main app</IonLabel>

@@ -10,7 +10,7 @@ export function formatDueDate(date: number) {
 }
 
 export function formatCommitAndPartnerDate(date: number) {
-  return `Partner-up by ${formatDate(date)}`;
+  return `Enroll by ${formatDate(date)}`;
 }
 
 export function isBeforeNow(date: number, milliseconds: number) {

@@ -160,7 +160,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         <IonTextarea placeholder="Description" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
       </IonItem>
       <IonItem>
-        <IonLabel slot="start">Due date &amp; time* <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their tasks will be broken automatically.']}><Question /></Tooltip></IonLabel>
+        <IonLabel slot="start">Due date &amp; time <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their tasks will be broken automatically.']}><Question /></Tooltip></IonLabel>
         <IonDatetime value={due} min={TOMORROW_MIDNIGHT.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} slot="end" />
       </IonItem>
       <IonItem>
@@ -172,7 +172,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         </IonSelect>
       </IonItem>
       <IonItem>
-        <IonLabel slot="start">Sign-up deadline* <Tooltip text={['The deadline for people to agree to tasks and find partners.', 'After the deadline, uncommitted users will not be able to agree to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>
+        <IonLabel slot="start">Enrollment deadline <Tooltip text={['The deadline for people to agree to tasks and find partners.', 'After the deadline, uncommitted users will not be able to agree to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>
         <IonSelect value={partnerUpDeadline} placeholder="Select one" interface="popover" name="partnerUpDeadline" onIonChange={(e) => setPartnerUpDeadline((e as any).target.value)} slot="end">
           {partnerUpDeadlineMilliseconds.map(({ value, text }) => (
             <IonSelectOption key={text} value={value} disabled={isBeforeNow(new Date(due).getTime(), value)}>{text}</IonSelectOption>
