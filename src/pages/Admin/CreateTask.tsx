@@ -172,7 +172,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         </IonSelect>
       </IonItem>
       <IonItem>
-        <IonLabel slot="start">Enrollment deadline <Tooltip text={['The deadline for people to agree to tasks and find partners.', 'After the deadline, uncommitted users will not be able to agree to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>
+        <IonLabel slot="start">Enrollment deadline <Tooltip text={['The deadline for people to commit to tasks and find partners.', 'After the deadline, uncommitted users will not be able to commit to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>
         <IonSelect value={partnerUpDeadline} placeholder="Select one" interface="popover" name="partnerUpDeadline" onIonChange={(e) => setPartnerUpDeadline((e as any).target.value)} slot="end">
           {partnerUpDeadlineMilliseconds.map(({ value, text }) => (
             <IonSelectOption key={text} value={value} disabled={isBeforeNow(new Date(due).getTime(), value)}>{text}</IonSelectOption>

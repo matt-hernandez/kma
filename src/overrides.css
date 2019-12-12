@@ -35,6 +35,11 @@ ion-chip {
   --ion-color-warning: #d0aa0d;
 }
 
+.sc-ion-card-md-h,
+.sc-ion-card-ios-h {
+  overflow: visible;
+}
+
 ion-card-content > ion-button {
   margin-bottom: 12px;
 }

@@ -14,6 +14,8 @@ import InlineItalic from './InlineItalic';
 import CustomLink from './CustomLink';
 import InlineColor from './InlineColor';
 import LoadingBlock from './LoadingBlock';
+import Tooltip from './Tooltip';
+import { ReactComponent as Question } from '../assets/question.svg';
 import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time';
 import { colors } from '../styles/colors';
 import { Connection } from '../apollo-client/types/user';
@@ -25,6 +27,7 @@ type PropTypes = {
   pointValue: number;
   description?: string;
   isCommitted: boolean;
+  showTooltips?: boolean;
   partnerRequestsToMe?: Connection[];
   pendingPartners?: Connection[];
   confirmedPartners?: Connection[];
@@ -45,6 +48,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
   description,
   isCommitted,
   pointValue,
+  showTooltips = false,
   partnerRequestsToMe = [],
   pendingPartners = [],
   confirmedPartners = [],
@@ -72,9 +76,11 @@ const Task: React.FunctionComponent<PropTypes> = ({
               {formattedCommitmentDeadline}
             </InlineColor>
           )}
-          {!shouldWarnPartnerUpDeadline && formattedCommitmentDeadline}
+          {!shouldWarnPartnerUpDeadline && formattedCommitmentDeadline} {showTooltips && <Tooltip text={['The deadline to commit to this task and find partners.', 'After this deadline passes, you will not be able to commit to this task. If you have already committed, you will not be able to find or replace partners after this deadline.']}><Question /></Tooltip>}
         </IonCardSubtitle>
-        <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
+        <IonCardSubtitle>
+          {formattedDueDate} {showTooltips && <Tooltip text={['The date and time when this task should be done. After this time, you\'ll be able to mark this task as "Done".', 'You have up to 2 days after the due date to mark a task as "Done". After that, the task will be "Broken" automatically.']}><Question /></Tooltip>}
+        </IonCardSubtitle>
         <IonCardSubtitle>Points: {pointValue}</IonCardSubtitle>
       </IonCardHeader>
       {isCommitted && confirmedPartners.map(connection => (
