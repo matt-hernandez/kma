@@ -57,7 +57,6 @@ export default function <T extends { cid: string, [key: string]: any }>(
         variables
       }, name);
       const index = items.findIndex(({ cid }) => item.cid === cid);
-      debugger;
       items = [
         ...items.slice(0, index),
         item,

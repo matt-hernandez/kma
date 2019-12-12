@@ -103,7 +103,6 @@ const ConfirmPartnerRequest: React.FunctionComponent<RouteComponentProps> = ({
     `
   });
   if (!cachedPartner && !loadingOnePossiblePartner && onePossiblePartner === undefined) {
-    debugger;
     getOnePossiblePartner();
     return <LoadingScreen />;
   }
