@@ -80,7 +80,33 @@ export const CONFIRM_PARTNER_REQUEST = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
+      wasCompleted
+    }
+  }
+`;
+
+export const CANCEL_PARTNER_REQUEST = gql`
+  mutation CancelPartnerRequest($taskCid: String!, $connectionCid: String!) {
+    cancelPartnerRequest(taskCid: $taskCid, connectionCid: $connectionCid) {
+      cid
+      templateCid
+      title
+      due
+      partnerUpDeadline
+      description
+      isCommitted
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -96,7 +122,12 @@ export const DENY_PARTNER_REQUEST = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -112,7 +143,12 @@ export const REMOVE_BROKEN_PARTNERSHIP = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -128,7 +164,12 @@ export const CANCEL_TASK = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -144,7 +185,12 @@ export const BREAK_TASK = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }
@@ -160,7 +206,12 @@ export const MARK_TASK_AS_DONE = gql`
       partnerUpDeadline
       description
       isCommitted
-      connections
+      connections {
+        cid
+        connectedUserCid
+        connectedUserName
+        type
+      }
       wasCompleted
     }
   }

@@ -35,9 +35,9 @@ type PropTypes = {
   onFindPartner?: (...args: any) => void;
   onMarkAsDone?: () => void;
   onBreak?: (...args: any) => void;
-  onCancelRequest?: (...args: any) => void;
-  onConfirmRequest?: (...args: any) => void;
-  onDenyRequest?: (...args: any) => void;
+  onCancelRequest?: (connection: Connection) => void;
+  onConfirmRequest?: (connection: Connection) => void;
+  onDenyRequest?: (connection: Connection) => void;
   debugNow?: number;
 };
 
@@ -99,7 +99,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
               <InlineItalic>Request for {connection.connectedUserName} pending</InlineItalic>
             </IonLabel>
           </IonChip>
-          <InlineItalic> - <CustomLink onClick={() => onCancelRequest(connection.cid)}>Cancel request</CustomLink></InlineItalic>
+          <InlineItalic> - <CustomLink onClick={() => onCancelRequest(connection)}>Cancel request</CustomLink></InlineItalic>
         </IonCardContent>
       ))}
       {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
@@ -118,8 +118,8 @@ const Task: React.FunctionComponent<PropTypes> = ({
               <InlineItalic>{`${connection.connectedUserName}`} requested you!</InlineItalic>
             </IonLabel>
           </IonChip>
-          <InlineItalic> - <CustomLink onClick={() => onConfirmRequest(connection.cid)}>Confirm request</CustomLink></InlineItalic>
-          <InlineItalic> or <CustomLink onClick={() => onDenyRequest(connection.cid)}>deny request</CustomLink></InlineItalic>
+          <InlineItalic> - <CustomLink onClick={() => onConfirmRequest(connection)}>Confirm request</CustomLink></InlineItalic>
+          <InlineItalic> or <CustomLink onClick={() => onDenyRequest(connection)}>deny request</CustomLink></InlineItalic>
         </IonCardContent>
       ))}
       {typeof description === 'string' && (

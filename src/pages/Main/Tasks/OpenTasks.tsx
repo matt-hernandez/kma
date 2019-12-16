@@ -76,6 +76,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
               if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
                 showLoadingScreen();
                 commit(cid)
+                  .then(() => goToFindPartnerPage(cid))
                   .finally(() => hideLoadingScreen());
               } else {
                 setTaskToCommitTo(task);
@@ -110,7 +111,7 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
                     color: 'danger',
                     message: 'We couldn\'t connect to the internet. Please try again.'
                   });
-                } else if (e.graphQLErrors.length && e.graphQLErrors.some((e) => e.message.includes('Task is past deadline'))) {
+                } else if (e.graphQLErrors.some((e) => e.message.includes('Task is past deadline'))) {
                   hideModal();
                   showToast({
                     color: 'danger',
