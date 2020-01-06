@@ -14,6 +14,7 @@ import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import Tasks from './Tasks';
+import Score from './Score';
 import PartnerSearch from './TransitoryPages/PartnerSearch';
 import ConfirmPartnerRequest from './TransitoryPages/ConfirmPartnerRequest';
 import RequestSent from './TransitoryPages/RequestSent';
@@ -105,7 +106,7 @@ const Main: React.FunctionComponent<RouteComponentProps> = ({
             <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
             <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
             <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
-            <Route path="/main/score" component={() => <div />} strict exact />
+            <Route path={`/main${Score.pageData.slug}`} component={Score} strict exact />
             <Route path="/main" exact render={() => <Redirect to="/main/tasks/open" />} />
           </Switch>
         </InflateContent>

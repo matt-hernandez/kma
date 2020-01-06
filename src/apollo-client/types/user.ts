@@ -2,10 +2,15 @@ export interface User {
   cid: string;
   name: string;
   email: string;
-  score: number;
   isAdmin: boolean;
   templatesToSkipCommitConfirm: string[];
   templatesToSkipMarkAsDone: string[];
+}
+
+export interface ScoreDetails {
+  score: number;
+  tasksDoneWithAPartner: number;
+  tasksDoneAlone: number;
 }
 
 export interface PossiblePartner {

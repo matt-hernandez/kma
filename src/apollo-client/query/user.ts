@@ -5,11 +5,20 @@ export const ME = gql`
     me {
       cid
       name 
-      email 
-      score
+      email
       isAdmin
       templatesToSkipCommitConfirm
       templatesToSkipMarkAsDone
+    }
+  }
+`;
+
+export const SCORE_DETAILS = gql`
+  query ScoreDetails {
+    scoreDetails {
+      score
+      tasksDoneWithAPartner
+      tasksDoneAlone
     }
   }
 `;
