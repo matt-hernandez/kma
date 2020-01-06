@@ -93,7 +93,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
               description={description}
               partnerRequestsToMe={connections.filter(({ type }) => type === 'REQUEST_FROM')}
               onCommit={() => {
-                if (templateCid && templatesToSkipCommitConfirm.includes(templateCid)) {
+                if (templateCid && templatesToSkipCommitConfirm.some(({ cid }) => cid === templateCid)) {
                   showLoadingScreen();
                   commit(cid)
                     .then(() => goToFindPartnerPage(cid))

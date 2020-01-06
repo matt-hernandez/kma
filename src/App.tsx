@@ -35,6 +35,7 @@ import './overrides.css';
 const InnerApp = () => (
   <IonReactRouter>
     <Switch>
+      <Route path="/" exact render={() => <Redirect to="/main" />} />
       <Route path="/login" exact component={Login} />
       <Route path="/main" component={Main} />
       <Route path="/admin" component={Admin} />
