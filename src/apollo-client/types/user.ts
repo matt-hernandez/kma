@@ -3,8 +3,13 @@ export interface User {
   name: string;
   email: string;
   isAdmin: boolean;
-  templatesToSkipCommitConfirm: string[];
-  templatesToSkipMarkAsDone: string[];
+  templatesToSkipCommitConfirm: TemplateSummary[];
+  templatesToSkipMarkAsDone: TemplateSummary[];
+}
+
+export interface TemplateSummary {
+  title: string;
+  cid: string;
 }
 
 export interface ScoreDetails {
