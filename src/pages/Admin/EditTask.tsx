@@ -1,42 +1,76 @@
-import React, { useContext } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import React, { useContext, useRef } from 'react';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { ApolloError, gql } from 'apollo-boost';
 import { addPageData } from '../../util/add-page-data';
-import { ALL_CURRENT_TASKS, ALL_UPCOMING_TASKS } from '../../apollo-client/query/admin';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
+import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
+import { UPDATE_TASK_TEMPLATE, UPDATE_TASK } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
-import TaskForm, { TaskFormData } from '../../components/TaskForm';
+import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
+import H1 from '../../components/H1';
+import { RouteParams } from '../../util/interface-overrides';
+import client from '../../apollo-client/client';
 
-const slug = '/tasks/create';
-const title = 'Create Task';
+const slug = '/tasks/edit/:cid';
+const title = 'Edit Task';
 
-const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
-    history
+const EditTask: React.FunctionComponent<RouteComponentProps> = ({
+    history,
+    match
   }) => {
-  const [ createTask ] = useMutation(CREATE_TASK, {
+  const isRedirecting = useRef(false);
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
+  const { showToast } = useContext(ToastContext);
+  const onError = (error: ApolloError) => {
+    if (!isRedirecting.current && error.graphQLErrors) {
+      isRedirecting.current = true;
+      if (error.graphQLErrors.some((error) => error.message.includes('User is not an admin'))) {
+        history.replace('/main');
+        showToast({
+          color: 'danger',
+          message: 'You are not authorized to view that page.'
+        });
+      } else if (error.graphQLErrors.some((error) => error.message.includes('User is not authenticated'))) {
+        history.replace('/login');
+        showToast({
+          color: 'danger',
+          message: 'You need to log in.'
+        });
+      }
+    }
+  }
+  const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
+  });
+  const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
+  });
+  const [ updateTask ] = useMutation(UPDATE_TASK, {
     update: (cache, { data }) => {
       const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
+        'OVERWRITE_ITEM_IN_ARRAY',
         {
-          name: 'allCurrentTasks',
-          query: ALL_CURRENT_TASKS,
+          name: 'currentTasks',
+          query: CURRENT_TASKS,
           sort: (d1, d2) => d1.due - d2.due
         },
-        'createTask'
+        'updateTask'
       );
       const updateUpcomingTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
+        'OVERWRITE_ITEM_IN_ARRAY',
         {
-          name: 'allUpcomingTasks',
-          query: ALL_UPCOMING_TASKS,
+          name: 'upcomingTasks',
+          query: UPCOMING_TASKS,
           sort: (d1, d2) => d1.due - d2.due
         },
-        'createTask'
+        'updateTask'
       );
-      const item: TaskForAdmin = data.createTask;
+      const item: TaskForAdmin = data.updateTask;
       if (item.publishDate > Date.now()) {
         updateUpcomingTasks(cache, { data });
       } else {
@@ -44,23 +78,24 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     }
   });
-  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE);
-  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
-  const { showToast } = useContext(ToastContext);
-  const createTaskListener = (taskData: TaskFormData) => {
+  const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE);
+  if (loadingCurrentTasks && loadingUpcomingTasks) {
+    return <TaskFormLoading />;
+  }
+  const updateTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
     let taskTemplateCreationHasError = false;
     let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then((task) => createdTask = task.data || null);
+    const updateTaskPromise = updateTask({ variables: taskData }).then((task) => createdTask = task.data || null);
     if (taskData.repeatFrequency) {
-      createTaskPromise.then(() => createTaskTemplate({
+      updateTaskPromise.then(() => updateTaskTemplate({
           variables: taskData
         }).catch(() => {
           taskTemplateCreationHasError = true;
         })
       );
     }
-    createTaskPromise.then(() => {
+    updateTaskPromise.then(() => {
       hideLoadingScreen();
       if (!createdTask) {
         showToast({
@@ -92,11 +127,31 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     });
   };
+  const taskCid = (match.params as RouteParams)['cid'];
+  const task: TaskFormData | null = client.readFragment({
+    id: taskCid,
+    fragment: gql`
+      fragment task on TaskForAdmin {
+        cid
+        title
+        due
+        description
+        pointValue
+        partnerUpDeadline
+        publishDate
+      }
+    `
+  });
+  if (!task) {
+    history.replace('/admin/tasks/current');
+    return <TaskFormLoading />;
+  }
   return (
     <>
-      <TaskForm onSubmit={createTaskListener} />
+      <H1>Edit task</H1>
+      <TaskForm task={task} onSubmit={updateTaskListener} />
     </>
   )
 };
 
-export default addPageData(withRouter(CreateTask), { slug, title });
+export default addPageData(withRouter(EditTask), { slug, title });

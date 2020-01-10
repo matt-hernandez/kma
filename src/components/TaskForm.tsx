@@ -9,6 +9,7 @@ import {
   IonSelect,
   IonSelectOption,
   } from '@ionic/react';
+import styled from 'styled-components';
 import { ReactComponent as Question } from '../assets/question.svg';
 import Tooltip from '../components/Tooltip';
 import {
@@ -22,6 +23,7 @@ import {
   getZonedDate
   } from '../util/date-time';
 import { TaskForAdmin, TaskTemplate } from '../apollo-client/types/admin';
+import LoadingBlock from './LoadingBlock';
 
 const TODAY_DATE_WITH_TIME_DIFFERENCE = new Date(TODAY_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
 const TOMORROW_MIDNIGHT = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED - ONE_HOUR_MILLISECONDS * 12);
@@ -54,7 +56,7 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency: Pick<TaskTemplate, 'repeatFrequency'> | null };
+export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency?: Pick<TaskTemplate, 'repeatFrequency'> | null };
 
 type Props = {
   isNew?: boolean,
@@ -158,3 +160,8 @@ const TaskForm: React.FunctionComponent<Props> = ({
 };
 
 export default TaskForm;
+
+export const TaskFormLoading = styled(LoadingBlock)`
+  width: 100%;
+  height: 400px;
+`;

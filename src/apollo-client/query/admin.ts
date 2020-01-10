@@ -12,9 +12,9 @@ export const USERS = gql`
   }
 `;
 
-export const ALL_CURRENT_TASKS = gql`
-  query AllCurrentTasks {
-    allCurrentTasks {
+export const CURRENT_TASKS = gql`
+  query CurrentTasks {
+    currentTasks {
       cid
       templateCid
       title
@@ -46,9 +46,9 @@ export const ALL_CURRENT_TASKS = gql`
   }
 `;
 
-export const ALL_PAST_TASKS = gql`
-  query AllPastTasks {
-    allPastTasks {
+export const PAST_TASKS = gql`
+  query PastTasks {
+    pastTasks {
       cid
       templateCid
       title
@@ -80,9 +80,9 @@ export const ALL_PAST_TASKS = gql`
   }
 `;
 
-export const ALL_UPCOMING_TASKS = gql`
-  query AllUpcomingTasks {
-    allUpcomingTasks {
+export const UPCOMING_TASKS = gql`
+  query UpcomingTasks {
+    upcomingTasks {
       cid
       templateCid
       title

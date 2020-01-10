@@ -3,40 +3,41 @@ import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
 import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
+import { UPDATE_TASK_TEMPLATE, UPDATE_TASK } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData } from '../../components/TaskForm';
+import H1 from '../../components/H1';
 
-const slug = '/tasks/create';
-const title = 'Create Task';
+const slug = '/tasks/copy/:cid';
+const title = 'Copy Into Task';
 
-const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
+const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
-  const [ createTask ] = useMutation(CREATE_TASK, {
+  const [ updateTask ] = useMutation(UPDATE_TASK, {
     update: (cache, { data }) => {
       const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
+        'OVERWRITE_ITEM_IN_ARRAY',
         {
           name: 'currentTasks',
           query: CURRENT_TASKS,
           sort: (d1, d2) => d1.due - d2.due
         },
-        'createTask'
+        'updateTask'
       );
       const updateUpcomingTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
+        'OVERWRITE_ITEM_IN_ARRAY',
         {
           name: 'upcomingTasks',
           query: UPCOMING_TASKS,
           sort: (d1, d2) => d1.due - d2.due
         },
-        'createTask'
+        'updateTask'
       );
-      const item: TaskForAdmin = data.createTask;
+      const item: TaskForAdmin = data.updateTask;
       if (item.publishDate > Date.now()) {
         updateUpcomingTasks(cache, { data });
       } else {
@@ -44,23 +45,23 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     }
   });
-  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE);
+  const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
-  const createTaskListener = (taskData: TaskFormData) => {
+  const updateTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
     let taskTemplateCreationHasError = false;
     let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then((task) => createdTask = task.data || null);
+    const updateTaskPromise = updateTask({ variables: taskData }).then((task) => createdTask = task.data || null);
     if (taskData.repeatFrequency) {
-      createTaskPromise.then(() => createTaskTemplate({
+      updateTaskPromise.then(() => updateTaskTemplate({
           variables: taskData
         }).catch(() => {
           taskTemplateCreationHasError = true;
         })
       );
     }
-    createTaskPromise.then(() => {
+    updateTaskPromise.then(() => {
       hideLoadingScreen();
       if (!createdTask) {
         showToast({
@@ -94,9 +95,10 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   };
   return (
     <>
-      <TaskForm isNew onSubmit={createTaskListener} />
+      <H1>Edit task</H1>
+      <TaskForm isNew onSubmit={updateTaskListener} />
     </>
   )
 };
 
-export default addPageData(withRouter(CreateTask), { slug, title });
+export default addPageData(withRouter(EditTask), { slug, title });

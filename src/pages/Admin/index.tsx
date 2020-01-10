@@ -20,7 +20,7 @@ import PastTasks from './PastTasks';
 import UpcomingTasks from './UpcomingTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
-import { ALL_CURRENT_TASKS, ALL_PAST_TASKS, ALL_UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
+import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 
 const adminPages: AppPage[] = [
@@ -79,15 +79,15 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
       }
     }
   }
-  useQuery(ALL_CURRENT_TASKS, {
+  useQuery(CURRENT_TASKS, {
     fetchPolicy: 'cache-and-network',
     onError
   });
-  useQuery(ALL_UPCOMING_TASKS, {
+  useQuery(UPCOMING_TASKS, {
     fetchPolicy: 'cache-and-network',
     onError
   });
-  useQuery(ALL_PAST_TASKS, {
+  useQuery(PAST_TASKS, {
     fetchPolicy: 'cache-and-network',
     onError
   });
