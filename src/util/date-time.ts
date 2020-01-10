@@ -21,6 +21,10 @@ export function getUTCTimeInMilliseconds(date: number | string) {
   return zonedTimeToUtc(date, TIME_ZONE).getTime();
 }
 
+export function getZonedDate(date: number): Date {
+  return utcToZonedTime(new Date(date), TIME_ZONE);
+}
+
 export const TIME_ZONE = 'America/Chicago';
 
 export const ONE_MINUTE_MILLISECONDS = 60000;

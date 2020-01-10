@@ -47,8 +47,8 @@ export const CREATE_TASK = gql`
 `;
 
 export const DELETE_TASK = gql`
-  mutation DeleteTask($taskCid: String!) {
-    deleteTask(taskCid: $taskCid) {
+  mutation DeleteTask($cid: String!) {
+    deleteTask(cid: $cid) {
       cid
       templateCid
       title

@@ -24,7 +24,7 @@ import {
   isBeforeNow,
   getUTCTimeInMilliseconds
   } from '../../util/date-time';
-import { ALL_CURRENT_TASKS } from '../../apollo-client/query/admin';
+import { ALL_CURRENT_TASKS, ALL_UPCOMING_TASKS } from '../../apollo-client/query/admin';
 import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
@@ -69,15 +69,32 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const [ createTask ] = useMutation(CREATE_TASK, {
-    update: generateCacheUpdate<TaskForAdmin>(
-      'INSERT_ITEM',
-      {
-        name: 'allCurrentTasks',
-        query: ALL_CURRENT_TASKS,
-        sort: (d1, d2) => d1.due - d2.due
-      },
-      'createTask'
-    )
+    update: (cache, { data }) => {
+      const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(
+        'INSERT_ITEM',
+        {
+          name: 'allCurrentTasks',
+          query: ALL_CURRENT_TASKS,
+          sort: (d1, d2) => d1.due - d2.due
+        },
+        'createTask'
+      );
+      const updateUpcomingTasks = generateCacheUpdate<TaskForAdmin>(
+        'INSERT_ITEM',
+        {
+          name: 'allUpcomingTasks',
+          query: ALL_UPCOMING_TASKS,
+          sort: (d1, d2) => d1.due - d2.due
+        },
+        'createTask'
+      );
+      const item: TaskForAdmin = data.createTask;
+      if (item.publishDate > new Date().getTime()) {
+        updateUpcomingTasks(cache, { data });
+      } else {
+        updateCurrentTasks(cache, { data });
+      }
+    }
   });
   const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE);
   const [ title, setTitle ] = useState('');
@@ -154,7 +171,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   return (
     <>
       <IonItem>
-        <IonInput placeholder="Title*" name="title" onIonInput={(e) => setTitle((e as any).target.value)}></IonInput>
+        <IonInput placeholder="Title*" name="title" onIonInput={(e) => setTitle((e as any).target.value)} />
       </IonItem>
       <IonItem>
         <IonTextarea placeholder="Description" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
