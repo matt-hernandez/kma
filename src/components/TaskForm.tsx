@@ -25,7 +25,7 @@ import { TaskForAdmin, TaskTemplate } from '../apollo-client/types/admin';
 
 const TODAY_DATE_WITH_TIME_DIFFERENCE = new Date(TODAY_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
 const TOMORROW_MIDNIGHT = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED - ONE_HOUR_MILLISECONDS * 12);
-const TOMORROW_AT_NOON_DATE = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
+const TOMORROW_AT_NOON_DATE = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED);
 
 const partnerUpDeadlineMilliseconds = [
   {
@@ -54,7 +54,7 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency: Pick<TaskTemplate, 'repeatFrequency'> | null };
+export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency: Pick<TaskTemplate, 'repeatFrequency'> | null };
 
 type Props = {
   isNew?: boolean,
@@ -72,7 +72,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
       due: TOMORROW_AT_NOON_DATE.getTime(),
       pointValue: 1,
       partnerUpDeadline: TOMORROW_AT_NOON_DATE.getTime() - ONE_HOUR_MILLISECONDS,
-      publishDate: new Date().getTime(),
+      publishDate: Date.now(),
       repeatFrequency: null
     },
     onSubmit
@@ -120,8 +120,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
       </IonItem>
       <IonItem>
         <IonLabel slot="start">
-          {isTemplate ? 'Next publish date' : 'Publish date'}
-          <Tooltip text={['When users will see this task in their "Open Tasks" feed and be able to sign-up.']}><Question /></Tooltip>
+          {isTemplate ? 'Next publish date' : 'Publish date'} <Tooltip text={['When users will see this task in their "Open Tasks" feed and be able to sign-up.']}><Question /></Tooltip>
         </IonLabel>
         <IonDatetime value={publishDate} min={TODAY_DATE_WITH_TIME_DIFFERENCE.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Now" name="publishDate" onIonChange={(e) => setPublishDate((e as any).target.value)} slot="end" />
       </IonItem>

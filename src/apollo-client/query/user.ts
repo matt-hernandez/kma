@@ -7,8 +7,14 @@ export const ME = gql`
       name 
       email
       isAdmin
-      templatesToSkipCommitConfirm
-      templatesToSkipMarkAsDone
+      templatesToSkipCommitConfirm {
+        cid
+        title
+      }
+      templatesToSkipMarkAsDone {
+        cid
+        title
+      }
     }
   }
 `;
