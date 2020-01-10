@@ -79,7 +79,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     }
   });
   const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE);
-  if (loadingCurrentTasks && loadingUpcomingTasks) {
+  if (loadingCurrentTasks || loadingUpcomingTasks) {
     return <TaskFormLoading />;
   }
   const updateTaskListener = (taskData: TaskFormData) => {
@@ -148,7 +148,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   return (
     <>
-      <H1>Edit task</H1>
+      <H1 centered marginTop>Edit task</H1>
       <TaskForm task={task} onSubmit={updateTaskListener} />
     </>
   )

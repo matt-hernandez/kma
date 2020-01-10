@@ -5,11 +5,12 @@ import TaskForAdmin from '../../components/TaskForAdmin';
 import { TaskForAdmin as TaskForAdminInterface } from '../../apollo-client/types/admin';
 import useQueryHelper from '../../util/use-query-helper';
 import { TaskLoading } from '../../components/Task';
+import { withRouter } from 'react-router';
 
 const slug = '/tasks/current';
 const title = 'Current Tasks';
 
-export default addPageData(() => {
+export default addPageData(withRouter(({ history }) => {
   const { loading, error, data: currentTasks } = useQueryHelper<TaskForAdminInterface[]>(CURRENT_TASKS, 'currentTasks');
   return (
     <>
@@ -21,8 +22,8 @@ export default addPageData(() => {
         </>
       )}
       {currentTasks && currentTasks.map((task) => (
-        <TaskForAdmin key={task.cid} {...task} />
+        <TaskForAdmin key={task.cid} onEdit={() => history.push(`/admin/tasks/edit/${task.cid}`)} {...task} />
       ))}
     </>
   );
-}, { slug, title });
+}), { slug, title });

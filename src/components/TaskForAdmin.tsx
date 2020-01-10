@@ -74,7 +74,7 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
           {user.name}
         </ConnectionPersonName>
       </ConnectionPerson>
-      {connections.map(({ fromName, fromCid, toCid, toName, type }) => {
+      {connections.map(({ fromName, fromCid, toCid, toName, type, cid: connectionCid }) => {
         const direction: 'INCOMING' | 'OUTGOING' = user.cid === toCid ? 'INCOMING' : 'OUTGOING';
         const cid = direction === 'OUTGOING' ? fromCid : toCid;
         const outcome = outcomes.find(({ userCid }) => userCid === cid);
@@ -89,7 +89,7 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
           connectionType = 'REQUEST_TO';
         }
         return (
-          <ConnectionPerson type={connectionType}>
+          <ConnectionPerson key={`${direction}-${connectionType}-${connectionCid}`} type={connectionType}>
             <UserPic />
             <ConnectionPersonName>
               {user.cid === toCid ? fromName : toName}
@@ -101,8 +101,9 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
   );
 };
 
-const Task: React.FunctionComponent<TaskForAdmin> = ({
-  cid,
+type Props = TaskForAdmin & { onEdit: () => void };
+
+const Task: React.FunctionComponent<Props> = ({
   templateCid,
   title,
   publishDate,
@@ -112,7 +113,8 @@ const Task: React.FunctionComponent<TaskForAdmin> = ({
   description,
   committedUsers,
   connections,
-  outcomes
+  outcomes,
+  onEdit
 }) => {
   const formattedDueDate = formatDueDate(due);
   const formattedCommitmentDeadline = formatCommitAndPartnerDate(partnerUpDeadline);
@@ -141,8 +143,7 @@ const Task: React.FunctionComponent<TaskForAdmin> = ({
           </IonCardContent>
         )}
         <IonCardContent>
-          <IonButton expand="block" color="primary" onClick={() => {}}>Edit task</IonButton>
-          <IonButton expand="block" color="danger" onClick={() => {}}>Delete task</IonButton>
+          <IonButton expand="block" color="primary" onClick={onEdit}>Edit task</IonButton>
         </IonCardContent>
       </IonCard>
     </>

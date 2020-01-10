@@ -6,7 +6,6 @@ export const USERS = gql`
       cid
       name 
       email 
-      score
       isAdmin
     }
   }

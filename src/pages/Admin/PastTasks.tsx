@@ -21,7 +21,7 @@ export default addPageData(() => {
         </>
       )}
       {pastTasks && pastTasks.map((task) => (
-        <TaskForAdmin key={task.cid} {...task} />
+        <TaskForAdmin key={task.cid} onEdit={() => {}} {...task} />
       ))}
     </>
   );

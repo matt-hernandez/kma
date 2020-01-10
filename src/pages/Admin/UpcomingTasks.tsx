@@ -21,7 +21,7 @@ export default addPageData(() => {
         </>
       )}
       {upcomingTasks && upcomingTasks.map((task) => (
-        <TaskForAdmin key={task.cid} {...task} />
+        <TaskForAdmin key={task.cid} onEdit={() => {}}  {...task} />
       ))}
     </>
   );

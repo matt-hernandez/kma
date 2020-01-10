@@ -8,6 +8,8 @@ import {
   IonDatetime,
   IonSelect,
   IonSelectOption,
+  IonList,
+  IonListHeader,
   } from '@ionic/react';
 import styled from 'styled-components';
 import { ReactComponent as Question } from '../assets/question.svg';
@@ -91,12 +93,14 @@ const TaskForm: React.FunctionComponent<Props> = ({
   };
   const isFormValid = checkFormValidity();
   return (
-    <>
+    <IonList>
+      <IonListHeader>Title*</IonListHeader>
       <IonItem>
-        <IonInput value={title} placeholder="Title*" name="title" onIonInput={(e) => setTitle((e as any).target.value)} />
+        <IonInput value={title} placeholder="(Title is required)" name="title" onIonInput={(e) => setTitle((e as any).target.value)} />
       </IonItem>
+      <IonListHeader>Description</IonListHeader>
       <IonItem>
-        <IonTextarea value={description} placeholder="Description" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
+        <IonTextarea value={description} placeholder="(Optional)" name="description" onIonInput={(e) => setDescription((e as any).target.value)} />
       </IonItem>
       <IonItem>
         <IonLabel slot="start">
@@ -155,7 +159,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
       >
         Create task
       </IonButton>
-    </>
+    </IonList>
   )
 };
 
