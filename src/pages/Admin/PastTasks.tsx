@@ -1,11 +1,11 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
 import TaskForAdmin from '../../components/TaskForAdmin';
 import { TaskForAdmin as TaskForAdminInterface } from '../../apollo-client/types/admin';
 import useQueryHelper from '../../util/use-query-helper';
 import { TaskLoading } from '../../components/Task';
 import { PAST_TASKS } from '../../apollo-client/query/admin';
-import { withRouter } from 'react-router';
 
 const slug = '/tasks/past';
 const title = 'Past Tasks';
