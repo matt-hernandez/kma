@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
-import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
-import { UPDATE_TASK_TEMPLATE, UPDATE_TASK } from '../../apollo-client/mutation/admin';
+import { TASK_TEMPLATES } from '../../apollo-client/query/admin';
+import { UPDATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
-import { TaskForAdmin } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData } from '../../components/TaskForm';
 import H1 from '../../components/H1';
+import { TaskTemplate } from '../../apollo-client/types/admin';
 
 const slug = '/tasks/edit-recurring/:cid';
 const title = 'Edit Recurring Task';
@@ -17,72 +17,33 @@ const title = 'Edit Recurring Task';
 const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
-  const [ updateTask ] = useMutation(UPDATE_TASK, {
-    update: (cache, { data }) => {
-      const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(
-        'OVERWRITE_ITEM_IN_ARRAY',
-        {
-          name: 'currentTasks',
-          query: CURRENT_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
-        },
-        'updateTask'
-      );
-      const updateUpcomingTasks = generateCacheUpdate<TaskForAdmin>(
-        'OVERWRITE_ITEM_IN_ARRAY',
-        {
-          name: 'upcomingTasks',
-          query: UPCOMING_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
-        },
-        'updateTask'
-      );
-      const item: TaskForAdmin = data.updateTask;
-      if (item.publishDate > Date.now()) {
-        updateUpcomingTasks(cache, { data });
-      } else {
-        updateCurrentTasks(cache, { data });
-      }
-    }
+  const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE, {
+    update: generateCacheUpdate<TaskTemplate>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'taskTemplates',
+        query: TASK_TEMPLATES,
+        sort: (d1, d2) => d1.nextPublishDate - d2.nextPublishDate
+      },
+      'updateTaskTemplate'
+    )
   });
-  const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const updateTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
-    let taskTemplateCreationHasError = false;
-    let createdTask: TaskForAdmin | null = null;
-    const updateTaskPromise = updateTask({ variables: taskData }).then((task) => createdTask = task.data || null);
-    if (taskData.repeatFrequency) {
-      updateTaskPromise.then(() => updateTaskTemplate({
-          variables: taskData
-        }).catch(() => {
-          taskTemplateCreationHasError = true;
-        })
-      );
-    }
-    updateTaskPromise.then(() => {
-      hideLoadingScreen();
-      if (!createdTask) {
-        showToast({
-          color: 'danger',
-          message: 'There was an error creating your task!'
-        });
-      } else if (taskTemplateCreationHasError) {
-        showToast({
-          color: 'warning',
-          message: 'Your task was created, but there was a problem setting up recurring tasks.'
-        });
-      } else {
-        let url: string;
-        if (createdTask.publishDate > Date.now()) {
-          url = '/admin/tasks/upcoming';
-        } else {
-          url = '/admin/tasks/current';
-        }
+    updateTaskTemplate({ variables: {
+          ...taskData,
+          nextPublishDate: taskData.publishDate,
+          nextDueDate: taskData.due
+        } 
+      })
+      .then(() => {
+        hideLoadingScreen();
+        let url = '/admin/tasks/upcoming';
         showToast({
           color: 'success',
-          message: 'Your task was created successfully!',
+          message: 'Your future tasks were updated successfully!',
           buttons: [{
             text: 'View task',
             handler: () => {
@@ -90,8 +51,13 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
             }
           }]
         });
-      }
-    });
+      })
+      .catch(() => {
+        showToast({
+          color: 'danger',
+          message: 'There was an error updating your future tasks!'
+        });
+      });
   };
   return (
     <>

@@ -112,3 +112,17 @@ export const UPCOMING_TASKS = gql`
     }
   }
 `;
+
+export const TASK_TEMPLATES = gql`
+  query TaskTemplates {
+    taskTemplates {
+      cid
+      title
+      repeatFrequency
+      nextPublishDate
+      nextDueDate
+      partnerUpDeadline
+      description
+    }
+  }
+`;

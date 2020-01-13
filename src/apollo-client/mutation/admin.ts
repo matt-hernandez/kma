@@ -114,11 +114,10 @@ export const DELETE_TASK = gql`
 `;
 
 export const CREATE_TASK_TEMPLATE = gql`
-  mutation CreateTaskTemplate($title: String!, $due: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $nextDueDate: Float!, $description: String) {
-    createTaskTemplate(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, nextDueDate: $nextDueDate, description: $description) {
+  mutation CreateTaskTemplate($title: String!, $due: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $description: String) {
+    createTaskTemplate(title: $title, due: $due, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, description: $description) {
       cid
       title
-      creationDate
       repeatFrequency
       nextPublishDate
       nextDueDate
@@ -129,11 +128,10 @@ export const CREATE_TASK_TEMPLATE = gql`
 `;
 
 export const UPDATE_TASK_TEMPLATE = gql`
-  mutation UpdateTaskTemplate($cid: String, $title: String!, $due: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $nextDueDate: Float!, $description: String) {
-    updateTaskTemplate(cid: $cid, title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, nextDueDate: $nextDueDate, description: $description) {
+  mutation UpdateTaskTemplate($cid: String, $title: String!, $nextDueDate: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $description: String) {
+    updateTaskTemplate(cid: $cid, title: $title, nextDueDate: $nextDueDate, nextPublishDate: $nextPublishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, description: $description) {
       cid
       title
-      creationDate
       repeatFrequency
       nextPublishDate
       nextDueDate
@@ -148,7 +146,6 @@ export const DELETE_TASK_TEMPLATE = gql`
     deleteTaskTemplate(cid: $cid) {
       cid
       title
-      creationDate
       repeatFrequency
       nextPublishDate
       nextDueDate

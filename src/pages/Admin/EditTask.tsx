@@ -4,7 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ApolloError, gql } from 'apollo-boost';
 import { addPageData } from '../../util/add-page-data';
 import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
-import { UPDATE_TASK_TEMPLATE, UPDATE_TASK } from '../../apollo-client/mutation/admin';
+import { UPDATE_TASK } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
@@ -57,7 +57,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'currentTasks',
           query: CURRENT_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
+          sort: (d1, d2) => d1.publishDate - d2.publishDate
         },
         'updateTask'
       );
@@ -66,7 +66,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'upcomingTasks',
           query: UPCOMING_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
+          sort: (d1, d2) => d1.publishDate - d2.publishDate
         },
         'updateTask'
       );
@@ -78,45 +78,28 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     }
   });
-  const [ updateTaskTemplate ] = useMutation(UPDATE_TASK_TEMPLATE);
   if (loadingCurrentTasks || loadingUpcomingTasks) {
-    return <TaskFormLoading />;
+    return (
+      <>
+        <H1 centered marginTop>Edit task</H1>
+        <TaskFormLoading />
+      </>
+    );
   }
   const updateTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
-    let taskTemplateCreationHasError = false;
-    let createdTask: TaskForAdmin | null = null;
-    const updateTaskPromise = updateTask({ variables: taskData }).then((task) => createdTask = task.data || null);
-    if (taskData.repeatFrequency) {
-      updateTaskPromise.then(() => updateTaskTemplate({
-          variables: taskData
-        }).catch(() => {
-          taskTemplateCreationHasError = true;
-        })
-      );
-    }
-    updateTaskPromise.then(() => {
-      hideLoadingScreen();
-      if (!createdTask) {
-        showToast({
-          color: 'danger',
-          message: 'There was an error creating your task!'
-        });
-      } else if (taskTemplateCreationHasError) {
-        showToast({
-          color: 'warning',
-          message: 'Your task was created, but there was a problem setting up recurring tasks.'
-        });
-      } else {
+    updateTask({ variables: taskData })
+      .then(({ data: modifiedTask }) => {
+        hideLoadingScreen();
         let url: string;
-        if (createdTask.publishDate > Date.now()) {
+        if (modifiedTask.publishDate > Date.now()) {
           url = '/admin/tasks/upcoming';
         } else {
           url = '/admin/tasks/current';
         }
         showToast({
           color: 'success',
-          message: 'Your task was created successfully!',
+          message: 'Your task was modified successfully!',
           buttons: [{
             text: 'View task',
             handler: () => {
@@ -124,8 +107,13 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
             }
           }]
         });
-      }
-    });
+      })
+      .catch(() => {
+        showToast({
+          color: 'danger',
+          message: 'There was an error modifying your task!'
+        });
+      });
   };
   const taskCid = (match.params as RouteParams)['cid'];
   const task: TaskFormData | null = client.readFragment({

@@ -2,19 +2,24 @@ import React, { useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
-import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
+import { CURRENT_TASKS, UPCOMING_TASKS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
 import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
-import { TaskForAdmin } from '../../apollo-client/types/admin';
+import { TaskForAdmin, TaskTemplate } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
-import TaskForm, { TaskFormData } from '../../components/TaskForm';
+import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
+import { RouteParams } from '../../util/interface-overrides';
+import client from '../../apollo-client/client';
+import { gql } from 'apollo-boost';
+import useQueryHelper from '../../util/use-query-helper';
 
-const slug = '/tasks/create';
+const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
 
 const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
-    history
+    history,
+    match
   }) => {
   const [ createTask ] = useMutation(CREATE_TASK, {
     update: (cache, { data }) => {
@@ -23,7 +28,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'currentTasks',
           query: CURRENT_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
+          sort: (d1, d2) => d1.publishDate - d2.publishDate
         },
         'createTask'
       );
@@ -32,7 +37,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'upcomingTasks',
           query: UPCOMING_TASKS,
-          sort: (d1, d2) => d1.due - d2.due
+          sort: (d1, d2) => d1.publishDate - d2.publishDate
         },
         'createTask'
       );
@@ -44,14 +49,24 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     }
   });
-  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE);
+  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE, {
+    update: generateCacheUpdate<TaskTemplate>(
+      'INSERT_ITEM',
+      {
+        name: 'taskTemplates',
+        query: TASK_TEMPLATES,
+        sort: (d1, d2) => d1.nextPublishDate - d2.nextPublishDate
+      },
+      'createTaskTemplate'
+    )
+  });
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const createTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
     let taskTemplateCreationHasError = false;
     let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then((task) => createdTask = task.data || null);
+    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data || null);
     if (taskData.repeatFrequency) {
       createTaskPromise.then(() => createTaskTemplate({
           variables: taskData
@@ -92,6 +107,40 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     });
   };
+  const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper(CURRENT_TASKS, 'currentTasks');
+  const { loading: loadingUpcomingTasks, error: errorUpcomingTasks, data: upcomingTasks } = useQueryHelper(UPCOMING_TASKS, 'upcomingTasks');
+  const taskCid = (match.params as RouteParams)['cid'];
+  if (taskCid) {
+    if (!loadingCurrentTasks && !loadingUpcomingTasks &&
+      currentTasks === undefined && upcomingTasks === undefined &&
+      !errorCurrentTasks && !errorUpcomingTasks) {
+      return <TaskFormLoading />;
+    }
+    const task: TaskFormData | null = client.readFragment({
+      id: taskCid,
+      fragment: gql`
+        fragment task on TaskForAdmin {
+          cid
+          title
+          due
+          description
+          pointValue
+          partnerUpDeadline
+          publishDate
+        }
+      `
+    });
+    if (!task) {
+      history.replace('/admin/tasks/current');
+      return <TaskFormLoading />;
+    } else {
+      return (
+        <>
+          <TaskForm isNew task={task} onSubmit={createTaskListener} />
+        </>
+      );
+    }
+  }
   return (
     <>
       <TaskForm isNew onSubmit={createTaskListener} />

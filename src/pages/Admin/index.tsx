@@ -20,7 +20,6 @@ import PastTasks from './PastTasks';
 import UpcomingTasks from './UpcomingTasks';
 import EditTask from './EditTask';
 import EditRecurringTasks from './EditRecurringTasks';
-import CopyIntoTask from './CopyIntoTask';
 import Users from './Users';
 import { AppPage } from '../../declarations';
 import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
@@ -114,7 +113,6 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
           {adminPages.map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
           <Route path={`/admin${EditTask.pageData.slug}`} component={EditTask} strict exact />
           <Route path={`/admin${EditRecurringTasks.pageData.slug}`} component={EditRecurringTasks} strict exact />
-          <Route path={`/admin${CopyIntoTask.pageData.slug}`} component={CopyIntoTask} strict exact />
           <Route path="/admin" exact render={() => <Redirect to="/admin/tasks/current" />} />
         </InflateContent>
       </IonPage>
