@@ -9,6 +9,10 @@ export function formatDueDate(date: number) {
   return `Due on ${formatDate(date)}`;
 }
 
+export function formatPublishDate(date: number) {
+  return `Will publish on ${formatDate(date)}`;
+}
+
 export function formatCommitAndPartnerDate(date: number) {
   return `Enroll by ${formatDate(date)}`;
 }

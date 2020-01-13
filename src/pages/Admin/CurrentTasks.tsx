@@ -22,7 +22,17 @@ export default addPageData(withRouter(({ history }) => {
         </>
       )}
       {currentTasks && currentTasks.map((task) => (
-        <TaskForAdmin key={task.cid} onEdit={() => history.push(`/admin/tasks/edit/${task.cid}`)} {...task} />
+        <TaskForAdmin
+          key={task.cid}
+          onEdit={() => history.push(`/admin/tasks/edit/${task.cid}`)}
+          onCopy={() => history.push(`/admin/tasks/create/${task.cid}`)}
+          onFutureEdit={() => {
+            if (task.templateCid) {
+              history.push(`/admin/tasks/edit-recurring/${task.templateCid}`);
+            }
+          }}
+          {...task}
+        />
       ))}
     </>
   );

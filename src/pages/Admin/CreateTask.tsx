@@ -57,7 +57,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       {
         name: 'taskTemplates',
         query: TASK_TEMPLATES,
-        sort: (d1, d2) => d1.nextPublishDate - d2.nextPublishDate
+        sort: (d1, d2) => d1.publishDate - d2.publishDate
       },
       'createTaskTemplate'
     )
@@ -114,11 +114,11 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   if (loadingCurrentTasks && loadingUpcomingTasks) {
     return <TaskFormLoading />;
   }
-  const taskCid = (match.params as RouteParams)['cid'];
+  const cid = (match.params as RouteParams)['cid'];
   let task: TaskFormData | null = null
-  if (taskCid) {
+  if (cid) {
     task = client.readFragment({
-      id: taskCid,
+      id: cid,
       fragment: gql`
         fragment task on TaskForAdmin {
           cid

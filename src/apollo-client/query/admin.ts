@@ -119,8 +119,8 @@ export const TASK_TEMPLATES = gql`
       cid
       title
       repeatFrequency
-      nextPublishDate
-      nextDueDate
+      publishDate
+      due
       partnerUpDeadline
       description
     }

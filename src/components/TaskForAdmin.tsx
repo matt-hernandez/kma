@@ -8,11 +8,12 @@ import {
   IonCardContent
   } from '@ionic/react';
 import styled from 'styled-components/macro';
-import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time';
+import { formatDueDate, formatCommitAndPartnerDate, formatPublishDate } from '../util/date-time';
 import { ConnectionForAdmin, Outcome, TaskForAdmin } from '../apollo-client/types/admin';
 import { User, ConnectionType } from '../apollo-client/types/user';
 import { ReactComponent as UserPic } from '../assets/user-pic.svg';
 import { colors } from '../styles/colors';
+import { OptionalKeys } from '../util/interface-overrides';
 
 const ConnectionContainer = styled.div`
   display: flex;
@@ -101,7 +102,7 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
   );
 };
 
-type Props = TaskForAdmin & { onEdit: () => void };
+type Props = OptionalKeys<TaskForAdmin, 'connections' | 'committedUsers' | 'outcomes'> & { isOrphanTemplate?: boolean, onEdit?: () => void, onCopy: () => void, onFutureEdit?: () => void };
 
 const Task: React.FunctionComponent<Props> = ({
   templateCid,
@@ -111,11 +112,15 @@ const Task: React.FunctionComponent<Props> = ({
   due,
   partnerUpDeadline,
   description,
-  committedUsers,
-  connections,
-  outcomes,
-  onEdit
+  committedUsers = [],
+  connections = [],
+  outcomes = [],
+  isOrphanTemplate = false,
+  onEdit,
+  onCopy,
+  onFutureEdit
 }) => {
+  const formattedPublishDate = formatPublishDate(publishDate);
   const formattedDueDate = formatDueDate(due);
   const formattedCommitmentDeadline = formatCommitAndPartnerDate(partnerUpDeadline);
   return (
@@ -123,9 +128,8 @@ const Task: React.FunctionComponent<Props> = ({
       <IonCard>
         <IonCardHeader>
           <IonCardTitle>{title}</IonCardTitle>
-          <IonCardSubtitle>
-            {formattedCommitmentDeadline}
-          </IonCardSubtitle>
+          <IonCardSubtitle>{formattedPublishDate}</IonCardSubtitle>
+          <IonCardSubtitle>{formattedCommitmentDeadline}</IonCardSubtitle>
           <IonCardSubtitle>{formattedDueDate}</IonCardSubtitle>
           <IonCardSubtitle>Points: {pointValue}</IonCardSubtitle>
         </IonCardHeader>
@@ -143,7 +147,9 @@ const Task: React.FunctionComponent<Props> = ({
           </IonCardContent>
         )}
         <IonCardContent>
-          <IonButton expand="block" color="primary" onClick={onEdit}>Edit task</IonButton>
+          {!isOrphanTemplate && <IonButton expand="block" color="primary" onClick={onEdit}>Edit task</IonButton>}
+          <IonButton expand="block" color="primary" onClick={onCopy}>Copy into new task</IonButton>
+          {templateCid && <IonButton expand="block" color="primary" onClick={onFutureEdit}>Edit future tasks</IonButton>}
         </IonCardContent>
       </IonCard>
     </>

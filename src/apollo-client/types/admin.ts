@@ -40,9 +40,9 @@ export interface TaskTemplate {
   cid: string;
   title: string;
   description?: string
+  due: number;
+  publishDate: number;
   pointValue: number;
   repeatFrequency: RepeatFrequency;
-  nextPublishDate: number;
-  nextDueDate: number;
   partnerUpDeadline: number;
 }

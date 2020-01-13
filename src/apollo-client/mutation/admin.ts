@@ -119,8 +119,8 @@ export const CREATE_TASK_TEMPLATE = gql`
       cid
       title
       repeatFrequency
-      nextPublishDate
-      nextDueDate
+      publishDate
+      due
       partnerUpDeadline
       description
     }
@@ -128,15 +128,15 @@ export const CREATE_TASK_TEMPLATE = gql`
 `;
 
 export const UPDATE_TASK_TEMPLATE = gql`
-  mutation UpdateTaskTemplate($cid: String, $title: String!, $description: String, $pointValue: Int!, $nextDueDate: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
-    updateTaskTemplate(cid: $cid, title: $title, description: $description, pointValue: $pointValue, nextDueDate: $nextDueDate, nextPublishDate: $nextPublishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
+  mutation UpdateTaskTemplate($cid: String, $title: String!, $description: String, $pointValue: Int!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
+    updateTaskTemplate(cid: $cid, title: $title, description: $description, pointValue: $pointValue, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
       cid
       title
       description
       pointValue
       repeatFrequency
-      nextPublishDate
-      nextDueDate
+      publishDate
+      due
       partnerUpDeadline
     }
   }
@@ -150,8 +150,8 @@ export const DELETE_TASK_TEMPLATE = gql`
       description
       pointValue
       repeatFrequency
-      nextPublishDate
-      nextDueDate
+      publishDate
+      due
       partnerUpDeadline
     }
   }

@@ -30,7 +30,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
       {
         name: 'taskTemplates',
         query: TASK_TEMPLATES,
-        sort: (d1, d2) => d1.nextPublishDate - d2.nextPublishDate
+        sort: (d1, d2) => d1.publishDate - d2.publishDate
       },
       'updateTaskTemplate'
     )
@@ -41,9 +41,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     showLoadingScreen();
     updateTaskTemplate({ variables: {
           ...taskData,
-          cid,
-          nextPublishDate: taskData.publishDate,
-          nextDueDate: taskData.due
+          cid
         } 
       })
       .then(() => {
@@ -80,8 +78,8 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
         description
         pointValue
         repeatFrequency
-        nextPublishDate
-        nextDueDate
+        publishDate
+        due
         partnerUpDeadline
       }
     `
@@ -99,15 +97,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
           you typed in when you originally set up your task and it's frequency.
         </RegularCopy>
       </MarginWrapper>
-      <TaskForm isTemplate task={{
-        title: taskTemplate.title,
-        description: taskTemplate.description,
-        pointValue: taskTemplate.pointValue,
-        repeatFrequency: taskTemplate.repeatFrequency,
-        partnerUpDeadline: taskTemplate.partnerUpDeadline,
-        due: taskTemplate.nextDueDate,
-        publishDate: taskTemplate.nextPublishDate
-      }} onSubmit={updateTaskListener} />
+      <TaskForm isTemplate task={taskTemplate} onSubmit={updateTaskListener} />
     </>
   )
 };
