@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
 import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
@@ -12,7 +13,6 @@ import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskFo
 import H1 from '../../components/H1';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
-import { gql } from 'apollo-boost';
 
 const slug = '/tasks/edit/:cid';
 const title = 'Edit Task';
