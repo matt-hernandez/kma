@@ -13,7 +13,7 @@ import { ConnectionForAdmin, Outcome, TaskForAdmin } from '../apollo-client/type
 import { User, ConnectionType } from '../apollo-client/types/user';
 import { ReactComponent as UserPic } from '../assets/user-pic.svg';
 import { colors } from '../styles/colors';
-import { OptionalKeys } from '../util/interface-overrides';
+import { Optional } from '../util/interface-overrides';
 
 const ConnectionContainer = styled.div`
   display: flex;
@@ -102,7 +102,7 @@ const Connections: React.FunctionComponent<ConnectionsProps> = ({ user, connecti
   );
 };
 
-type Props = OptionalKeys<TaskForAdmin, 'connections' | 'committedUsers' | 'outcomes'> & { isOrphanTemplate?: boolean, onEdit?: () => void, onCopy: () => void, onFutureEdit?: () => void };
+type Props = Optional<TaskForAdmin, 'connections' | 'committedUsers' | 'outcomes'> & { isOrphanTemplate?: boolean, onEdit?: () => void, onCopy: () => void, onFutureEdit?: () => void };
 
 const Task: React.FunctionComponent<Props> = ({
   templateCid,
