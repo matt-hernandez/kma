@@ -39,10 +39,10 @@ export type RepeatFrequency = 'DAY' | 'WEEK' | 'TWO_WEEKS' | 'THREE_WEEKS' | 'TH
 export interface TaskTemplate {
   cid: string;
   title: string;
-  creationDate: number;
+  description?: string
+  pointValue: number;
   repeatFrequency: RepeatFrequency;
   nextPublishDate: number;
   nextDueDate: number;
   partnerUpDeadline: number;
-  description?: string
 }

@@ -114,8 +114,8 @@ export const DELETE_TASK = gql`
 `;
 
 export const CREATE_TASK_TEMPLATE = gql`
-  mutation CreateTaskTemplate($title: String!, $due: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $description: String) {
-    createTaskTemplate(title: $title, due: $due, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, description: $description) {
+  mutation CreateTaskTemplate($title: String!, $description: String, $pointValue: Int!, $due: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
+    createTaskTemplate(title: $title, description: $description, pointValue: $pointValue, due: $due, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
       cid
       title
       repeatFrequency
@@ -128,15 +128,16 @@ export const CREATE_TASK_TEMPLATE = gql`
 `;
 
 export const UPDATE_TASK_TEMPLATE = gql`
-  mutation UpdateTaskTemplate($cid: String, $title: String!, $nextDueDate: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!, $description: String) {
-    updateTaskTemplate(cid: $cid, title: $title, nextDueDate: $nextDueDate, nextPublishDate: $nextPublishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency, description: $description) {
+  mutation UpdateTaskTemplate($cid: String, $title: String!, $description: String, $pointValue: Int!, $nextDueDate: Float!, $nextPublishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
+    updateTaskTemplate(cid: $cid, title: $title, description: $description, pointValue: $pointValue, nextDueDate: $nextDueDate, nextPublishDate: $nextPublishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
       cid
       title
+      description
+      pointValue
       repeatFrequency
       nextPublishDate
       nextDueDate
       partnerUpDeadline
-      description
     }
   }
 `;
@@ -146,11 +147,12 @@ export const DELETE_TASK_TEMPLATE = gql`
     deleteTaskTemplate(cid: $cid) {
       cid
       title
+      description
+      pointValue
       repeatFrequency
       nextPublishDate
       nextDueDate
       partnerUpDeadline
-      description
     }
   }
 `;

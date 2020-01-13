@@ -10,8 +10,11 @@ import generateCacheUpdate from '../../util/generate-cache-update';
 import { TaskForAdmin, TaskTemplate } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
+import H1 from '../../components/H1';
+import RegularCopy from '../../components/RegularCopy';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
+import MarginWrapper from '../../components/MarginWrapper';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -112,8 +115,9 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     return <TaskFormLoading />;
   }
   const taskCid = (match.params as RouteParams)['cid'];
+  let task: TaskFormData | null = null
   if (taskCid) {
-    const task: TaskFormData | null = client.readFragment({
+    task = client.readFragment({
       id: taskCid,
       fragment: gql`
         fragment task on TaskForAdmin {
@@ -131,15 +135,23 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       history.replace('/admin/tasks/current');
       return <TaskFormLoading />;
     }
-    return (
-      <>
-        <TaskForm isNew task={task} onSubmit={createTaskListener} />
-      </>
-    );
   }
   return (
     <>
-      <TaskForm isNew onSubmit={createTaskListener} />
+      <H1 centered marginTop>Create tasks</H1>
+      {task && (
+        <MarginWrapper marginLeft marginRight>
+          <RegularCopy>
+            We copied your task details over to this form. Feel free to make any changes you wish.
+            When you click on "Create task," a completely new task will be created. These changes
+            WILL NOT affect your original task.
+          </RegularCopy>
+        </MarginWrapper>
+      )}
+      {task
+        ? <TaskForm isNew task={task} onSubmit={createTaskListener} />
+        : <TaskForm isNew onSubmit={createTaskListener} />
+      }
     </>
   )
 };

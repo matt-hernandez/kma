@@ -24,7 +24,7 @@ import {
   getUTCTimeInMilliseconds,
   getZonedDate
   } from '../util/date-time';
-import { TaskForAdmin, TaskTemplate } from '../apollo-client/types/admin';
+import { TaskForAdmin, RepeatFrequency } from '../apollo-client/types/admin';
 import LoadingBlock from './LoadingBlock';
 
 const TODAY_DATE_WITH_TIME_DIFFERENCE = new Date(TODAY_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
@@ -58,7 +58,7 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency?: Pick<TaskTemplate, 'repeatFrequency'> | null };
+export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency?: RepeatFrequency | null };
 
 type Props = {
   isNew?: boolean,

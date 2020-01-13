@@ -21,6 +21,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     history,
     match
   }) => {
+  const cid = (match.params as RouteParams)['cid'];
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS);
@@ -63,8 +64,12 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   const updateTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
-    updateTask({ variables: taskData })
-      .then(({ data: modifiedTask }) => {
+    updateTask({
+      variables: {
+        ...taskData,
+        cid
+      }
+    }).then(({ data: modifiedTask }) => {
         hideLoadingScreen();
         let url: string;
         if (modifiedTask.publishDate > Date.now()) {
@@ -90,9 +95,8 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
         });
       });
   };
-  const taskCid = (match.params as RouteParams)['cid'];
   const task: TaskFormData | null = client.readFragment({
-    id: taskCid,
+    id: cid,
     fragment: gql`
       fragment task on TaskForAdmin {
         cid

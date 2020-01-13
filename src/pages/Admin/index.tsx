@@ -22,7 +22,7 @@ import EditTask from './EditTask';
 import EditRecurringTasks from './EditRecurringTasks';
 import Users from './Users';
 import { AppPage } from '../../declarations';
-import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS } from '../../apollo-client/query/admin';
+import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 
 const adminPages: AppPage[] = [
@@ -90,6 +90,10 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
     onError
   });
   useQuery(PAST_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
+  });
+  useQuery(TASK_TEMPLATES, {
     fetchPolicy: 'cache-and-network',
     onError
   });
