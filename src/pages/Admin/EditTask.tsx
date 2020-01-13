@@ -1,7 +1,6 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { ApolloError, gql } from 'apollo-boost';
 import { addPageData } from '../../util/add-page-data';
 import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/query/admin';
 import { UPDATE_TASK } from '../../apollo-client/mutation/admin';
@@ -13,6 +12,7 @@ import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskFo
 import H1 from '../../components/H1';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
+import { gql } from 'apollo-boost';
 
 const slug = '/tasks/edit/:cid';
 const title = 'Edit Task';
@@ -21,35 +21,10 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     history,
     match
   }) => {
-  const isRedirecting = useRef(false);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
-  const onError = (error: ApolloError) => {
-    if (!isRedirecting.current && error.graphQLErrors) {
-      isRedirecting.current = true;
-      if (error.graphQLErrors.some((error) => error.message.includes('User is not an admin'))) {
-        history.replace('/main');
-        showToast({
-          color: 'danger',
-          message: 'You are not authorized to view that page.'
-        });
-      } else if (error.graphQLErrors.some((error) => error.message.includes('User is not authenticated'))) {
-        history.replace('/login');
-        showToast({
-          color: 'danger',
-          message: 'You need to log in.'
-        });
-      }
-    }
-  }
-  const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS, {
-    fetchPolicy: 'cache-and-network',
-    onError
-  });
-  const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS, {
-    fetchPolicy: 'cache-and-network',
-    onError
-  });
+  const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS);
+  const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS);
   const [ updateTask ] = useMutation(UPDATE_TASK, {
     update: (cache, { data }) => {
       const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(

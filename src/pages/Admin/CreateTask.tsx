@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
 import { CURRENT_TASKS, UPCOMING_TASKS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
@@ -11,8 +12,6 @@ import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
-import { gql } from 'apollo-boost';
-import useQueryHelper from '../../util/use-query-helper';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -107,15 +106,13 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
       }
     });
   };
-  const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper(CURRENT_TASKS, 'currentTasks');
-  const { loading: loadingUpcomingTasks, error: errorUpcomingTasks, data: upcomingTasks } = useQueryHelper(UPCOMING_TASKS, 'upcomingTasks');
+  const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS);
+  const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS);
+  if (loadingCurrentTasks && loadingUpcomingTasks) {
+    return <TaskFormLoading />;
+  }
   const taskCid = (match.params as RouteParams)['cid'];
   if (taskCid) {
-    if (!loadingCurrentTasks && !loadingUpcomingTasks &&
-      currentTasks === undefined && upcomingTasks === undefined &&
-      !errorCurrentTasks && !errorUpcomingTasks) {
-      return <TaskFormLoading />;
-    }
     const task: TaskFormData | null = client.readFragment({
       id: taskCid,
       fragment: gql`
@@ -133,13 +130,12 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     if (!task) {
       history.replace('/admin/tasks/current');
       return <TaskFormLoading />;
-    } else {
-      return (
-        <>
-          <TaskForm isNew task={task} onSubmit={createTaskListener} />
-        </>
-      );
     }
+    return (
+      <>
+        <TaskForm isNew task={task} onSubmit={createTaskListener} />
+      </>
+    );
   }
   return (
     <>
