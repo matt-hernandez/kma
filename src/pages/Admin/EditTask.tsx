@@ -11,6 +11,9 @@ import { TaskForAdmin } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
 import H1 from '../../components/H1';
+import MarginWrapper from '../../components/MarginWrapper';
+import RegularCopy from '../../components/RegularCopy';
+import CustomLink from '../../components/CustomLink';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
 
@@ -100,6 +103,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
     fragment: gql`
       fragment task on TaskForAdmin {
         cid
+        templateCid
         title
         due
         description
@@ -116,6 +120,14 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
   return (
     <>
       <H1 centered marginTop>Edit task</H1>
+      {task.templateCid && (
+        <MarginWrapper marginLeft marginRight>
+          <RegularCopy>
+            This task is set up to repeat at regular intervals. This form will only make changes to
+            the most recently created task. To modify all future tasks that will be created, <CustomLink href={`/admin/tasks/edit-recurring/${task.templateCid}`}>click here</CustomLink>.
+          </RegularCopy>
+        </MarginWrapper>
+      )}
       <TaskForm task={task} onSubmit={updateTaskListener} />
     </>
   )
