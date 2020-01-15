@@ -144,6 +144,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
           title
           due
           description
+          templateCid
           pointValue
           partnerUpDeadline
           publishDate
@@ -153,6 +154,16 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     if (!task) {
       history.replace('/admin/tasks/current');
       return <TaskFormLoading />;
+    } else if (task.templateCid) {
+      const taskTemplate = client.readFragment({
+        id: task.templateCid,
+        fragment: gql`
+          fragment task on TaskTemplate {
+            repeatFrequency
+          }
+        `
+      });
+      task.repeatFrequency = taskTemplate.repeatFrequency;
     }
   }
   return (
