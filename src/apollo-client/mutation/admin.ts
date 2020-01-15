@@ -114,12 +114,13 @@ export const DELETE_TASK = gql`
 `;
 
 export const CREATE_TASK_TEMPLATE = gql`
-  mutation CreateTaskTemplate($title: String!, $description: String, $pointValue: Int!, $due: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
-    createTaskTemplate(title: $title, description: $description, pointValue: $pointValue, due: $due, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
+  mutation CreateTaskTemplate($taskCid: String!, $repeatFrequency: RepeatFrequency!) {
+    createTaskTemplate(taskCid: $taskCid, repeatFrequency: $repeatFrequency) {
       cid
       title
       repeatFrequency
       publishDate
+      pointValue
       due
       partnerUpDeadline
       description

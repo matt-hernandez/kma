@@ -44,7 +44,7 @@ export default addPageData(withRouter(({ history }) => {
           {...task}
         />
       ))}
-      {taskTemplates.length && (
+      {orphanTemplates.length > 0 && (
         <MarginWrapper marginLeft marginRight>
           <RegularCopy>
             <InlineBold>

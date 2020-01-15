@@ -46,9 +46,9 @@ const adminPages: AppPage[] = [
   },
   {
     title: CreateTask.pageData.title,
-    url: `/admin${CreateTask.pageData.slug}`,
+    url: `/admin${CreateTask.pageData.slug.replace('/:cid', '')}`,
     icon: addCircle,
-    component: (CreateTask as any)
+    component: CreateTask
   },
   {
     title: Users.pageData.title,
@@ -114,7 +114,8 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
           </IonToolbar>
         </IonHeader>
         <InflateContent top={56} as="main">
-          {adminPages.map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
+          {adminPages.filter(({ title }) => title !== CreateTask.pageData.title).map(({ url, component }) => <Route key={url} path={url} component={component} strict exact />)}
+          <Route path={`/admin${CreateTask.pageData.slug}`} component={CreateTask} strict exact />
           <Route path={`/admin${EditTask.pageData.slug}`} component={EditTask} strict exact />
           <Route path={`/admin${EditRecurringTasks.pageData.slug}`} component={EditRecurringTasks} strict exact />
           <Route path="/admin" exact render={() => <Redirect to="/admin/tasks/current" />} />

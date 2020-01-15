@@ -16,6 +16,8 @@ import RegularCopy from '../../components/RegularCopy';
 import CustomLink from '../../components/CustomLink';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
+import InlineItalic from '../../components/InlineItalic';
+import HorizontalRule from '../../components/HorizontalRule';
 
 const slug = '/tasks/edit/:cid';
 const title = 'Edit Task';
@@ -119,14 +121,20 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   return (
     <>
-      <H1 centered marginTop>Edit task</H1>
+      <H1 centered marginTop marginBottom>Edit task</H1>
       {task.templateCid && (
-        <MarginWrapper marginLeft marginRight>
-          <RegularCopy>
-            This task is set up to repeat at regular intervals. This form will only make changes to
-            the most recently created task. To modify all future tasks that will be created, <CustomLink href={`/admin/tasks/edit-recurring/${task.templateCid}`}>click here</CustomLink>.
-          </RegularCopy>
-        </MarginWrapper>
+        <>
+          <MarginWrapper marginTop marginBottom marginLeft marginRight>
+            <RegularCopy>
+              <InlineItalic>
+                This task is set up to repeat at regular intervals. This form will only make changes to
+                the currently existing task. To modify the settings for all future tasks that will be
+                created after, <CustomLink href={`/admin/tasks/edit-recurring/${task.templateCid}`}>click here</CustomLink>.
+              </InlineItalic>
+            </RegularCopy>
+          </MarginWrapper>
+          <HorizontalRule grayLevel={3} />
+        </>
       )}
       <TaskForm task={task} onSubmit={updateTaskListener} />
     </>

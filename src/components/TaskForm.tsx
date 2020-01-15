@@ -88,7 +88,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
   const [ points, setPoints ] = useState(task.pointValue);
   const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(task.partnerUpDeadline);
   const [ publishDate, setPublishDate ] = useState(getZonedDate(task.publishDate).toISOString());
-  const [ repeatFrequency, setRepeatFrequency ] = useState(task.repeatFrequency);
+  const [ repeatFrequency, setRepeatFrequency ] = useState(task.repeatFrequency || null);
   const checkFormValidity = () => {
     return title.trim() && due && partnerUpDeadline;
   };

@@ -15,6 +15,8 @@ import RegularCopy from '../../components/RegularCopy';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
 import MarginWrapper from '../../components/MarginWrapper';
+import InlineItalic from '../../components/InlineItalic';
+import HorizontalRule from '../../components/HorizontalRule';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -68,10 +70,27 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     showLoadingScreen();
     let taskTemplateCreationHasError = false;
     let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data || null);
+    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data);
     if (taskData.repeatFrequency) {
-      createTaskPromise.then(() => createTaskTemplate({
-          variables: taskData
+      createTaskPromise.then(({ cid }) => createTaskTemplate({
+          variables: {
+            taskCid: cid,
+            repeatFrequency: taskData.repeatFrequency
+          }
+        }).then(({ data }) => {
+          if (createdTask && data) {
+            client.writeFragment({
+              id: createdTask.cid,
+              fragment: gql`
+                fragment task on TaskForAdmin {
+                  templateCid
+                }
+              `,
+              data: {
+                templateCid: data.cid
+              }
+            });
+          }
         }).catch(() => {
           taskTemplateCreationHasError = true;
         })
@@ -138,15 +157,20 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   return (
     <>
-      <H1 centered marginTop>Create tasks</H1>
+      <H1 centered marginBottom marginTop>Create tasks</H1>
       {task && (
-        <MarginWrapper marginLeft marginRight>
-          <RegularCopy>
-            We copied your task details over to this form. Feel free to make any changes you wish.
-            When you click on "Create task," a completely new task will be created. These changes
-            WILL NOT affect your original task.
-          </RegularCopy>
-        </MarginWrapper>
+        <>
+          <MarginWrapper marginLeft marginRight>
+            <RegularCopy>
+              <InlineItalic>
+                We copied your task details over to this form. Feel free to make any changes you wish.
+                When you click on "Create task," a completely new task will be created. These changes
+                WILL NOT affect your original task.
+              </InlineItalic>
+            </RegularCopy>
+          </MarginWrapper>
+          <HorizontalRule grayLevel={3} />
+        </>
       )}
       {task
         ? <TaskForm isNew task={task} onSubmit={createTaskListener} />

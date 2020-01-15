@@ -15,6 +15,8 @@ import MarginWrapper from '../../components/MarginWrapper';
 import RegularCopy from '../../components/RegularCopy';
 import { RouteParams } from '../../util/interface-overrides';
 import client from '../../apollo-client/client';
+import InlineItalic from '../../components/InlineItalic';
+import HorizontalRule from '../../components/HorizontalRule';
 
 const slug = '/tasks/edit-recurring/:cid';
 const title = 'Edit Recurring Task';
@@ -90,13 +92,16 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   return (
     <>
-      <H1 centered marginTop>Edit future tasks</H1>
-      <MarginWrapper marginLeft marginRight>
+      <H1 centered marginBottom marginTop>Edit future tasks</H1>
+      <MarginWrapper marginBottom marginTop marginLeft marginRight>
         <RegularCopy>
-          This form holds the details of your future tasks based on the details
-          you typed in when you originally set up your task and it's frequency.
+          <InlineItalic>
+            This form holds the details of your future tasks based on the details
+            you typed in when you originally set up your task and it's frequency.
+          </InlineItalic>
         </RegularCopy>
       </MarginWrapper>
+      <HorizontalRule grayLevel={3} />
       <TaskForm isTemplate task={taskTemplate} onSubmit={updateTaskListener} />
     </>
   )

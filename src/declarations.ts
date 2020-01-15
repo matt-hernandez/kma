@@ -1,10 +1,8 @@
-import React from 'react';
-
 export interface AppPage {
   url: string;
   icon: object;
   title: string;
-  component?: React.FunctionComponent;
+  component?: any;
 }
 
 export type ArrayUnpacked<T> = T extends (infer U)[] ? U : T;

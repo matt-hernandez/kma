@@ -120,6 +120,7 @@ export const TASK_TEMPLATES = gql`
       title
       repeatFrequency
       publishDate
+      pointValue
       due
       partnerUpDeadline
       description
