@@ -16,14 +16,14 @@ import InlineColor from './InlineColor';
 import LoadingBlock from './LoadingBlock';
 import Tooltip from './Tooltip';
 import { ReactComponent as Question } from '../assets/question.svg';
-import { formatDueDate, formatCommitAndPartnerDate } from '../util/date-time';
+import { formatDueDate, formatCommitAndPartnerDate, getPartnerUpDeadlineEpochFromDue } from '../util/date-time';
 import { colors } from '../styles/colors';
-import { Connection } from '../apollo-client/types/user';
+import { Connection, PartnerUpDeadline } from '../apollo-client/types/user';
 
 type PropTypes = {
   title: string;
   due: number;
-  partnerUpDeadline: number;
+  partnerUpDeadline: PartnerUpDeadline;
   pointValue: number;
   description?: string;
   isCommitted: boolean;
@@ -58,14 +58,14 @@ const Task: React.FunctionComponent<PropTypes> = ({
   onBreak = () => {},
   onCancelRequest = () => {},
   onConfirmRequest = () => {},
-  onDenyRequest = () => {},
-  debugNow
+  onDenyRequest = () => {}
 }) => {
-  const isPastPartnerUpDeadline = partnerUpDeadline < (debugNow || Date.now());
-  const shouldWarnPartnerUpDeadline = partnerUpDeadline - (debugNow || Date.now()) < (1000 * 60 * 60) && partnerUpDeadline - (debugNow || Date.now()) > 0;
-  const isPastDue = (debugNow || Date.now()) > due;
+  const partnerUpDeadlineEpoch = getPartnerUpDeadlineEpochFromDue(due, partnerUpDeadline);
+  const isPastPartnerUpDeadline = partnerUpDeadlineEpoch < Date.now();
+  const shouldWarnPartnerUpDeadline = partnerUpDeadlineEpoch - Date.now() < (1000 * 60 * 60) && partnerUpDeadlineEpoch - Date.now() > 0;
+  const isPastDue = Date.now() > due;
   const formattedDueDate = formatDueDate(due);
-  const formattedCommitmentDeadline = formatCommitAndPartnerDate(partnerUpDeadline);
+  const formattedCommitmentDeadline = formatCommitAndPartnerDate(due, partnerUpDeadline);
   return (
     <IonCard>
       <IonCardHeader>
@@ -174,9 +174,7 @@ export const TaskLoading: React.FunctionComponent = () => {
         <TaskDescriptionLoading />
         <TaskDescriptionLoading />
       </IonCardContent>
-      <IonCardContent>
-
-      </IonCardContent>
+      <IonCardContent />
     </IonCard>
   );
 };

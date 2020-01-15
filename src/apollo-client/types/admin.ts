@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User, PartnerUpDeadline } from "./user";
 
 export type ConnectionTypeForAdmin = 'REQUESTED' | 'CONFIRMED' | 'BROKE_WITH';
 
@@ -27,7 +27,7 @@ export interface TaskForAdmin {
   due: number;
   publishDate: number;
   pointValue: number;
-  partnerUpDeadline: number;
+  partnerUpDeadline: PartnerUpDeadline;
   description?: string
   committedUsers: User[];
   connections: ConnectionForAdmin[];
@@ -44,5 +44,5 @@ export interface TaskTemplate {
   publishDate: number;
   pointValue: number;
   repeatFrequency: RepeatFrequency;
-  partnerUpDeadline: number;
+  partnerUpDeadline: PartnerUpDeadline;
 }

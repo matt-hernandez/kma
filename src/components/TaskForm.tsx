@@ -16,44 +16,45 @@ import { ReactComponent as Question } from '../assets/question.svg';
 import Tooltip from '../components/Tooltip';
 import {
   ONE_HOUR_MILLISECONDS,
-  ONE_DAY_MILLISECONDS,
   TOMORROW_AT_NOON_MILLISECONDS_ZONED,
   TODAY_MILLISECONDS_ZONED,
   TIME_ZONE_DIFFERENCE,
   isBeforeNow,
   getUTCTimeInMilliseconds,
-  getZonedDate
+  getZonedDate,
+  getPartnerUpDeadlineInMilliseconds
   } from '../util/date-time';
 import { TaskForAdmin, RepeatFrequency } from '../apollo-client/types/admin';
 import LoadingBlock from './LoadingBlock';
+import { PartnerUpDeadline } from '../apollo-client/types/user';
 
 const TODAY_DATE_WITH_TIME_DIFFERENCE = new Date(TODAY_MILLISECONDS_ZONED + TIME_ZONE_DIFFERENCE);
 const TOMORROW_MIDNIGHT = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED - ONE_HOUR_MILLISECONDS * 12);
 const TOMORROW_AT_NOON_DATE = new Date(TOMORROW_AT_NOON_MILLISECONDS_ZONED);
 
-const partnerUpDeadlineMilliseconds = [
+const partnerUpDeadlineMilliseconds: Array<{ value: PartnerUpDeadline, text: string }> = [
   {
-    value: ONE_HOUR_MILLISECONDS,
+    value: 'ONE_HOUR',
     text: '1 hour before due date'
   },
   {
-    value: ONE_HOUR_MILLISECONDS * 2,
+    value: 'TWO_HOURS',
     text: '2 hours before'
   },
   {
-    value: ONE_HOUR_MILLISECONDS * 6,
+    value: 'SIX_HOURS',
     text: '6 hours before'
   },
   {
-    value: ONE_HOUR_MILLISECONDS * 12,
+    value: 'TWELVE_HOURS',
     text: '12 hours before'
   },
   {
-    value: ONE_DAY_MILLISECONDS,
+    value: 'ONE_DAY',
     text: '1 day before'
   },
   {
-    value: ONE_DAY_MILLISECONDS * 7,
+    value: 'ONE_WEEK',
     text: '1 week before'
   }
 ];
@@ -75,7 +76,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
       description: '',
       due: TOMORROW_AT_NOON_DATE.getTime(),
       pointValue: 1,
-      partnerUpDeadline: TOMORROW_AT_NOON_DATE.getTime() - ONE_HOUR_MILLISECONDS,
+      partnerUpDeadline: 'ONE_HOUR',
       publishDate: Date.now(),
       repeatFrequency: null
     },
@@ -85,7 +86,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
   const [ description, setDescription ] = useState(task.description || '');
   const [ due, setDue ] = useState(getZonedDate(task.due).toISOString());
   const [ points, setPoints ] = useState(task.pointValue);
-  const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(task.due - task.partnerUpDeadline);
+  const [ partnerUpDeadline, setPartnerUpDeadline ] = useState(task.partnerUpDeadline);
   const [ publishDate, setPublishDate ] = useState(getZonedDate(task.publishDate).toISOString());
   const [ repeatFrequency, setRepeatFrequency ] = useState(task.repeatFrequency);
   const checkFormValidity = () => {
@@ -120,7 +121,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
         <IonLabel slot="start">Enrollment deadline <Tooltip text={['The deadline for people to commit to tasks and find partners.', 'After the deadline, uncommitted users will not be able to commit to the task, and committed users will not be able to find or replace partners.']}><Question /></Tooltip></IonLabel>
         <IonSelect value={partnerUpDeadline} placeholder="Select one" interface="popover" name="partnerUpDeadline" onIonChange={(e) => setPartnerUpDeadline((e as any).target.value)} slot="end">
           {partnerUpDeadlineMilliseconds.map(({ value, text }) => (
-            <IonSelectOption key={text} value={value} disabled={isBeforeNow(new Date(due).getTime(), value)}>{text}</IonSelectOption>
+            <IonSelectOption key={text} value={value} disabled={isBeforeNow(new Date(due).getTime(), getPartnerUpDeadlineInMilliseconds(value))}>{text}</IonSelectOption>
           ))}
         </IonSelect>
       </IonItem>
@@ -149,7 +150,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
             description,
             pointValue: points,
             due: getUTCTimeInMilliseconds(due),
-            partnerUpDeadline: getUTCTimeInMilliseconds(due) - partnerUpDeadline,
+            partnerUpDeadline: partnerUpDeadline,
             publishDate: getUTCTimeInMilliseconds(publishDate) || getUTCTimeInMilliseconds(now),
             repeatFrequency
           };

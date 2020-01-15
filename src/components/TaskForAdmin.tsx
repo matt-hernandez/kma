@@ -122,7 +122,7 @@ const Task: React.FunctionComponent<Props> = ({
 }) => {
   const formattedPublishDate = formatPublishDate(publishDate);
   const formattedDueDate = formatDueDate(due);
-  const formattedCommitmentDeadline = formatCommitAndPartnerDate(partnerUpDeadline);
+  const formattedCommitmentDeadline = formatCommitAndPartnerDate(due, partnerUpDeadline);
   return (
     <>
       <IonCard>

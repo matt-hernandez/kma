@@ -32,13 +32,15 @@ export interface Connection {
   type: ConnectionType;
 }
 
+export type PartnerUpDeadline = 'ONE_HOUR' | 'TWO_HOURS' | 'SIX_HOURS' | 'TWELVE_HOURS' | 'ONE_DAY' | 'ONE_WEEK';
+
 export interface Task {
   cid: string;
   templateCid?: string;
   title: string;
   due: number;
   pointValue: number;
-  partnerUpDeadline: number;
+  partnerUpDeadline: PartnerUpDeadline;
   description?: string;
   isCommitted: boolean;
   connections: Connection[];
