@@ -58,7 +58,7 @@ const partnerUpDeadlineMilliseconds = [
   }
 ];
 
-export type TaskFormData = Pick<TaskForAdmin, 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency?: RepeatFrequency | null };
+export type TaskFormData = Pick<TaskForAdmin, 'templateCid' | 'title' | 'description' | 'due' | 'pointValue' | 'partnerUpDeadline' | 'publishDate'> & { repeatFrequency?: RepeatFrequency | null };
 
 type Props = {
   isNew?: boolean,
@@ -157,10 +157,25 @@ const TaskForm: React.FunctionComponent<Props> = ({
         }}
         disabled={!isFormValid}
       >
-        Create task
+        {isNew ? 'Create task' : 'Save changes'}
       </IonButton>
+      {!isNew && !isTemplate && (
+        <IonButton expand="block" color="danger">
+          {task.templateCid ? 'Delete this task only' : 'Delete'}
+        </IonButton>
+      )}
+      {!isNew && task.templateCid && (
+        <IonButton expand="block" color="danger">
+          Delete and cancel all future tasks
+        </IonButton>
+      )}
+      {(task.templateCid || isTemplate) && (
+        <IonButton expand="block" color="danger">
+          Cancel all future tasks
+        </IonButton>
+      )}
     </IonList>
-  )
+  );
 };
 
 export default TaskForm;
