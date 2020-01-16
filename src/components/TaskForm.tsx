@@ -162,17 +162,17 @@ const TaskForm: React.FunctionComponent<Props> = ({
       </IonButton>
       {!isNew && !isTemplate && (
         <IonButton expand="block" color="danger">
-          {task.templateCid ? 'Delete this task only' : 'Delete'}
+          {task.templateCid ? 'Delete only this task' : 'Delete'}
         </IonButton>
       )}
       {!isNew && task.templateCid && (
         <IonButton expand="block" color="danger">
-          Delete and cancel all future tasks
+          Delete this and all future tasks
         </IonButton>
       )}
       {(task.templateCid || isTemplate) && (
         <IonButton expand="block" color="danger">
-          Cancel all future tasks
+          Delete all future tasks
         </IonButton>
       )}
     </IonList>

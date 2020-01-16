@@ -17,6 +17,7 @@ import client from '../../apollo-client/client';
 import MarginWrapper from '../../components/MarginWrapper';
 import InlineItalic from '../../components/InlineItalic';
 import HorizontalRule from '../../components/HorizontalRule';
+import InlineBold from '../../components/InlineBold';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -130,7 +131,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   };
   const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS);
   const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS);
-  if (loadingCurrentTasks && loadingUpcomingTasks) {
+  if (loadingCurrentTasks || loadingUpcomingTasks) {
     return <TaskFormLoading />;
   }
   const cid = (match.params as RouteParams)['cid'];
@@ -168,15 +169,15 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
   }
   return (
     <>
-      <H1 centered marginBottom marginTop>Create tasks</H1>
+      <H1 centered marginBottom marginTop>Create task</H1>
       {task && (
         <>
           <MarginWrapper marginLeft marginRight>
             <RegularCopy>
               <InlineItalic>
-                We copied your task details over to this form. Feel free to make any changes you wish.
-                When you click on "Create task," a completely new task will be created. These changes
-                WILL NOT affect your original task.
+                We copied your task details over to this form. Feel free to make any changes you
+                wish. When you click on "Create task," a completely new task will be created. These
+                changes <InlineBold>WILL NOT</InlineBold> affect your original task.
               </InlineItalic>
             </RegularCopy>
           </MarginWrapper>
