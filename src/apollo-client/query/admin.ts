@@ -5,8 +5,7 @@ export const USERS = gql`
     users {
       cid
       name 
-      email 
-      isAdmin
+      email
     }
   }
 `;
@@ -124,6 +123,16 @@ export const TASK_TEMPLATES = gql`
       due
       partnerUpDeadline
       description
+    }
+  }
+`;
+
+export const USER_SCORE = gql`
+  query UserScore($cid: String!) {
+    userScore(cid: $cid) {
+      score
+      tasksDoneWithAPartner
+      tasksDoneAlone
     }
   }
 `;
