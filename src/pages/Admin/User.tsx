@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IonList, IonItem, IonLabel } from '@ionic/react';
+import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
 import { withRouter } from 'react-router';
 import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
@@ -110,6 +110,9 @@ export default addPageData(withRouter(({ history, match }) => {
           </RegularCopy>
         </MarginWrapper>
       )}
+      <MarginWrapper marginTop marginRight marginLeft>
+        <IonButton color="danger">Delete user</IonButton>
+      </MarginWrapper>
     </>
   );
 }), { slug, title });
