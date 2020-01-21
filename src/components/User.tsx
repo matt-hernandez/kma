@@ -26,7 +26,7 @@ const User: React.FunctionComponent<Props> = function ({ name, onClick }) {
       <UserPic />
       <LabelWrapper>
         <IonLabel>{name}</IonLabel>
-        <IonButton>Details</IonButton>
+        <IonButton color="primary" onClick={onClick}>Details</IonButton>
       </LabelWrapper>
     </IonItem>
   );

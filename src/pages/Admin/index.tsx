@@ -21,6 +21,7 @@ import UpcomingTasks from './UpcomingTasks';
 import EditTask from './EditTask';
 import EditRecurringTasks from './EditRecurringTasks';
 import Users from './Users';
+import User from './User';
 import { AppPage } from '../../declarations';
 import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
 import { ToastContext } from '../../contexts/ToastContext';
@@ -118,6 +119,7 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
           <Route path={`/admin${CreateTask.pageData.slug}`} component={CreateTask} strict exact />
           <Route path={`/admin${EditTask.pageData.slug}`} component={EditTask} strict exact />
           <Route path={`/admin${EditRecurringTasks.pageData.slug}`} component={EditRecurringTasks} strict exact />
+          <Route path={`/admin${User.pageData.slug}`} component={User} strict exact />
           <Route path="/admin" exact render={() => <Redirect to="/admin/tasks/current" />} />
         </InflateContent>
       </IonPage>

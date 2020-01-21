@@ -9,7 +9,7 @@ import useQueryHelper from '../../util/use-query-helper';
 const slug = '/users';
 const title = 'Users';
 
-export default addPageData(withRouter(() => {
+export default addPageData(withRouter(({ history }) => {
   const { loading, error, data: users } = useQueryHelper<UserInterface[]>(USERS, 'users');
   if (loading) {
     return (
@@ -24,7 +24,7 @@ export default addPageData(withRouter(() => {
   }
   return (
     <>
-      {users.map(({ name, cid }) => <User key={cid} name={name} />)}
+      {users.map(({ name, cid }) => <User key={cid} name={name} onClick={() => history.push(`/admin/user-info/${cid}`)} />)}
     </>
   );
 }), { slug, title });
