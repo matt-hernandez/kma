@@ -6,7 +6,7 @@ export const USERS = gql`
       cid
       name 
       email
-      isAdmin
+      acessRights
       isActive
     }
   }

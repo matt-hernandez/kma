@@ -1,8 +1,10 @@
+export type AccessRights = 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+
 export interface User {
   cid: string;
   name: string;
   email: string;
-  isAdmin: boolean;
+  accessRights: AccessRights;
   isActive: boolean;
   templatesToSkipCommitConfirm: TemplateSummary[];
   templatesToSkipMarkAsDone: TemplateSummary[];

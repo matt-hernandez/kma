@@ -6,7 +6,7 @@ export const MAKE_USER_INACTIVE = gql`
       cid
       name 
       email
-      isAdmin
+      acessRights
       isActive
     }
   }

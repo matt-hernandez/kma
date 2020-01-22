@@ -6,7 +6,7 @@ import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
 import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
 import { MAKE_USER_INACTIVE } from '../../apollo-client/mutation/admin';
-import { User as UserInterface, ScoreDetails } from '../../apollo-client/types/user';
+import { User as UserInterface, ScoreDetails, User } from '../../apollo-client/types/user';
 import useQueryHelper from '../../util/use-query-helper';
 import LoadingBlock from '../../components/LoadingBlock';
 import { RouteParams } from '../../util/interface-overrides';
@@ -18,6 +18,7 @@ import { TaskForAdmin } from '../../apollo-client/types/admin';
 import UserHistoricalTask, { UserHistoricalTaskLoading } from '../../components/UserHistoricalTask';
 import RegularCopy from '../../components/RegularCopy';
 import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
+import { ME } from '../../apollo-client/query/user';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -39,6 +40,7 @@ const UserPageLoading = (
 
 export default addPageData(withRouter(({ history, match }) => {
   const cid = (match.params as RouteParams)['cid'];
+  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelper<User>(ME, 'me');
   const { loading: loadingUsers, error: errorUsers, data: users } = useQueryHelper<UserInterface[]>(USERS, 'users');
   const { loading: loadingUserScore, error: errorUserScore, data: userScore } = useQueryHelper<ScoreDetails>(USER_SCORE, 'userScore', {
     variables: {
@@ -124,6 +126,28 @@ export default addPageData(withRouter(({ history, match }) => {
             }
           });
         }}>Delete user</IonButton>
+        {me.accessRights === 'SUPER_ADMIN' && (
+          <>
+            {user.accessRights === 'USER' && (
+              <IonButton color="primary" onClick={() => {
+                makeUserInactive({
+                  variables: {
+                    cid: user.cid
+                  }
+                });
+              }}>Make user an admin</IonButton>
+            )}
+            {user.accessRights === 'ADMIN' && (
+              <IonButton color="danger" onClick={() => {
+                makeUserInactive({
+                  variables: {
+                    cid: user.cid
+                  }
+                });
+              }}>Remove user as an admin</IonButton>
+            )}
+          </>
+        )}
       </MarginWrapper>
     </>
   );

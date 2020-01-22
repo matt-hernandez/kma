@@ -20,6 +20,7 @@ import { AppPage } from '../declarations';
 import { ME } from '../apollo-client/query/user';
 import { DevToolsModal } from '../components/Modal';
 import useQueryHelper from '../util/use-query-helper';
+import { User } from '../apollo-client/types/user';
 
 interface MenuProps {
   appPages: AppPage[];
@@ -49,7 +50,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
     location,
     history
   }) => {
-  const { loading, error, data: me } = useQueryHelper(ME, 'me');
+  const { loading, error, data: me } = useQueryHelper<User>(ME, 'me');
   const [ isDevToolsModalOpen, setIsDevToolsModalOpen ] = useState(false);
   return (
     <>
@@ -90,7 +91,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
                     </IonItem>
                   );
                 })}
-                {(me.isAdmin && !location.pathname.includes('/admin')) && (
+                {((me.accessRights === 'ADMIN' || me.accessRights === 'SUPER_ADMIN') && !location.pathname.includes('/admin')) && (
                   <IonItem type="button" onClick={() => {
                     history.push('/admin');
                   }}>
@@ -98,7 +99,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
                     <IonLabel>Admin</IonLabel>
                   </IonItem>
                 )}
-                {(me.isAdmin && location.pathname.includes('/admin')) && (
+                {((me.accessRights === 'ADMIN' || me.accessRights === 'SUPER_ADMIN') && location.pathname.includes('/admin')) && (
                   <IonItem type="button" onClick={() => {
                     history.push('/main');
                   }}>
