@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
 import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
-import { MAKE_USER_INACTIVE } from '../../apollo-client/mutation/admin';
+import { MAKE_USER_INACTIVE, MAKE_USER_ACTIVE, MAKE_USER_AN_ADMIN, REMOVE_USER_AS_ADMIN } from '../../apollo-client/mutation/admin';
 import { User as UserInterface, ScoreDetails, User } from '../../apollo-client/types/user';
 import useQueryHelper from '../../util/use-query-helper';
 import LoadingBlock from '../../components/LoadingBlock';
@@ -20,6 +20,7 @@ import RegularCopy from '../../components/RegularCopy';
 import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
 import { ME } from '../../apollo-client/query/user';
 import { ConfirmMakeUserInactiveModal, ConfirmRemoveUserAsAdminModal, ConfirmMakeUserAnAdminModal } from '../../components/Modal';
+import { ConfirmMakeUserActiveModal } from '../../components/Modal/ConfirmMakeUserActiveModal';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -49,10 +50,13 @@ export default addPageData(withRouter(({ history, match }) => {
     }
   });
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
-  const [ makeUserInactive, { loading: loadingMakeUserInactive } ] = useMutation(MAKE_USER_INACTIVE);
-  const [ shouldShowMakeUserInactiveModal, toggleMakeUserInactiveModal ] = useStateHelper(false, listenerTypes.TOGGLE);
+  const [ makeUserInactive ] = useMutation(MAKE_USER_INACTIVE);
+  const [ makeUserActive ] = useMutation(MAKE_USER_ACTIVE);
+  const [ makeUserAnAdmin ] = useMutation(MAKE_USER_AN_ADMIN);
+  const [ removeUserAsAdmin ] = useMutation(REMOVE_USER_AS_ADMIN);
+  const [ shouldShowUserActiveModal, toggleUserActiveModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   const [ shouldShowUserAdminModal, toggleUserAdminModal ] = useStateHelper(false, listenerTypes.TOGGLE);
-  if (loadingUsers || loadingUserScore) {
+  if (loadingMe || loadingUsers || loadingUserScore) {
     return UserPageLoading;
   }
   const user = users.find(({ cid: userCid }) => cid === userCid);
@@ -120,43 +124,58 @@ export default addPageData(withRouter(({ history, match }) => {
         </MarginWrapper>
       )}
       <MarginWrapper marginTop marginRight marginLeft>
-        <IonButton color="danger" onClick={toggleMakeUserInactiveModal}>Make user inactive</IonButton>
+        {user.isActive && <IonButton color="danger" onClick={toggleUserActiveModal}>Make user inactive</IonButton>}
+        {!user.isActive && <IonButton color="primary" onClick={toggleUserActiveModal}>Make user active</IonButton>}
         {me.accessRights === 'SUPER_ADMIN' && (
           <>
             {user.accessRights === 'USER' && (
-              <IonButton color="primary" onClick={() => {
-                makeUserInactive({
-                  variables: {
-                    cid: user.cid
-                  }
-                });
-              }}>Make user an admin</IonButton>
+              <IonButton color="primary" onClick={toggleUserAdminModal}>Make user an admin</IonButton>
             )}
             {user.accessRights === 'ADMIN' && (
-              <IonButton color="danger" onClick={() => {
-                makeUserInactive({
-                  variables: {
-                    cid: user.cid
-                  }
-                });
-              }}>Remove user as an admin</IonButton>
+              <IonButton color="danger" onClick={toggleUserAdminModal}>Remove user as an admin</IonButton>
             )}
           </>
         )}
       </MarginWrapper>
-      <ConfirmMakeUserInactiveModal isOpen={shouldShowMakeUserInactiveModal} onConfirm={() => {
-        makeUserInactive({
-            variables: {
-              cid: user.cid
-            }
-          })
-          .then(toggleMakeUserInactiveModal);
-      }} />
+      {user.isActive && (
+        <ConfirmMakeUserInactiveModal isOpen={shouldShowUserActiveModal} onConfirm={() => {
+          makeUserInactive({
+              variables: {
+                cid: user.cid
+              }
+            })
+            .then(toggleUserActiveModal);
+        }} />
+      )}
+      {!user.isActive && (
+        <ConfirmMakeUserActiveModal isOpen={shouldShowUserActiveModal} onConfirm={() => {
+          makeUserActive({
+              variables: {
+                cid: user.cid
+              }
+            })
+            .then(toggleUserActiveModal);
+        }} />
+      )}
       {user.accessRights === 'USER' && (
-        <ConfirmMakeUserAnAdminModal isOpen={shouldShowUserAdminModal} />
+        <ConfirmMakeUserAnAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
+          makeUserAnAdmin({
+              variables: {
+                cid: user.cid
+              }
+            })
+            .then(toggleUserAdminModal);
+        }} />
       )}
       {user.accessRights === 'ADMIN' && (
-        <ConfirmRemoveUserAsAdminModal isOpen={shouldShowUserAdminModal} />
+        <ConfirmRemoveUserAsAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
+          removeUserAsAdmin({
+              variables: {
+                cid: user.cid
+              }
+            })
+            .then(toggleUserAdminModal);
+        }} />
       )}
     </>
   );

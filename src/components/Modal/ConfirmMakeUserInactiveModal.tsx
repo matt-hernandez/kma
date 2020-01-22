@@ -16,11 +16,11 @@ export const ConfirmMakeUserInactiveModal: React.FunctionComponent<ModalProps> =
     <ModalContainer isOpen={isOpen} onDismiss={onDismiss}>
       <H1 grayLevel={8}>What will this do?</H1>
       <RegularCopy grayLevel={7}>
-        Making a user "inactive" means they will no longer be able to use the app in any way.
-        If they log in to the app, they will be redirected to a screen which says their account
-        is "inactive". You should use this functionality if the gym member has cancelled their
-        membership and is not expected to come back, or if there is any other reason they should be
-        shut out from this app.
+        Making a user "inactive" means they will no longer be able to use the app at all, even if
+        they're an admin. If they log in to the app, they will be redirected to a screen which says
+        their account is "inactive". You should use this functionality if the gym member has
+        cancelled their membership and is not expected to come back or for any other reason where
+        someone should be shut out from this app.
       </RegularCopy>
       <RegularCopy grayLevel={7}>
         Making a user "inactve" <InlineBold>DOES NOT</InlineBold> affect anyone's score. All points

@@ -12,6 +12,42 @@ export const MAKE_USER_INACTIVE = gql`
   }
 `;
 
+export const MAKE_USER_ACTIVE = gql`
+  mutation MakeUserActive($cid: String!) {
+    makeUserActive(cid: $cid) {
+      cid
+      name 
+      email
+      acessRights
+      isActive
+    }
+  }
+`;
+
+export const MAKE_USER_AN_ADMIN = gql`
+  mutation MakeUserAnAdmin($cid: String!) {
+    makeUserAnAdmin(cid: $cid) {
+      cid
+      name 
+      email
+      acessRights
+      isActive
+    }
+  }
+`;
+
+export const REMOVE_USER_AS_ADMIN = gql`
+  mutation RemoveUserAsAdmin($cid: String!) {
+    removeUserAsAdmin(cid: $cid) {
+      cid
+      name 
+      email
+      acessRights
+      isActive
+    }
+  }
+`;
+
 export const CREATE_TASK = gql`
   mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $pointValue: Int!, $description: String) {
     createTask(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, pointValue: $pointValue, description: $description) {
