@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
 
-export const DELETE_USER = gql`
-  mutation DeleteUser($email: String!) {
-    deleteUser(email: $email) {
+export const MAKE_USER_INACTIVE = gql`
+  mutation MakeUserInactive($cid: String!) {
+    makeUserInactive(cid: $cid) {
       cid
       name 
-      email 
-      score
+      email
       isAdmin
+      isActive
     }
   }
 `;
