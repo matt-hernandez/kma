@@ -10,6 +10,7 @@ const ModalPadding = styled.div`
 export interface ModalProps {
   isOpen: boolean;
   onDismiss: AcceptAnyReturnVoid;
+  onConfirm?: AcceptAnyReturnVoid;
 }
 
 const ModalContainer: React.FunctionComponent<ModalProps> = ({ isOpen, onDismiss, children }) => {

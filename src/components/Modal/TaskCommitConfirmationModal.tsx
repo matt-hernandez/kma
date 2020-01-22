@@ -13,10 +13,8 @@ import { Task } from '../../apollo-client/types/user';
 import { formatDueDate } from '../../util/date-time';
 import { colors } from '../../styles/colors';
 import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
-import { AcceptAnyReturnVoid } from '../../util/interface-overrides';
 
 interface Props extends ModalProps {
-  onConfirm?: AcceptAnyReturnVoid;
   task: Task;
 }
 
@@ -32,7 +30,6 @@ export const TaskCommitConfirmationModal: React.FunctionComponent<Props> = ({
     isOpen
   }) => {
   const [ skipConfirm, toggleSkipConfirm ] = useStateHelper(false, listenerTypes.TOGGLE);
-  console.log(templateCid);
   return (
     <ModalContainer isOpen={isOpen} onDismiss={onDismiss}>
       <H1 grayLevel={8}>Ready to commit to this?</H1>
@@ -61,9 +58,7 @@ export const TaskCommitConfirmationModal: React.FunctionComponent<Props> = ({
           onConfirm({ skipConfirm });
         }}>Yes, commit!</IonButton>
       </MarginWrapper>
-      <IonButton expand="block" color="medium" fill="outline" onClick={() => {
-        onDismiss();
-      }}>Nevermind</IonButton>
+      <IonButton expand="block" color="medium" fill="outline" onClick={onDismiss}>Nevermind</IonButton>
     </ModalContainer>
   )
 };

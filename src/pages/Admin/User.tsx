@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useMutation } from '@apollo/react-hooks';
+import { withRouter } from 'react-router';
 import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
-import { withRouter } from 'react-router';
 import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
+import { MAKE_USER_INACTIVE } from '../../apollo-client/mutation/admin';
 import { User as UserInterface, ScoreDetails } from '../../apollo-client/types/user';
 import useQueryHelper from '../../util/use-query-helper';
 import LoadingBlock from '../../components/LoadingBlock';
@@ -15,6 +17,7 @@ import MarginWrapper from '../../components/MarginWrapper';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
 import UserHistoricalTask, { UserHistoricalTaskLoading } from '../../components/UserHistoricalTask';
 import RegularCopy from '../../components/RegularCopy';
+import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -43,6 +46,9 @@ export default addPageData(withRouter(({ history, match }) => {
     }
   });
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
+  const [ makeUserInactive, { loading: loadingMakeUserInactive } ] = useMutation(MAKE_USER_INACTIVE);
+  const [ shouldShowMakeUserInactiveModal, toggleMakeUserInactiveModal ] = useStateHelper(false, listenerTypes.TOGGLE);
+  const [ shouldShowUserAdminModal, toggleUserAdminModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   if (loadingUsers || loadingUserScore) {
     return UserPageLoading;
   }
@@ -111,7 +117,13 @@ export default addPageData(withRouter(({ history, match }) => {
         </MarginWrapper>
       )}
       <MarginWrapper marginTop marginRight marginLeft>
-        <IonButton color="danger">Delete user</IonButton>
+        <IonButton color="danger" onClick={() => {
+          makeUserInactive({
+            variables: {
+              cid: user.cid
+            }
+          });
+        }}>Delete user</IonButton>
       </MarginWrapper>
     </>
   );
