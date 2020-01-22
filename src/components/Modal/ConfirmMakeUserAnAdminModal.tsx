@@ -7,7 +7,7 @@ import InlineBold from '../InlineBold';
 import Spacer from '../Spacer';
 import MarginWrapper from '../MarginWrapper';
 
-export const ConfirmMakeUserInactiveModal: React.FunctionComponent<ModalProps> = ({
+export const ConfirmMakeUserAnAdminModal: React.FunctionComponent<ModalProps> = ({
     onConfirm,
     onDismiss,
     isOpen

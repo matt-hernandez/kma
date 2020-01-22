@@ -9,7 +9,7 @@ const ModalPadding = styled.div`
 
 export interface ModalProps {
   isOpen: boolean;
-  onDismiss: AcceptAnyReturnVoid;
+  onDismiss?: AcceptAnyReturnVoid;
   onConfirm?: AcceptAnyReturnVoid;
 }
 

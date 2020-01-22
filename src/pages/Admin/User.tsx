@@ -19,6 +19,7 @@ import UserHistoricalTask, { UserHistoricalTaskLoading } from '../../components/
 import RegularCopy from '../../components/RegularCopy';
 import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
 import { ME } from '../../apollo-client/query/user';
+import { ConfirmMakeUserInactiveModal, ConfirmRemoveUserAsAdminModal, ConfirmMakeUserAnAdminModal } from '../../components/Modal';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -119,13 +120,7 @@ export default addPageData(withRouter(({ history, match }) => {
         </MarginWrapper>
       )}
       <MarginWrapper marginTop marginRight marginLeft>
-        <IonButton color="danger" onClick={() => {
-          makeUserInactive({
-            variables: {
-              cid: user.cid
-            }
-          });
-        }}>Delete user</IonButton>
+        <IonButton color="danger" onClick={toggleMakeUserInactiveModal}>Make user inactive</IonButton>
         {me.accessRights === 'SUPER_ADMIN' && (
           <>
             {user.accessRights === 'USER' && (
@@ -149,6 +144,20 @@ export default addPageData(withRouter(({ history, match }) => {
           </>
         )}
       </MarginWrapper>
+      <ConfirmMakeUserInactiveModal isOpen={shouldShowMakeUserInactiveModal} onConfirm={() => {
+        makeUserInactive({
+            variables: {
+              cid: user.cid
+            }
+          })
+          .then(toggleMakeUserInactiveModal);
+      }} />
+      {user.accessRights === 'USER' && (
+        <ConfirmMakeUserAnAdminModal isOpen={shouldShowUserAdminModal} />
+      )}
+      {user.accessRights === 'ADMIN' && (
+        <ConfirmRemoveUserAsAdminModal isOpen={shouldShowUserAdminModal} />
+      )}
     </>
   );
 }), { slug, title });
