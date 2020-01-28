@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { withRouter } from 'react-router';
@@ -21,6 +21,8 @@ import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
 import { ME } from '../../apollo-client/query/user';
 import { ConfirmMakeUserInactiveModal, ConfirmRemoveUserAsAdminModal, ConfirmMakeUserAnAdminModal } from '../../components/Modal';
 import { ConfirmMakeUserActiveModal } from '../../components/Modal/ConfirmMakeUserActiveModal';
+import { ToastContext } from '../../contexts/ToastContext';
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -50,6 +52,8 @@ export default addPageData(withRouter(({ history, match }) => {
     }
   });
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
+  const { showToast } = useContext(ToastContext);
+  const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const [ makeUserInactive ] = useMutation(MAKE_USER_INACTIVE);
   const [ makeUserActive ] = useMutation(MAKE_USER_ACTIVE);
   const [ makeUserAnAdmin ] = useMutation(MAKE_USER_AN_ADMIN);
@@ -139,42 +143,74 @@ export default addPageData(withRouter(({ history, match }) => {
       </MarginWrapper>
       {user.isActive && (
         <ConfirmMakeUserInactiveModal isOpen={shouldShowUserActiveModal} onConfirm={() => {
+          showLoadingScreen();
           makeUserInactive({
               variables: {
                 cid: user.cid
               }
             })
-            .then(toggleUserActiveModal);
+            .then(toggleUserActiveModal)
+            .catch(() => {
+              showToast({
+                color: 'danger',
+                message: 'There was an error inactivating this user! Please try again.'
+              });
+            })
+            .finally(hideLoadingScreen);
         }} />
       )}
       {!user.isActive && (
         <ConfirmMakeUserActiveModal isOpen={shouldShowUserActiveModal} onConfirm={() => {
+          showLoadingScreen();
           makeUserActive({
               variables: {
                 cid: user.cid
               }
             })
-            .then(toggleUserActiveModal);
+            .then(toggleUserActiveModal)
+            .catch(() => {
+              showToast({
+                color: 'danger',
+                message: 'There was an error activating this user! Please try again.'
+              });
+            })
+            .finally(hideLoadingScreen);
         }} />
       )}
       {user.accessRights === 'USER' && (
         <ConfirmMakeUserAnAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
+          showLoadingScreen();
           makeUserAnAdmin({
               variables: {
                 cid: user.cid
               }
             })
-            .then(toggleUserAdminModal);
+            .then(toggleUserAdminModal)
+            .catch(() => {
+              showToast({
+                color: 'danger',
+                message: 'There was an error making this user an admin! Please try again.'
+              });
+            })
+            .finally(hideLoadingScreen);
         }} />
       )}
       {user.accessRights === 'ADMIN' && (
         <ConfirmRemoveUserAsAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
+          showLoadingScreen();
           removeUserAsAdmin({
               variables: {
                 cid: user.cid
               }
             })
-            .then(toggleUserAdminModal);
+            .then(toggleUserAdminModal)
+            .catch(() => {
+              showToast({
+                color: 'danger',
+                message: 'There was an error removing this user as an admin! Please try again.'
+              });
+            })
+            .finally(hideLoadingScreen);
         }} />
       )}
     </>
