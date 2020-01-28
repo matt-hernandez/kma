@@ -11,7 +11,7 @@ export interface ConnectionForAdmin {
   toName: string;
 }
 
-export type OutcomeType = 'FULFILLED' | 'PENDING' | 'BROKEN';
+export type OutcomeType = 'FULFILLED' | 'FULFILLED_OMIT_PARTNER' | 'PENDING' | 'BROKEN' | 'BROKEN_OMIT_PARTNER';
 
 export interface Outcome {
   cid: string;

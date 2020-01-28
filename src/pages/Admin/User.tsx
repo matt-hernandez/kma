@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/react-hooks';
 import { withRouter } from 'react-router';
 import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
 import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
-import { MAKE_USER_INACTIVE, MAKE_USER_ACTIVE, MAKE_USER_AN_ADMIN, REMOVE_USER_AS_ADMIN } from '../../apollo-client/mutation/admin';
+import { MAKE_USER_INACTIVE, MAKE_USER_ACTIVE, MAKE_USER_AN_ADMIN, REMOVE_USER_AS_ADMIN, CHANGE_TASK_STATUS_FOR_USER } from '../../apollo-client/mutation/admin';
 import { User as UserInterface, ScoreDetails, User } from '../../apollo-client/types/user';
 import useQueryHelper from '../../util/use-query-helper';
 import LoadingBlock from '../../components/LoadingBlock';
@@ -14,7 +14,7 @@ import H1 from '../../components/H1';
 import Spacer from '../../components/Spacer';
 import LargeCopy from '../../components/LargeCopy';
 import MarginWrapper from '../../components/MarginWrapper';
-import { TaskForAdmin } from '../../apollo-client/types/admin';
+import { TaskForAdmin, ConnectionForAdmin, Outcome, OutcomeType } from '../../apollo-client/types/admin';
 import UserHistoricalTask, { UserHistoricalTaskLoading } from '../../components/UserHistoricalTask';
 import RegularCopy from '../../components/RegularCopy';
 import { useStateHelper, listenerTypes } from '../../util/use-state-helper';
@@ -23,6 +23,8 @@ import { ConfirmMakeUserInactiveModal, ConfirmRemoveUserAsAdminModal, ConfirmMak
 import { ConfirmMakeUserActiveModal } from '../../components/Modal/ConfirmMakeUserActiveModal';
 import { ToastContext } from '../../contexts/ToastContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
+import { ChangeTaskStatusModal } from '../../components/Modal/ChangeTaskStatusModal';
+import generateCacheUpdate from '../../util/generate-cache-update';
 
 const slug = '/user-info/:cid';
 const title = 'User Info';
@@ -54,10 +56,60 @@ export default addPageData(withRouter(({ history, match }) => {
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
   const { showToast } = useContext(ToastContext);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
-  const [ makeUserInactive ] = useMutation(MAKE_USER_INACTIVE);
-  const [ makeUserActive ] = useMutation(MAKE_USER_ACTIVE);
-  const [ makeUserAnAdmin ] = useMutation(MAKE_USER_AN_ADMIN);
-  const [ removeUserAsAdmin ] = useMutation(REMOVE_USER_AS_ADMIN);
+  const [ makeUserInactive ] = useMutation(MAKE_USER_INACTIVE, {
+    update: generateCacheUpdate<UserInterface>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'users',
+        query: USERS
+      },
+      'makeUserInactive'
+    )
+  });
+  const [ makeUserActive ] = useMutation(MAKE_USER_ACTIVE, {
+    update: generateCacheUpdate<UserInterface>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'users',
+        query: USERS
+      },
+      'makeUserActive'
+    )
+  });
+  const [ makeUserAnAdmin ] = useMutation(MAKE_USER_AN_ADMIN, {
+    update: generateCacheUpdate<UserInterface>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'users',
+        query: USERS
+      },
+      'makeUserAnAdmin'
+    )
+  });
+  const [ removeUserAsAdmin ] = useMutation(REMOVE_USER_AS_ADMIN, {
+    update: generateCacheUpdate<UserInterface>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'users',
+        query: USERS
+      },
+      'removeUserAsAdmin'
+    )
+  });
+  const [ changeTaskStatusForUser ] = useMutation(CHANGE_TASK_STATUS_FOR_USER, {
+    update: generateCacheUpdate<TaskForAdmin>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'pastTasks',
+        query: PAST_TASKS,
+        sort: (d1, d2) => d1.publishDate - d2.publishDate
+      },
+      'changeTaskStatusForUser'
+    )
+  });
+  const [ connectionsForChangeStatus, setConnectionsForChangeStatus ] = useState<ConnectionForAdmin[]>([]);
+  const [ outcomeForChangeStatus, setOutcomeForChangeStatus ] = useState<Outcome | null>(null);
+  const [ shouldShowChangeStatusModal, toggleChangeStatusModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   const [ shouldShowUserActiveModal, toggleUserActiveModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   const [ shouldShowUserAdminModal, toggleUserAdminModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   if (loadingMe || loadingUsers || loadingUserScore) {
@@ -99,11 +151,16 @@ export default addPageData(withRouter(({ history, match }) => {
       </MarginWrapper>
       {(!!userPastTasks && userPastTasks.length > 0) && (
         <IonList>
-          {userPastTasks.map(({ cid, title, outcomes }) => {
+          {userPastTasks.map(({ cid, title, outcomes, connections }) => {
             const outcome = outcomes.find(({ userCid }) => user.cid === userCid);
+            const connectionsForAgreement = connections.filter(({ fromCid, toCid, type }) => (user.cid === fromCid || user.cid === toCid) && type === 'CONFIRMED');
             if (outcome) {
               return (
-                <UserHistoricalTask key={`${user.cid}-${cid}`} title={title} status={outcome.type} />
+                <UserHistoricalTask key={`${user.cid}-${cid}`} title={title} status={outcome.type} onChangeStatus={() => {
+                  toggleChangeStatusModal();
+                  setConnectionsForChangeStatus(connectionsForAgreement);
+                  setOutcomeForChangeStatus(outcome);
+                }} />
               );
             }
             return (
@@ -212,6 +269,31 @@ export default addPageData(withRouter(({ history, match }) => {
             })
             .finally(hideLoadingScreen);
         }} />
+      )}
+      {(shouldShowChangeStatusModal && outcomeForChangeStatus !== null) && (
+        <ChangeTaskStatusModal
+          connections={connectionsForChangeStatus}
+          outcome={outcomeForChangeStatus}
+          onConfirm={(outcomeType: OutcomeType) => {
+            showLoadingScreen();
+            changeTaskStatusForUser({
+                variables: {
+                  outcomeCid: outcomeForChangeStatus.cid,
+                  outcomeType
+                }
+              })
+              .then(toggleChangeStatusModal)
+              .catch(() => {
+                showToast({
+                  color: 'danger',
+                  message: 'There was an error changing the status of this task! Please try again.'
+                });
+              })
+              .finally(hideLoadingScreen);
+          }}
+          isOpen={shouldShowChangeStatusModal}
+          name={user.name}
+        />
       )}
     </>
   );

@@ -48,6 +48,40 @@ export const REMOVE_USER_AS_ADMIN = gql`
   }
 `;
 
+export const CHANGE_TASK_STATUS_FOR_USER = gql`
+  mutation ChangeTaskStatusForUser($outcomeCid: String!, $outcomeType: OutcomeType!) {
+    changeTaskStatusForUser(outcomeCid: $outcomeCid, outcomeType: $outcomeType) {
+      cid
+      templateCid
+      title
+      due
+      pointValue
+      publishDate
+      partnerUpDeadline
+      description
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
+    }
+  }
+`;
+
 export const CREATE_TASK = gql`
   mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $pointValue: Int!, $description: String) {
     createTask(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, pointValue: $pointValue, description: $description) {

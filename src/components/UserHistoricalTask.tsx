@@ -39,7 +39,7 @@ const Status = styled.span<StatusProps>`
 type Props = {
   title: string;
   status: string;
-  onChangeStatus?: (...args: any[]) => void;
+  onChangeStatus: (...args: any[]) => void;
 };
 
 const UserHistoricalTask: React.FunctionComponent<Props> = function ({ title, status, onChangeStatus }) {
