@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IonSearchbar, IonList } from '@ionic/react';
 import { withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 import styled from 'styled-components/macro';
@@ -37,6 +37,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const taskCid = (match.params as RouteParams)['cid'];
+  const searchBarRef = useRef(null);
   const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   let task = (myTasks || []).find(({cid}) => cid === taskCid);
   const savedSearchQuery = localStorage.getItem('lkma__saved-search-query') || '';
@@ -46,6 +47,18 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
     variables: { query, taskCid },
     skip: isQueryBlank
   });
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const searchBarEl = document.querySelector('.searchbar-input') as HTMLInputElement;
+      if (searchBarEl) {
+        searchBarEl.focus();
+        clearInterval(intervalId);
+      }
+    }, 100);
+    return () => {
+      clearInterval(intervalId);
+    }
+  }, [])
   if (loadingMyTasks) {
     return <LoadingScreen />;
   }
@@ -57,6 +70,7 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
       <IonSearchbar
         debounce={500}
         animated
+        ref={searchBarRef}
         placeholder="Search for partners"
         autocomplete="off"
         value={query}

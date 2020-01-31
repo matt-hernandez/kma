@@ -128,11 +128,11 @@ const Task: React.FunctionComponent<PropTypes> = ({
         </IonCardContent>
       )}
       <IonCardContent>
-        {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this</IonButton>}
+        {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this task</IonButton>}
         {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
         {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
         {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
-        {isCommitted && <IonButton expand="block" color="danger" onClick={onBreak}>Break task</IonButton>}
+        {isCommitted && <IonButton expand="block" color="danger" onClick={onBreak}>Break commitment</IonButton>}
       </IonCardContent>
     </IonCard>
   );

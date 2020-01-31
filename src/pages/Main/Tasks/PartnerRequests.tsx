@@ -37,10 +37,13 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
   });
   const [ confirmPartnerRequest ] = useMutation(CONFIRM_PARTNER_REQUEST, {
     update: generateCacheUpdate<TaskInterface>(
-      'OVERWRITE_ITEM_IN_ARRAY',
+      'TRANSFER_ITEM',
       {
-        name: 'myTasks',
-        query: MY_TASKS
+        from: 'requestedPartnerTasks',
+        fromQuery: REQUESTED_PARTNER_TASKS,
+        to: 'myTasks',
+        toQuery: MY_TASKS,
+        sort: (d1, d2) => d1.due - d2.due
       },
       'confirmPartnerRequest'
     ),
@@ -69,6 +72,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     )
   });
   const commit = (taskCid: string) => commitToTask({ variables: { taskCid } });
+  const goToMyTasks = () => history.push('/main/tasks/my');
   const goToFindPartnerPage = (taskCid: string) => history.push(`/main/find-a-partner/${taskCid}`);
   const isPageLoading = loadingMe || loadingRequestedPartnerTasks;
   return (
@@ -111,6 +115,7 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
                       connectionCid: connection.cid
                     }
                   })
+                  .then(goToMyTasks)
                   .catch((e: ApolloError) => {
                     if (e.networkError) {
                       showToast({

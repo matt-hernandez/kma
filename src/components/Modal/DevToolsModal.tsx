@@ -24,7 +24,7 @@ export const DevToolsModal: React.FunctionComponent<ModalProps> = ({ isOpen, onD
         } else if (userToBe === 'Katie Fryer') {
           cookies.setItem(
             cookieName,
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiS2F0aWUgR29vbHNiZWUiLCJlbWFpbCI6ImthdGllLmdvb2xzYmVlQGxpb25za3Jhdm1hZ2EuY29tIn0.u-4d8nKYTv9xn5O06TnoN2kw0w7JRRuvXqkl534FFmY'
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiS2F0aWUgRnJ5ZXIiLCJlbWFpbCI6ImthdGllLmZyeWVyQGxpb25za3Jhdm1hZ2EuY29tIn0.AD6VGZsVF0vS4tTOjK4BN6oCrv55FEKxx9gq4CSJZFk'
           );
         } else if (userToBe === 'Erin Armstrong') {
           cookies.setItem(
