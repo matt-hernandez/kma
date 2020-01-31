@@ -6,7 +6,7 @@ export const ME = gql`
       cid
       name 
       email
-      acessRights
+      accessRights
       isActive
       templatesToSkipCommitConfirm {
         cid

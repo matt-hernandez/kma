@@ -28,7 +28,7 @@ export const ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
       name 
       email 
       score
-      acessRights
+      accessRights
       templatesToSkipCommitConfirm
       templatesToSkipMarkAsDone
     }
@@ -42,7 +42,7 @@ export const ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
       name 
       email 
       score
-      acessRights
+      accessRights
       templatesToSkipCommitConfirm
       templatesToSkipMarkAsDone
     }

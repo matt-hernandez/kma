@@ -6,7 +6,7 @@ export const MAKE_USER_INACTIVE = gql`
       cid
       name 
       email
-      acessRights
+      accessRights
       isActive
     }
   }
@@ -18,7 +18,7 @@ export const MAKE_USER_ACTIVE = gql`
       cid
       name 
       email
-      acessRights
+      accessRights
       isActive
     }
   }
@@ -30,7 +30,7 @@ export const MAKE_USER_AN_ADMIN = gql`
       cid
       name 
       email
-      acessRights
+      accessRights
       isActive
     }
   }
@@ -42,7 +42,7 @@ export const REMOVE_USER_AS_ADMIN = gql`
       cid
       name 
       email
-      acessRights
+      accessRights
       isActive
     }
   }
