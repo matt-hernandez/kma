@@ -97,7 +97,7 @@ const EditTask: React.FunctionComponent<RouteComponentProps> = ({
         <RegularCopy>
           <InlineItalic>
             This form holds the details of your future tasks based on the details
-            you typed in when you originally set up your task and it's frequency.
+            you typed in when you originally set up your task and its frequency.
           </InlineItalic>
         </RegularCopy>
       </MarginWrapper>

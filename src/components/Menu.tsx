@@ -85,7 +85,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
                   return (
                     <IonItem key={`${appPage.url}-menu-item`} type="button" onClick={() => {
                       history.push(appPage.url);
-                    }} color={location.pathname === appPage.url ? 'primary' : undefined}>
+                    }} color={appPage.url.includes(location.pathname) ? 'primary' : undefined}>
                       <IonIcon slot="start" icon={appPage.icon} />
                       <IonLabel>{appPage.title}</IonLabel>
                     </IonItem>

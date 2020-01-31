@@ -214,7 +214,7 @@ export default addPageData(withRouter(({ history, match }) => {
               });
             })
             .finally(hideLoadingScreen);
-        }} />
+        }} onDismiss={toggleUserActiveModal} />
       )}
       {!user.isActive && (
         <ConfirmMakeUserActiveModal isOpen={shouldShowUserActiveModal} onConfirm={() => {
@@ -232,7 +232,7 @@ export default addPageData(withRouter(({ history, match }) => {
               });
             })
             .finally(hideLoadingScreen);
-        }} />
+        }} onDismiss={toggleUserActiveModal} />
       )}
       {user.accessRights === 'USER' && (
         <ConfirmMakeUserAnAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
@@ -250,7 +250,7 @@ export default addPageData(withRouter(({ history, match }) => {
               });
             })
             .finally(hideLoadingScreen);
-        }} />
+        }} onDismiss={toggleUserAdminModal} />
       )}
       {user.accessRights === 'ADMIN' && (
         <ConfirmRemoveUserAsAdminModal isOpen={shouldShowUserAdminModal} onConfirm={() => {
@@ -268,7 +268,7 @@ export default addPageData(withRouter(({ history, match }) => {
               });
             })
             .finally(hideLoadingScreen);
-        }} />
+        }} onDismiss={toggleUserAdminModal} />
       )}
       {(shouldShowChangeStatusModal && outcomeForChangeStatus !== null) && (
         <ChangeTaskStatusModal
@@ -293,6 +293,7 @@ export default addPageData(withRouter(({ history, match }) => {
           }}
           isOpen={shouldShowChangeStatusModal}
           name={user.name}
+          onDismiss={toggleChangeStatusModal}
         />
       )}
     </>

@@ -107,7 +107,7 @@ const TaskForm: React.FunctionComponent<Props> = ({
         <IonLabel slot="start">
           {isTemplate ? 'Next due date & time' : 'Due date & time'} <Tooltip text={['The date and time when the task should be completed.', 'Users will have 2 days after this date to mark their tasks as "Done." After that, their tasks will be broken automatically.']}><Question /></Tooltip>
         </IonLabel>
-        <IonDatetime value={due} min={TOMORROW_MIDNIGHT.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} slot="end" />
+        <IonDatetime value={due} min={TOMORROW_MIDNIGHT.toISOString()} displayFormat="DDD MMM D, YYYY h:mm A" placeholder="Select due date" minuteValues="0,15,30,45" name="due" onIonChange={(e) => setDue((e as any).target.value)} slot="end" />
       </IonItem>
       <IonItem>
         <IonLabel slot="start">Points</IonLabel>
@@ -129,11 +129,11 @@ const TaskForm: React.FunctionComponent<Props> = ({
         <IonLabel slot="start">
           {isTemplate ? 'Next publish date' : 'Publish date'} <Tooltip text={['When users will see this task in their "Open Tasks" feed and be able to sign-up.']}><Question /></Tooltip>
         </IonLabel>
-        <IonDatetime value={publishDate} min={TODAY_DATE_WITH_TIME_DIFFERENCE.toISOString()} displayFormat="MMM DD, YYYY h:mm A" placeholder="Now" name="publishDate" onIonChange={(e) => setPublishDate((e as any).target.value)} slot="end" />
+        <IonDatetime value={publishDate} min={TODAY_DATE_WITH_TIME_DIFFERENCE.toISOString()} displayFormat="DDD MMM D, YYYY h:mm A" placeholder="Now" name="publishDate" onIonChange={(e) => setPublishDate((e as any).target.value)} slot="end" />
       </IonItem>
       {(isNew || isTemplate) && (
         <IonItem>
-          <IonLabel slot="start">Task frequency <Tooltip text={['Use this to create a task that repeats at a regular amount of time.', 'NOTE: The publish date for future repeating tasks is always right after the due date of the current one.']}><Question /></Tooltip></IonLabel>
+          <IonLabel slot="start">Task frequency <Tooltip text={['Use this to create a task that repeats at a regular amount of time.', 'NOTE: The publish date for future repeating tasks is always the morning after the due date of the current one.']}><Question /></Tooltip></IonLabel>
           <IonSelect value={repeatFrequency} placeholder="Once" interface="popover" name="repeatFrequency" onIonChange={(e) => setRepeatFrequency((e as any).target.value)} slot="end">
             {isNew && <IonSelectOption value={null}>Once</IonSelectOption>}
             <IonSelectOption value="DAY">Daily</IonSelectOption>
