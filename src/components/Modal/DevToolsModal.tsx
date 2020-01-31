@@ -9,7 +9,7 @@ export const DevToolsModal: React.FunctionComponent<ModalProps> = ({ isOpen, onD
     <ModalContainer isOpen={isOpen} onDismiss={onDismiss}>
       <IonSelect placeholder="Change user" interface="popover" onIonChange={(e) => setUserToBe((e as any).target.value)}>
         <IonSelectOption value="Matt Hernandez">Matt Hernandez</IonSelectOption>
-        <IonSelectOption value="Katie Goolsbee">Katie Goolsbee</IonSelectOption>
+        <IonSelectOption value="Katie Fryer">Katie Fryer</IonSelectOption>
         <IonSelectOption value="Erin Armstrong">Erin Armstrong</IonSelectOption>
         <IonSelectOption value="Dave Goode">Dave Goode</IonSelectOption>
         <IonSelectOption value="Norbi Zylberberg">Norbi Zylberberg</IonSelectOption>
@@ -21,7 +21,7 @@ export const DevToolsModal: React.FunctionComponent<ModalProps> = ({ isOpen, onD
             cookieName,
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWF0dCBIZXJuYW5kZXoiLCJlbWFpbCI6Im1hdHQuaXNhaWFoLmhlcm5hbmRlekBnbWFpbC5jb20ifQ.WdTMhn-FWocBOLZAOfygTYPPP1Sb0PO0MKkNKVIRMRk'
           );
-        } else if (userToBe === 'Katie Goolsbee') {
+        } else if (userToBe === 'Katie Fryer') {
           cookies.setItem(
             cookieName,
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiS2F0aWUgR29vbHNiZWUiLCJlbWFpbCI6ImthdGllLmdvb2xzYmVlQGxpb25za3Jhdm1hZ2EuY29tIn0.u-4d8nKYTv9xn5O06TnoN2kw0w7JRRuvXqkl534FFmY'
