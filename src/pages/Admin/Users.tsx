@@ -26,7 +26,7 @@ export default addPageData(withRouter(({ history }) => {
   }
   return (
     <>
-      {users.filter(({ cid }) => cid !== me.cid).map(({ name, cid }) => <User key={cid} name={name} onClick={() => history.push(`/admin/user-info/${cid}`)} />)}
+      {users.map(({ name, cid }) => <User key={cid} name={name} onClick={() => history.push(`/admin/user-info/${cid}`)} />)}
     </>
   );
 }), { slug, title });
