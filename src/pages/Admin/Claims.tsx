@@ -12,20 +12,12 @@ import Claim from '../../components/Claim';
 const slug = '/claims';
 const title = 'Claims';
 
-function useConsolidate(...stateReturn: any[]) {
-  return [
-    stateReturn
-  ];
-}
-
 export default addPageData(() => {
-  const arr = useConsolidate(useState(false));
-  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelper<UserInterface>(ME, 'me');
   const { loading: loadingUsers, error: errorUsers, data: users } = useQueryHelper<UserInterface[]>(USERS, 'users');
   const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper<TaskForAdmin[]>(CURRENT_TASKS, 'users');
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'users');
   const { loading: loadingClaims, error: errorClaims, data: claims } = useQueryHelper<Outcome[]>(CLAIMS, 'claims');
-  const loading = loadingCurrentTasks || loadingPastTasks || loadingClaims || loadingMe || loadingUsers;
+  const loading = loadingCurrentTasks || loadingPastTasks || loadingClaims || loadingUsers;
   if (loading) {
     return (
       <>

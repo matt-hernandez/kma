@@ -11,7 +11,6 @@ const slug = '/users';
 const title = 'Users';
 
 export default addPageData(withRouter(({ history }) => {
-  const { loading: loadingMe, error: errorMe, data: me } = useQueryHelper<UserInterface>(ME, 'me');
   const { loading, error, data: users } = useQueryHelper<UserInterface[]>(USERS, 'users');
   if (loading) {
     return (
