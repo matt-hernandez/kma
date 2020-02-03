@@ -138,3 +138,14 @@ export const USER_SCORE = gql`
     }
   }
 `;
+
+export const CLAIMS = gql`
+  query Claims {
+    claims {
+      cid
+      taskCid
+      userCid
+      type
+    }
+  }
+`;

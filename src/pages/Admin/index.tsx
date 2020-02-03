@@ -11,7 +11,7 @@ import {
 import { Redirect, Route, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { ApolloError } from 'apollo-boost';
-import { list, rewind, fastforward, addCircle, person } from 'ionicons/icons';
+import { list, rewind, fastforward, addCircle, person, filing } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import CreateTask from './CreateTask';
@@ -25,6 +25,7 @@ import User from './User';
 import { AppPage } from '../../declarations';
 import { CURRENT_TASKS, PAST_TASKS, UPCOMING_TASKS, USERS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
 import { ToastContext } from '../../contexts/ToastContext';
+import Claims from './Claims';
 
 const adminPages: AppPage[] = [
   {
@@ -56,6 +57,12 @@ const adminPages: AppPage[] = [
     url: `/admin${Users.pageData.slug}`,
     icon: person,
     component: Users
+  },
+  {
+    title: Claims.pageData.title,
+    url: `/admin${Claims.pageData.slug}`,
+    icon: filing,
+    component: Claims
   }
 ];
 
