@@ -18,13 +18,14 @@ import Tooltip from './Tooltip';
 import { ReactComponent as Question } from '../assets/question.svg';
 import { formatDueDate, formatCommitAndPartnerDate, getPartnerUpDeadlineEpochFromDue } from '../util/date-time';
 import { colors } from '../styles/colors';
-import { Connection, PartnerUpDeadline } from '../apollo-client/types/user';
+import { Connection, PartnerUpDeadline, OutcomeType } from '../apollo-client/types/user';
 
 type PropTypes = {
   title: string;
   due: number;
   partnerUpDeadline: PartnerUpDeadline;
   pointValue: number;
+  outcomeType: OutcomeType | null;
   description?: string;
   isCommitted: boolean;
   showTooltips?: boolean;
@@ -48,6 +49,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
   description,
   isCommitted,
   pointValue,
+  outcomeType,
   showTooltips = false,
   partnerRequestsToMe = [],
   pendingPartners = [],
@@ -131,7 +133,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
         {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this task</IonButton>}
         {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
         {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
-        {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" onClick={onMarkAsDone}>Mark as Done</IonButton>}
+        {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" disabled={outcomeType !== null && outcomeType === 'PENDING'} onClick={onMarkAsDone}>Mark as Done</IonButton>}
         {isCommitted && <IonButton expand="block" color="danger" onClick={onBreak}>Break commitment</IonButton>}
       </IonCardContent>
     </IonCard>

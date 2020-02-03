@@ -61,10 +61,11 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
         </>
       )}
       {openTasks && openTasks.map((task, i) => {
-        const { cid, partnerUpDeadline, pointValue, title, due, description, templateCid } = task;
+        const { cid, partnerUpDeadline, pointValue, title, due, description, templateCid, outcomeType } = task;
         return (
           <Task
             key={cid}
+            outcomeType={outcomeType}
             showTooltips={i === 0}
             isCommitted={false}
             partnerUpDeadline={partnerUpDeadline}

@@ -16,7 +16,7 @@ export const COMMIT_TO_TASK = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -65,7 +65,7 @@ export const REQUEST_PARTNER_FOR_TASK = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -86,7 +86,7 @@ export const CONFIRM_PARTNER_REQUEST = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -107,7 +107,7 @@ export const CANCEL_PARTNER_REQUEST = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -128,7 +128,7 @@ export const DENY_PARTNER_REQUEST = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -149,7 +149,7 @@ export const REMOVE_BROKEN_PARTNERSHIP = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -170,7 +170,7 @@ export const CANCEL_TASK = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -191,7 +191,7 @@ export const BREAK_TASK = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -212,7 +212,7 @@ export const MARK_TASK_AS_DONE = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;

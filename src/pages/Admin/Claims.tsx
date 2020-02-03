@@ -14,8 +14,8 @@ const title = 'Claims';
 
 export default addPageData(() => {
   const { loading: loadingUsers, error: errorUsers, data: users } = useQueryHelper<UserInterface[]>(USERS, 'users');
-  const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper<TaskForAdmin[]>(CURRENT_TASKS, 'users');
-  const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'users');
+  const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper<TaskForAdmin[]>(CURRENT_TASKS, 'currentTasks');
+  const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
   const { loading: loadingClaims, error: errorClaims, data: claims } = useQueryHelper<Outcome[]>(CLAIMS, 'claims');
   const loading = loadingCurrentTasks || loadingPastTasks || loadingClaims || loadingUsers;
   if (loading) {
@@ -33,7 +33,7 @@ export default addPageData(() => {
     <>
       {claims.map(({ userCid, type, taskCid, cid }) => {
         const task = [...currentTasks, ...pastTasks].find(({ cid }) => cid === taskCid);
-        const user = users.find(({ cid }) => cid === taskCid);
+        const user = users.find(({ cid }) => cid === userCid);
         const name = user ? user.name : '';
         const title = task ? task.title : '';
         const due = task ? task.due : 0;

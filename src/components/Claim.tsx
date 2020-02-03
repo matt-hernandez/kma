@@ -8,8 +8,16 @@ import FlexRow from './FlexRow';
 import InlineBold from './InlineBold';
 import SmallCopy from './SmallCopy';
 import { formatDueDate } from '../util/date-time';
+import FlexCell from './FlexCell';
+import MarginWrapper from './MarginWrapper';
+import { colors } from '../styles/colors';
 
 const ClaimWrapper = styled.div`
+  padding-bottom: 10px;
+  border-bottom: 1px solid ${colors.gray2};
+`;
+
+const UserAndTaskDetailsWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
@@ -39,18 +47,26 @@ type Props = {
 
 const Claim: React.FunctionComponent<Props> = function ({ name, taskTitle, taskDue, onConfirm, onDeny }) {
   return (
-    <div>
-      <ClaimWrapper>
+    <ClaimWrapper>
+      <UserAndTaskDetailsWrapper>
         <UserPic />
         <TaskDetails>
-          <RegularCopy>{name} claims that they did</RegularCopy>
+          <RegularCopy>{name} claims they did</RegularCopy>
           <RegularCopy><InlineBold>{taskTitle}</InlineBold></RegularCopy>
           <SmallCopy>{formatDueDate(taskDue)}</SmallCopy>
         </TaskDetails>
-      </ClaimWrapper>
-      <IonButton expand="block" color="primary" onClick={onConfirm}>Confirm</IonButton>
-      <IonButton expand="block" color="danger" onClick={onDeny}>Deny</IonButton>
-    </div>
+      </UserAndTaskDetailsWrapper>
+      <MarginWrapper marginLeft marginRight>
+        <FlexRow>
+          <FlexCell shouldInflate>
+            <IonButton expand="block" color="danger" onClick={onDeny}>Deny</IonButton>
+          </FlexCell>
+          <FlexCell shouldInflate>
+            <IonButton expand="block" color="primary" onClick={onConfirm}>Confirm</IonButton>
+          </FlexCell>
+        </FlexRow>
+      </MarginWrapper>
+    </ClaimWrapper>
   );
 }
 
@@ -76,10 +92,10 @@ const ItemTextLoading = styled(LoadingBlock)`
 `;
 
 export const UserLoading = () => (
-  <ClaimWrapper>
+  <UserAndTaskDetailsWrapper>
     <FlexRow alignItems="center">
       <ItemIconLoading />
       <ItemTextLoading />
     </FlexRow>
-  </ClaimWrapper>
+  </UserAndTaskDetailsWrapper>
 );

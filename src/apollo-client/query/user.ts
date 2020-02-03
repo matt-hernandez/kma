@@ -83,7 +83,7 @@ export const OPEN_TASKS = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `; 
@@ -105,7 +105,7 @@ export const MY_TASKS = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -127,7 +127,7 @@ export const REQUESTED_PARTNER_TASKS = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;
@@ -149,7 +149,7 @@ export const MY_PAST_TASKS = gql`
         connectedUserName
         type
       }
-      wasCompleted
+      outcomeType
     }
   }
 `;

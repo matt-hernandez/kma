@@ -85,10 +85,11 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
         </>
       )}
       {requestedPartnerTasks && requestedPartnerTasks.map((task) => {
-          const { cid, partnerUpDeadline, templateCid, connections, title, due, pointValue, description } = task;
+          const { cid, partnerUpDeadline, templateCid, connections, title, due, pointValue, description, outcomeType } = task;
           return (
             <Task
               key={cid}
+              outcomeType={outcomeType}
               isCommitted={false}
               partnerUpDeadline={partnerUpDeadline}
               title={title}

@@ -1,4 +1,4 @@
-import { User, PartnerUpDeadline } from "./user";
+import { User, PartnerUpDeadline, OutcomeType } from "./user";
 
 export type ConnectionTypeForAdmin = 'REQUESTED' | 'CONFIRMED' | 'BROKE_WITH';
 
@@ -10,8 +10,6 @@ export interface ConnectionForAdmin {
   toCid: string;
   toName: string;
 }
-
-export type OutcomeType = 'FULFILLED' | 'FULFILLED_OMIT_PARTNER' | 'PENDING' | 'BROKEN' | 'BROKEN_OMIT_PARTNER';
 
 export interface Outcome {
   cid: string;

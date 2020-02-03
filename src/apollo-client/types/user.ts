@@ -37,6 +37,8 @@ export interface Connection {
 
 export type PartnerUpDeadline = 'ONE_HOUR' | 'TWO_HOURS' | 'SIX_HOURS' | 'TWELVE_HOURS' | 'ONE_DAY' | 'ONE_WEEK';
 
+export type OutcomeType = 'FULFILLED' | 'FULFILLED_OMIT_PARTNER' | 'PENDING' | 'BROKEN' | 'BROKEN_OMIT_PARTNER';
+
 export interface Task {
   cid: string;
   templateCid?: string;
@@ -47,5 +49,5 @@ export interface Task {
   description?: string;
   isCommitted: boolean;
   connections: Connection[];
-  wasCompleted: boolean | null;
+  outcomeType: OutcomeType | null;
 }

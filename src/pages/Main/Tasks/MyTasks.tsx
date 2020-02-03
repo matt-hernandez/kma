@@ -7,7 +7,7 @@ import { addPageData } from '../../../util/add-page-data';
 import { MY_TASKS, ME } from '../../../apollo-client/query/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import useQueryHelper from '../../../util/use-query-helper';
-import { CONFIRM_PARTNER_REQUEST, CANCEL_PARTNER_REQUEST, DENY_PARTNER_REQUEST } from '../../../apollo-client/mutation/user';
+import { CONFIRM_PARTNER_REQUEST, CANCEL_PARTNER_REQUEST, DENY_PARTNER_REQUEST, MARK_TASK_AS_DONE } from '../../../apollo-client/mutation/user';
 import generateCacheUpdate from '../../../util/generate-cache-update';
 import { ToastContext } from '../../../contexts/ToastContext';
 import { LoadingContext } from '../../../contexts/LoadingContext';
@@ -53,6 +53,16 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
       'denyPartnerRequest'
     ),
   });
+  const [ markTaskAsDone ] = useMutation(MARK_TASK_AS_DONE, {
+    update: generateCacheUpdate<TaskInterface>(
+      'OVERWRITE_ITEM_IN_ARRAY',
+      {
+        name: 'myTasks',
+        query: MY_TASKS
+      },
+      'markTaskAsDone'
+    ),
+  });
   const isPageLoading = loadingMe || loadingMyTasks;
   return (
     <>
@@ -64,13 +74,14 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
         </>
       )}
       {myTasks && myTasks.map((task) => {
-        const { cid, pointValue, partnerUpDeadline, title, due, description, connections } = task;
+        const { cid, pointValue, partnerUpDeadline, title, due, description, connections, outcomeType } = task;
         return (
           <Task
             key={cid}
             isCommitted={true}
             pointValue={pointValue}
             partnerUpDeadline={partnerUpDeadline}
+            outcomeType={outcomeType}
             pendingPartners={connections.filter(({ type }) => type === 'REQUEST_TO')}
             confirmedPartners={connections.filter(({ type }) => type === 'CONFIRMED')}
             partnerRequestsToMe={connections.filter(({ type }) => type === 'REQUEST_FROM')}
@@ -174,6 +185,23 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
                       ...items.slice(index + 1),
                     ];
                     writeCachedQuery(MY_TASKS, 'myTasks', items);
+                  }
+                })
+                .finally(hideLoadingScreen);
+            }}
+            onMarkAsDone={() => {
+              showLoadingScreen();
+              markTaskAsDone({
+                  variables: {
+                    taskCid: cid
+                  }
+                })
+                .catch((e: ApolloError) => {
+                  if (e.networkError) {
+                    showToast({
+                      color: 'danger',
+                      message: 'We couldn\'t connect to the internet. Please try again.'
+                    });
                   }
                 })
                 .finally(hideLoadingScreen);
