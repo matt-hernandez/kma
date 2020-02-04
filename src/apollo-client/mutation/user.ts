@@ -175,9 +175,9 @@ export const CANCEL_TASK = gql`
   }
 `;
 
-export const BREAK_TASK = gql`
-  mutation BreakTask($taskCid: String!) {
-    breakTask(taskCid: $taskCid) {
+export const BREAK_COMMITMENT = gql`
+  mutation BreakCommitment($taskCid: String!) {
+    breakCommitment(taskCid: $taskCid) {
       cid
       templateCid
       title

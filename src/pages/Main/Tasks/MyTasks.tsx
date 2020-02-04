@@ -4,10 +4,10 @@ import { ApolloError } from 'apollo-boost';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Task, { TaskLoading } from '../../../components/Task';
 import { addPageData } from '../../../util/add-page-data';
-import { MY_TASKS, ME } from '../../../apollo-client/query/user';
+import { MY_TASKS, ME, MY_PAST_TASKS } from '../../../apollo-client/query/user';
 import { Task as TaskInterface, User } from '../../../apollo-client/types/user';
 import useQueryHelper from '../../../util/use-query-helper';
-import { CONFIRM_PARTNER_REQUEST, CANCEL_PARTNER_REQUEST, DENY_PARTNER_REQUEST, MARK_TASK_AS_DONE } from '../../../apollo-client/mutation/user';
+import { CONFIRM_PARTNER_REQUEST, CANCEL_PARTNER_REQUEST, DENY_PARTNER_REQUEST, MARK_TASK_AS_DONE, BREAK_COMMITMENT } from '../../../apollo-client/mutation/user';
 import generateCacheUpdate from '../../../util/generate-cache-update';
 import { ToastContext } from '../../../contexts/ToastContext';
 import { LoadingContext } from '../../../contexts/LoadingContext';
@@ -61,6 +61,19 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
         query: MY_TASKS
       },
       'markTaskAsDone'
+    ),
+  });
+  const [ breakCommitment ] = useMutation(BREAK_COMMITMENT, {
+    update: generateCacheUpdate<TaskInterface>(
+      'TRANSFER_ITEM',
+      {
+        from: 'myTasks',
+        fromQuery: MY_TASKS,
+        to: 'myPastTasks',
+        toQuery: MY_PAST_TASKS,
+        sort: (d1, d2) => d1.due - d2.due
+      },
+      'breakCommitment'
     ),
   });
   const isPageLoading = loadingMe || loadingMyTasks;
@@ -201,6 +214,33 @@ const MyTasks: React.FunctionComponent<RouteComponentProps> = ({
                     showToast({
                       color: 'danger',
                       message: 'We couldn\'t connect to the internet. Please try again.'
+                    });
+                  } else {
+                    showToast({
+                      color: 'danger',
+                      message: 'There was a problem marking your task as done. Please try again.'
+                    });
+                  }
+                })
+                .finally(hideLoadingScreen);
+            }}
+            onBreak={() => {
+              showLoadingScreen();
+              breakCommitment({
+                  variables: {
+                    taskCid: cid
+                  }
+                })
+                .catch((e: ApolloError) => {
+                  if (e.networkError) {
+                    showToast({
+                      color: 'danger',
+                      message: 'We couldn\'t connect to the internet. Please try again.'
+                    });
+                  } else {
+                    showToast({
+                      color: 'danger',
+                      message: 'There was a problem breaking your commitment. Please try again.'
                     });
                   }
                 })

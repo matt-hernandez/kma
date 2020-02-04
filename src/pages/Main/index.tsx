@@ -21,7 +21,7 @@ import RequestSent from './TransitoryPages/RequestSent';
 import FindAPartner from './TransitoryPages/FindAPartner';
 import UserPool from './TransitoryPages/UserPool';
 import { AppPage } from '../../declarations';
-import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS } from '../../apollo-client/query/user';
+import { ME, OPEN_TASKS, MY_TASKS, REQUESTED_PARTNER_TASKS, MY_PAST_TASKS } from '../../apollo-client/query/user';
 import { ApolloError } from 'apollo-boost';
 import { ToastContext } from '../../contexts/ToastContext';
 
@@ -83,6 +83,10 @@ const Main: React.FunctionComponent<RouteComponentProps> = ({
     onError
   });
   useQuery(REQUESTED_PARTNER_TASKS, {
+    fetchPolicy: 'cache-and-network',
+    onError
+  });
+  useQuery(MY_PAST_TASKS, {
     fetchPolicy: 'cache-and-network',
     onError
   });
