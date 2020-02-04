@@ -227,3 +227,70 @@ export const DELETE_TASK_TEMPLATE = gql`
     }
   }
 `;
+
+export const CONFIRM_AS_DONE = gql`
+  mutation ConfirmAsDone($cid: String!) {
+    confirmAsDone(cid: $cid) {
+      cid
+      templateCid
+      title
+      due
+      publishDate
+      partnerUpDeadline
+      description
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
+    }
+  }
+`;
+
+export const DENY_AS_DONE = gql`
+  mutation DenyAsDone($cid: String!) {
+    DenyAsDone(cid: $cid) {
+      cid
+      templateCid
+      title
+      due
+      publishDate
+      partnerUpDeadline
+      description
+      committedUsers {
+        cid
+        name
+        email
+      }
+      connections {
+        cid
+        fromCid
+        fromName
+        type
+        toCid
+        toName
+      }
+      outcomes {
+        cid
+        taskCid
+        userCid
+        type
+      }
+    }
+  }
+`;
+

@@ -88,6 +88,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
                 }
               `,
               data: {
+                ...data,
                 templateCid: data.cid
               }
             });
