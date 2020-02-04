@@ -83,7 +83,7 @@ export const CHANGE_TASK_STATUS_FOR_USER = gql`
 `;
 
 export const CREATE_TASK = gql`
-  mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $pointValue: Int!, $description: String) {
+  mutation CreateTask($title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: PartnerUpDeadline!, $pointValue: Int!, $description: String) {
     createTask(title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, pointValue: $pointValue, description: $description) {
       cid
       templateCid
@@ -117,7 +117,7 @@ export const CREATE_TASK = gql`
 `;
 
 export const UPDATE_TASK = gql`
-  mutation UpdateTask($cid: String, $title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $pointValue: Int!, $description: String) {
+  mutation UpdateTask($cid: String!, $title: String!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: PartnerUpDeadline!, $pointValue: Int!, $description: String) {
     updateTask(cid: $cid, title: $title, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, pointValue: $pointValue, description: $description) {
       cid
       templateCid
@@ -199,7 +199,7 @@ export const CREATE_TASK_TEMPLATE = gql`
 `;
 
 export const UPDATE_TASK_TEMPLATE = gql`
-  mutation UpdateTaskTemplate($cid: String, $title: String!, $description: String, $pointValue: Int!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: Float!, $repeatFrequency: String!) {
+  mutation UpdateTaskTemplate($cid: String!, $title: String!, $description: String, $pointValue: Int!, $due: Float!, $publishDate: Float!, $partnerUpDeadline: PartnerUpDeadline!, $repeatFrequency: RepeatFrequency!) {
     updateTaskTemplate(cid: $cid, title: $title, description: $description, pointValue: $pointValue, due: $due, publishDate: $publishDate, partnerUpDeadline: $partnerUpDeadline, repeatFrequency: $repeatFrequency) {
       cid
       title
@@ -214,7 +214,7 @@ export const UPDATE_TASK_TEMPLATE = gql`
 `;
 
 export const DELETE_TASK_TEMPLATE = gql`
-  mutation DeleteTaskTemplate($cid: String) {
+  mutation DeleteTaskTemplate($cid: String!) {
     deleteTaskTemplate(cid: $cid) {
       cid
       title

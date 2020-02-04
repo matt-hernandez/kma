@@ -26,11 +26,16 @@ export const ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM = gql`
     addTaskTemplateToSkipCommitConfirm(templateCid: $templateCid) {
       cid
       name 
-      email 
-      score
+      email
       accessRights
-      templatesToSkipCommitConfirm
-      templatesToSkipMarkAsDone
+      templatesToSkipCommitConfirm {
+        cid
+        title
+      }
+      templatesToSkipMarkAsDone {
+        cid
+        title
+      }
     }
   }
 `;
@@ -40,11 +45,16 @@ export const ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM = gql`
     addTaskTemplateToSkipDoneConfirm(templateCid: $templateCid) {
       cid
       name 
-      email 
-      score
+      email
       accessRights
-      templatesToSkipCommitConfirm
-      templatesToSkipMarkAsDone
+      templatesToSkipCommitConfirm {
+        cid
+        title
+      }
+      templatesToSkipMarkAsDone {
+        cid
+        title
+      }
     }
   }
 `;
@@ -136,27 +146,6 @@ export const DENY_PARTNER_REQUEST = gql`
 export const REMOVE_BROKEN_PARTNERSHIP = gql`
   mutation RemoveBrokenPartnership($taskCid: String!, $connectionCid: String!) {
     removeBrokenPartnership(taskCid: $taskCid, connectionCid: $connectionCid) {
-      cid
-      templateCid
-      title
-      due
-      partnerUpDeadline
-      description
-      isCommitted
-      connections {
-        cid
-        connectedUserCid
-        connectedUserName
-        type
-      }
-      outcomeType
-    }
-  }
-`;
-
-export const CANCEL_TASK = gql`
-  mutation CancelTask($taskCid: String!) {
-    cancelTask(taskCid: $taskCid) {
       cid
       templateCid
       title
