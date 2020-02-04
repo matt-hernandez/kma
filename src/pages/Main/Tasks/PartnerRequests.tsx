@@ -49,14 +49,33 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
     ),
   });
   const [ denyPartnerRequest ] = useMutation(DENY_PARTNER_REQUEST, {
-    update: generateCacheUpdate<TaskInterface>(
-      'OVERWRITE_ITEM_IN_ARRAY',
-      {
-        name: 'myTasks',
-        query: MY_TASKS
-      },
-      'denyPartnerRequest'
-    ),
+    update: (cache, { data }) => {
+      const d = data['denyPartnerRequest'] as TaskInterface;
+      const updatePartnerRequests = generateCacheUpdate<TaskInterface>(
+        'OVERWRITE_ITEM_IN_ARRAY',
+        {
+          name: 'requestedPartnerTasks',
+          query: REQUESTED_PARTNER_TASKS
+        },
+        'denyPartnerRequest'
+      );
+      const updateOpenTasks = generateCacheUpdate<TaskInterface>(
+        'TRANSFER_ITEM',
+        {
+          from: 'requestedPartnerTasks',
+          fromQuery: REQUESTED_PARTNER_TASKS,
+          to: 'openTasks',
+          toQuery: OPEN_TASKS,
+          sort: (d1, d2) => d1.due - d2.due
+        },
+        'denyPartnerRequest'
+      );
+      if (d.connections.length === 0) {
+        updateOpenTasks(cache, { data });
+      } else {
+        updatePartnerRequests(cache, { data });
+      }
+    },
   });
   const [ commitToTask ] = useMutation(COMMIT_TO_TASK, {
     update: generateCacheUpdate<TaskInterface>(
