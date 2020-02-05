@@ -38,7 +38,7 @@ function generateHooks(type: 'Query' | 'Mutation', nameArray: string[], source: 
 }
 
 function generate() {
-  const types = readFileSync(resolve(__dirname, '__generated__/types.ts'), 'utf8');
+  const types = readFileSync(resolve(__dirname, '../__generated__/types.ts'), 'utf8');
   const queryMatch = types.match(/export type Query = (\{[\S\s]*?\});/);
   if (!queryMatch) {
     return;
@@ -75,6 +75,6 @@ function generate() {
   `} from './mutations';\n\n` +
   `${queryHooks}\n` +
   `${mutationHooks}`;
-  writeFileSync(resolve(__dirname, 'src/apollo-client/hooks.ts'), hooks, 'utf8');
+  writeFileSync(resolve(__dirname, '../src/apollo-client/hooks.ts'), hooks, 'utf8');
 }
 generate();

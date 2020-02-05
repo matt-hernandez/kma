@@ -31,10 +31,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "apollo:download": "apollo client:download-schema schema.graphql",
-    "apollo:validate": "npm run apollo:download && ts-node --compiler-options '{\"module\":\"commonjs\"}' validate-client.ts",
+    "apollo:download": "apollo client:download-schema graphql/schema.graphql",
+    "apollo:validate": "npm run apollo:download && ts-node --compiler-options '{\"module\":\"commonjs\"}' graphql/validate-client.ts",
     "apollo:codegen": "npm run apollo:validate && graphql-codegen",
-    "apollo:generate": "npm run apollo:codegen && ts-node --compiler-options '{\"module\":\"commonjs\"}' generate-hooks.ts"
+    "apollo:generate": "npm run apollo:codegen && ts-node --compiler-options '{\"module\":\"commonjs\"}' graphql/generate-hooks.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

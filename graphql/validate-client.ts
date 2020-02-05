@@ -3,8 +3,8 @@ import { buildSchema, GraphQLError } from 'graphql';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { red, bold } from 'colors/safe';
-import * as queries from './src/apollo-client/queries';
-import * as mutations from './src/apollo-client/mutations';
+import * as queries from '../src/apollo-client/queries';
+import * as mutations from '../src/apollo-client/mutations';
 
 const schema = readFileSync(resolve(__dirname, 'schema.graphql'), 'utf8');
 const graphQLSchema = buildSchema(schema);
