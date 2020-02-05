@@ -32,7 +32,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "apollo:generate": "graphql-codegen"
+    "apollo:generate": "graphql-codegen && npm run apollo:generate-hooks",
+    "apollo:generate-hooks": "ts-node --compiler-options '{\"module\":\"commonjs\"}' generate-hooks.ts"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,6 +49,7 @@
     "@graphql-codegen/cli": "^1.12.1",
     "@graphql-codegen/typescript": "^1.12.1",
     "@types/react-redux": "^7.1.2",
-    "@types/styled-components": "^4.1.18"
+    "@types/styled-components": "^4.1.18",
+    "ts-node": "^8.6.2"
   }
 }
