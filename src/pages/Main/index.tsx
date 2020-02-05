@@ -78,6 +78,7 @@ const Main: React.FunctionComponent<RouteComponentProps> = ({
     }
   }
   useQuery(ME, {
+    fetchPolicy: 'cache-and-network',
     onError
   });
   useQuery(OPEN_TASKS, {

@@ -1,0 +1,216 @@
+"""
+Direct the client to resolve this field locally, either from the cache or local resolvers.
+"""
+directive @client(
+  """
+  When true, the client will never use the cache for this value. See
+  https://www.apollographql.com/docs/react/essentials/local-state/#forcing-resolvers-with-clientalways-true
+  """
+  always: Boolean
+) on FIELD | FRAGMENT_DEFINITION | INLINE_FRAGMENT
+
+"""
+Export this locally resolved field as a variable to be used in the remainder of this query. See
+https://www.apollographql.com/docs/react/essentials/local-state/#using-client-fields-as-variables
+"""
+directive @export(
+  """The variable name to export this field as."""
+  as: String!
+) on FIELD
+
+"""
+Specify a custom store key for this result. See
+https://www.apollographql.com/docs/react/advanced/caching/#the-connection-directive
+"""
+directive @connection(
+  """Specify the store key."""
+  key: String!
+
+  """
+  An array of query argument names to include in the generated custom store key.
+  """
+  filter: [String!]
+) on FIELD
+
+enum AccessRights {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+type ConfirmTaskAsDoneResult {
+  task: TaskForAdmin!
+  outcome: Outcome!
+}
+
+type Connection {
+  cid: String!
+  connectedUserCid: String!
+  connectedUserName: String!
+  type: ConnectionType!
+}
+
+type ConnectionForAdmin {
+  cid: String!
+  fromCid: String!
+  fromName: String!
+  type: ConnectionTypeForAdmin!
+  toCid: String!
+  toName: String!
+}
+
+enum ConnectionType {
+  REQUEST_TO
+  REQUEST_FROM
+  CONFIRMED
+  BROKE_WITH
+}
+
+enum ConnectionTypeForAdmin {
+  REQUESTED
+  CONFIRMED
+  BROKE_WITH
+}
+
+type Mutation {
+  commitToTask(taskCid: String!): Task!
+  addTaskTemplateToSkipCommitConfirm(templateCid: String!): User!
+  addTaskTemplateToSkipDoneConfirm(templateCid: String!): User!
+  requestPartnerForTask(taskCid: String!, partnerCid: String!): Task!
+  confirmPartnerRequest(taskCid: String!, connectionCid: String!): Task!
+  cancelPartnerRequest(taskCid: String!, connectionCid: String!): Task!
+  denyPartnerRequest(taskCid: String!, connectionCid: String!): Task!
+  removeBrokenPartnership(taskCid: String!, connectionCid: String!): Task!
+  breakCommitment(taskCid: String!): Task!
+  markTaskAsDone(taskCid: String!): Task!
+  createUser(name: String!, email: String!, loginTimestamp: Float!): User!
+  makeUserInactive(cid: String!): User!
+  makeUserActive(cid: String!): User!
+  makeUserAnAdmin(cid: String!): User!
+  removeUserAsAdmin(cid: String!): User!
+  changeTaskStatusForUser(outcomeCid: String!, outcomeType: OutcomeType!): TaskForAdmin!
+  createTask(title: String!, due: Float!, publishDate: Float!, partnerUpDeadline: PartnerUpDeadline!, description: String, pointValue: Int!): TaskForAdmin!
+  updateTask(cid: String!, title: String!, due: Float!, publishDate: Float!, partnerUpDeadline: PartnerUpDeadline!, description: String, pointValue: Int!): TaskForAdmin!
+  deleteTask(cid: String!): TaskForAdmin!
+  createTaskTemplate(taskCid: String!, repeatFrequency: RepeatFrequency!): TaskTemplate!
+  updateTaskTemplate(cid: String!, title: String!, description: String, pointValue: Int!, due: Float!, publishDate: Float!, partnerUpDeadline: PartnerUpDeadline!, repeatFrequency: RepeatFrequency): TaskTemplate!
+  deleteTaskTemplate(cid: String!): TaskTemplate!
+  confirmAsDone(taskCid: String!, userCid: String!): ConfirmTaskAsDoneResult!
+  denyAsDone(taskCid: String!, userCid: String!): ConfirmTaskAsDoneResult!
+}
+
+type Outcome {
+  cid: String!
+  taskCid: String!
+  userCid: String!
+  type: OutcomeType!
+}
+
+enum OutcomeType {
+  FULFILLED
+  FULFILLED_OMIT_PARTNER
+  PENDING
+  BROKEN
+  BROKEN_OMIT_PARTNER
+}
+
+enum PartnerUpDeadline {
+  ONE_HOUR
+  TWO_HOURS
+  SIX_HOURS
+  TWELVE_HOURS
+  ONE_DAY
+  ONE_WEEK
+}
+
+type PossiblePartner {
+  cid: String!
+  name: String!
+}
+
+type Query {
+  me: User!
+  scoreDetails: ScoreDetails!
+  possiblePartnersForTask(query: String!, taskCid: String!): [PossiblePartner!]!
+  userPool(taskCid: String!): [PossiblePartner!]!
+  onePossiblePartnerForTask(taskCid: String!, partnerCid: String!): PossiblePartner
+  getPartnerDetails(partnerCid: String!): PossiblePartner!
+  openTasks: [Task!]!
+  myTasks: [Task!]!
+  requestedPartnerTasks: [Task!]!
+  myPastTasks: [Task!]!
+  users: [User]!
+  currentTasks: [TaskForAdmin]!
+  pastTasks: [TaskForAdmin]!
+  upcomingTasks: [TaskForAdmin]!
+  taskTemplates: [TaskTemplate]!
+  claims: [Outcome]!
+  userScore(cid: String!): ScoreDetails!
+}
+
+enum RepeatFrequency {
+  DAY
+  WEEK
+  MONTH
+  END_OF_MONTH
+}
+
+type ScoreDetails {
+  score: Int!
+  tasksDoneWithAPartner: Int!
+  tasksDoneAlone: Int!
+}
+
+type Task {
+  cid: String!
+  templateCid: String
+  title: String!
+  due: Float!
+  pointValue: Int!
+  partnerUpDeadline: PartnerUpDeadline!
+  description: String
+  isCommitted: Boolean!
+  hasOthers: Boolean!
+  connections: [Connection]!
+  outcomeType: OutcomeType
+}
+
+type TaskForAdmin {
+  cid: String!
+  templateCid: String
+  title: String!
+  due: Float!
+  pointValue: Int!
+  publishDate: Float!
+  partnerUpDeadline: PartnerUpDeadline!
+  description: String
+  committedUsers: [User]!
+  connections: [ConnectionForAdmin]!
+  outcomes: [Outcome]!
+}
+
+type TaskTemplate {
+  cid: String!
+  title: String!
+  description: String
+  due: Float!
+  publishDate: Float!
+  pointValue: Int!
+  repeatFrequency: RepeatFrequency!
+  partnerUpDeadline: PartnerUpDeadline!
+}
+
+type TemplateSummary {
+  title: String!
+  cid: String!
+}
+
+type User {
+  cid: String!
+  name: String!
+  email: String!
+  accessRights: AccessRights!
+  isActive: Boolean!
+  templatesToSkipCommitConfirm: [TemplateSummary]!
+  templatesToSkipMarkAsDone: [TemplateSummary]!
+}

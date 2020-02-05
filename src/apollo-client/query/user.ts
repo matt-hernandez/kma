@@ -1,4 +1,6 @@
 import gql from 'graphql-tag';
+import { useQuery, QueryHookOptions } from '@apollo/react-hooks';
+import { User, ScoreDetails } from '../../../__generated__/types';
 
 export const ME = gql`
   query Me {
@@ -20,6 +22,10 @@ export const ME = gql`
   }
 `;
 
+export function useQueryMe(options?: QueryHookOptions<User, null>) {
+  return useQuery<User, null>(ME, options);
+}
+
 export const SCORE_DETAILS = gql`
   query ScoreDetails {
     scoreDetails {
@@ -29,6 +35,10 @@ export const SCORE_DETAILS = gql`
     }
   }
 `;
+
+export function useQueryScoreDetails(options?: QueryHookOptions<ScoreDetails, null>) {
+  return useQuery<ScoreDetails, null>(SCORE_DETAILS, options);
+}
 
 export const POSSIBLE_PARTNERS_FOR_TASK = gql`
   query PossiblePartnersForTask($query: String!, $taskCid: String!) {
