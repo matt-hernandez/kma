@@ -1,4 +1,4 @@
-import { useQuery, useMutation, QueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';
 import {
   Query,
   Mutation,
@@ -75,159 +75,256 @@ import {
 } from './mutations';
 
 
-export function useQueryMe(options?: QueryHookOptions<Query['me'], null>) {
-  return useQuery<Query['me'], null>(ME, options);
+export function useQueryMe(options?: QueryHookOptions<{ me: Query['me'] }, null>) {
+  const { loading, error, data } = useQuery<{ me: Query['me'] }, null>(ME, options);
+  return { loading, error, data: data ? data.me : data };
 }
 
-export function useQueryScoreDetails(options?: QueryHookOptions<Query['scoreDetails'], null>) {
-  return useQuery<Query['scoreDetails'], null>(SCORE_DETAILS, options);
+export function useQueryScoreDetails(options?: QueryHookOptions<{ scoreDetails: Query['scoreDetails'] }, null>) {
+  const { loading, error, data } = useQuery<{ scoreDetails: Query['scoreDetails'] }, null>(SCORE_DETAILS, options);
+  return { loading, error, data: data ? data.scoreDetails : data };
 }
 
-export function useQueryPartnerSearch(options: QueryHookOptions<Query['partnerSearch'], QueryPartnerSearchArgs>) {
-  return useQuery<Query['partnerSearch'], QueryPartnerSearchArgs>(PARTNER_SEARCH, options);
+export function useQueryPartnerSearch(options: QueryHookOptions<{ partnerSearch: Query['partnerSearch'] }, QueryPartnerSearchArgs>) {
+  const { loading, error, data } = useQuery<{ partnerSearch: Query['partnerSearch'] }, QueryPartnerSearchArgs>(PARTNER_SEARCH, options);
+  return { loading, error, data: data ? data.partnerSearch : data };
 }
 
-export function useQueryUserPool(options: QueryHookOptions<Query['userPool'], QueryUserPoolArgs>) {
-  return useQuery<Query['userPool'], QueryUserPoolArgs>(USER_POOL, options);
+export function useQueryUserPool(options: QueryHookOptions<{ userPool: Query['userPool'] }, QueryUserPoolArgs>) {
+  const { loading, error, data } = useQuery<{ userPool: Query['userPool'] }, QueryUserPoolArgs>(USER_POOL, options);
+  return { loading, error, data: data ? data.userPool : data };
 }
 
-export function useQueryGetPartnerDetails(options: QueryHookOptions<Query['getPartnerDetails'], QueryGetPartnerDetailsArgs>) {
-  return useQuery<Query['getPartnerDetails'], QueryGetPartnerDetailsArgs>(GET_PARTNER_DETAILS, options);
+export function useQueryGetPartnerDetails(options: QueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>) {
+  const { loading, error, data } = useQuery<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>(GET_PARTNER_DETAILS, options);
+  return { loading, error, data: data ? data.getPartnerDetails : data };
 }
 
-export function useQueryOpenTasks(options?: QueryHookOptions<Query['openTasks'], null>) {
-  return useQuery<Query['openTasks'], null>(OPEN_TASKS, options);
+export function useQueryOpenTasks(options?: QueryHookOptions<{ openTasks: Query['openTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ openTasks: Query['openTasks'] }, null>(OPEN_TASKS, options);
+  return { loading, error, data: data ? data.openTasks : data };
 }
 
-export function useQueryMyTasks(options?: QueryHookOptions<Query['myTasks'], null>) {
-  return useQuery<Query['myTasks'], null>(MY_TASKS, options);
+export function useQueryMyTasks(options?: QueryHookOptions<{ myTasks: Query['myTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ myTasks: Query['myTasks'] }, null>(MY_TASKS, options);
+  return { loading, error, data: data ? data.myTasks : data };
 }
 
-export function useQueryRequestedPartnerTasks(options?: QueryHookOptions<Query['requestedPartnerTasks'], null>) {
-  return useQuery<Query['requestedPartnerTasks'], null>(REQUESTED_PARTNER_TASKS, options);
+export function useQueryRequestedPartnerTasks(options?: QueryHookOptions<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>(REQUESTED_PARTNER_TASKS, options);
+  return { loading, error, data: data ? data.requestedPartnerTasks : data };
 }
 
-export function useQueryMyPastTasks(options?: QueryHookOptions<Query['myPastTasks'], null>) {
-  return useQuery<Query['myPastTasks'], null>(MY_PAST_TASKS, options);
+export function useQueryMyPastTasks(options?: QueryHookOptions<{ myPastTasks: Query['myPastTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ myPastTasks: Query['myPastTasks'] }, null>(MY_PAST_TASKS, options);
+  return { loading, error, data: data ? data.myPastTasks : data };
 }
 
-export function useQueryUsers(options?: QueryHookOptions<Query['users'], null>) {
-  return useQuery<Query['users'], null>(USERS, options);
+export function useQueryUsers(options?: QueryHookOptions<{ users: Query['users'] }, null>) {
+  const { loading, error, data } = useQuery<{ users: Query['users'] }, null>(USERS, options);
+  return { loading, error, data: data ? data.users : data };
 }
 
-export function useQueryCurrentTasks(options?: QueryHookOptions<Query['currentTasks'], null>) {
-  return useQuery<Query['currentTasks'], null>(CURRENT_TASKS, options);
+export function useQueryCurrentTasks(options?: QueryHookOptions<{ currentTasks: Query['currentTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ currentTasks: Query['currentTasks'] }, null>(CURRENT_TASKS, options);
+  return { loading, error, data: data ? data.currentTasks : data };
 }
 
-export function useQueryPastTasks(options?: QueryHookOptions<Query['pastTasks'], null>) {
-  return useQuery<Query['pastTasks'], null>(PAST_TASKS, options);
+export function useQueryPastTasks(options?: QueryHookOptions<{ pastTasks: Query['pastTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ pastTasks: Query['pastTasks'] }, null>(PAST_TASKS, options);
+  return { loading, error, data: data ? data.pastTasks : data };
 }
 
-export function useQueryUpcomingTasks(options?: QueryHookOptions<Query['upcomingTasks'], null>) {
-  return useQuery<Query['upcomingTasks'], null>(UPCOMING_TASKS, options);
+export function useQueryUpcomingTasks(options?: QueryHookOptions<{ upcomingTasks: Query['upcomingTasks'] }, null>) {
+  const { loading, error, data } = useQuery<{ upcomingTasks: Query['upcomingTasks'] }, null>(UPCOMING_TASKS, options);
+  return { loading, error, data: data ? data.upcomingTasks : data };
 }
 
-export function useQueryTaskTemplates(options?: QueryHookOptions<Query['taskTemplates'], null>) {
-  return useQuery<Query['taskTemplates'], null>(TASK_TEMPLATES, options);
+export function useQueryTaskTemplates(options?: QueryHookOptions<{ taskTemplates: Query['taskTemplates'] }, null>) {
+  const { loading, error, data } = useQuery<{ taskTemplates: Query['taskTemplates'] }, null>(TASK_TEMPLATES, options);
+  return { loading, error, data: data ? data.taskTemplates : data };
 }
 
-export function useQueryClaims(options?: QueryHookOptions<Query['claims'], null>) {
-  return useQuery<Query['claims'], null>(CLAIMS, options);
+export function useQueryClaims(options?: QueryHookOptions<{ claims: Query['claims'] }, null>) {
+  const { loading, error, data } = useQuery<{ claims: Query['claims'] }, null>(CLAIMS, options);
+  return { loading, error, data: data ? data.claims : data };
 }
 
-export function useQueryUserScore(options: QueryHookOptions<Query['userScore'], QueryUserScoreArgs>) {
-  return useQuery<Query['userScore'], QueryUserScoreArgs>(USER_SCORE, options);
+export function useQueryUserScore(options: QueryHookOptions<{ userScore: Query['userScore'] }, QueryUserScoreArgs>) {
+  const { loading, error, data } = useQuery<{ userScore: Query['userScore'] }, QueryUserScoreArgs>(USER_SCORE, options);
+  return { loading, error, data: data ? data.userScore : data };
 }
 
 
-export function useMutationCommitToTask(options: MutationHookOptions<Mutation['commitToTask'], MutationCommitToTaskArgs>) {
-  return useMutation<Mutation['commitToTask'], MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
+export function useLazyQueryMe(options?: LazyQueryHookOptions<{ me: Query['me'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ me: Query['me'] }, null>(ME, options);
+  return [ queryFetch, { loading, error, data: data ? data.me : data } ];
 }
 
-export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
-  return useMutation<Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
+export function useLazyQueryScoreDetails(options?: LazyQueryHookOptions<{ scoreDetails: Query['scoreDetails'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ scoreDetails: Query['scoreDetails'] }, null>(SCORE_DETAILS, options);
+  return [ queryFetch, { loading, error, data: data ? data.scoreDetails : data } ];
 }
 
-export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
-  return useMutation<Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
+export function useLazyQueryPartnerSearch(options?: LazyQueryHookOptions<{ partnerSearch: Query['partnerSearch'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ partnerSearch: Query['partnerSearch'] }, null>(PARTNER_SEARCH, options);
+  return [ queryFetch, { loading, error, data: data ? data.partnerSearch : data } ];
 }
 
-export function useMutationRequestPartnerForTask(options: MutationHookOptions<Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>) {
-  return useMutation<Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
+export function useLazyQueryUserPool(options?: LazyQueryHookOptions<{ userPool: Query['userPool'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ userPool: Query['userPool'] }, null>(USER_POOL, options);
+  return [ queryFetch, { loading, error, data: data ? data.userPool : data } ];
 }
 
-export function useMutationConfirmPartnerRequest(options: MutationHookOptions<Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>) {
-  return useMutation<Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
+export function useLazyQueryGetPartnerDetails(options?: LazyQueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ getPartnerDetails: Query['getPartnerDetails'] }, null>(GET_PARTNER_DETAILS, options);
+  return [ queryFetch, { loading, error, data: data ? data.getPartnerDetails : data } ];
 }
 
-export function useMutationCancelPartnerRequest(options: MutationHookOptions<Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>) {
-  return useMutation<Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
+export function useLazyQueryOpenTasks(options?: LazyQueryHookOptions<{ openTasks: Query['openTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ openTasks: Query['openTasks'] }, null>(OPEN_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.openTasks : data } ];
 }
 
-export function useMutationDenyPartnerRequest(options: MutationHookOptions<Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>) {
-  return useMutation<Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
+export function useLazyQueryMyTasks(options?: LazyQueryHookOptions<{ myTasks: Query['myTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ myTasks: Query['myTasks'] }, null>(MY_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.myTasks : data } ];
 }
 
-export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>) {
-  return useMutation<Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
+export function useLazyQueryRequestedPartnerTasks(options?: LazyQueryHookOptions<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>(REQUESTED_PARTNER_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.requestedPartnerTasks : data } ];
 }
 
-export function useMutationBreakCommitment(options: MutationHookOptions<Mutation['breakCommitment'], MutationBreakCommitmentArgs>) {
-  return useMutation<Mutation['breakCommitment'], MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
+export function useLazyQueryMyPastTasks(options?: LazyQueryHookOptions<{ myPastTasks: Query['myPastTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ myPastTasks: Query['myPastTasks'] }, null>(MY_PAST_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.myPastTasks : data } ];
 }
 
-export function useMutationMarkTaskAsDone(options: MutationHookOptions<Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>) {
-  return useMutation<Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
+export function useLazyQueryUsers(options?: LazyQueryHookOptions<{ users: Query['users'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ users: Query['users'] }, null>(USERS, options);
+  return [ queryFetch, { loading, error, data: data ? data.users : data } ];
 }
 
-export function useMutationMakeUserInactive(options: MutationHookOptions<Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>) {
-  return useMutation<Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
+export function useLazyQueryCurrentTasks(options?: LazyQueryHookOptions<{ currentTasks: Query['currentTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ currentTasks: Query['currentTasks'] }, null>(CURRENT_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.currentTasks : data } ];
 }
 
-export function useMutationMakeUserActive(options: MutationHookOptions<Mutation['makeUserActive'], MutationMakeUserActiveArgs>) {
-  return useMutation<Mutation['makeUserActive'], MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
+export function useLazyQueryPastTasks(options?: LazyQueryHookOptions<{ pastTasks: Query['pastTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ pastTasks: Query['pastTasks'] }, null>(PAST_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.pastTasks : data } ];
 }
 
-export function useMutationMakeUserAnAdmin(options: MutationHookOptions<Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>) {
-  return useMutation<Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
+export function useLazyQueryUpcomingTasks(options?: LazyQueryHookOptions<{ upcomingTasks: Query['upcomingTasks'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ upcomingTasks: Query['upcomingTasks'] }, null>(UPCOMING_TASKS, options);
+  return [ queryFetch, { loading, error, data: data ? data.upcomingTasks : data } ];
 }
 
-export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>) {
-  return useMutation<Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
+export function useLazyQueryTaskTemplates(options?: LazyQueryHookOptions<{ taskTemplates: Query['taskTemplates'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ taskTemplates: Query['taskTemplates'] }, null>(TASK_TEMPLATES, options);
+  return [ queryFetch, { loading, error, data: data ? data.taskTemplates : data } ];
 }
 
-export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>) {
-  return useMutation<Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
+export function useLazyQueryClaims(options?: LazyQueryHookOptions<{ claims: Query['claims'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ claims: Query['claims'] }, null>(CLAIMS, options);
+  return [ queryFetch, { loading, error, data: data ? data.claims : data } ];
 }
 
-export function useMutationCreateTask(options: MutationHookOptions<Mutation['createTask'], MutationCreateTaskArgs>) {
-  return useMutation<Mutation['createTask'], MutationCreateTaskArgs>(CREATE_TASK, options);
+export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore: Query['userScore'] }, null>) {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ userScore: Query['userScore'] }, null>(USER_SCORE, options);
+  return [ queryFetch, { loading, error, data: data ? data.userScore : data } ];
 }
 
-export function useMutationUpdateTask(options: MutationHookOptions<Mutation['updateTask'], MutationUpdateTaskArgs>) {
-  return useMutation<Mutation['updateTask'], MutationUpdateTaskArgs>(UPDATE_TASK, options);
+
+export function useMutationCommitToTask(options: MutationHookOptions<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>) {
+  return useMutation<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
 }
 
-export function useMutationDeleteTask(options: MutationHookOptions<Mutation['deleteTask'], MutationDeleteTaskArgs>) {
-  return useMutation<Mutation['deleteTask'], MutationDeleteTaskArgs>(DELETE_TASK, options);
+export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
+  return useMutation<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
 }
 
-export function useMutationCreateTaskTemplate(options: MutationHookOptions<Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>) {
-  return useMutation<Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
+export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
+  return useMutation<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
 }
 
-export function useMutationUpdateTaskTemplate(options: MutationHookOptions<Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>) {
-  return useMutation<Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
+export function useMutationRequestPartnerForTask(options: MutationHookOptions<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>) {
+  return useMutation<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
 }
 
-export function useMutationDeleteTaskTemplate(options: MutationHookOptions<Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>) {
-  return useMutation<Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
+export function useMutationConfirmPartnerRequest(options: MutationHookOptions<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>) {
+  return useMutation<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
 }
 
-export function useMutationConfirmAsDone(options: MutationHookOptions<Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>) {
-  return useMutation<Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
+export function useMutationCancelPartnerRequest(options: MutationHookOptions<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>) {
+  return useMutation<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
 }
 
-export function useMutationDenyAsDone(options: MutationHookOptions<Mutation['denyAsDone'], MutationDenyAsDoneArgs>) {
-  return useMutation<Mutation['denyAsDone'], MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
+export function useMutationDenyPartnerRequest(options: MutationHookOptions<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>) {
+  return useMutation<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
+}
+
+export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>) {
+  return useMutation<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
+}
+
+export function useMutationBreakCommitment(options: MutationHookOptions<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>) {
+  return useMutation<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
+}
+
+export function useMutationMarkTaskAsDone(options: MutationHookOptions<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>) {
+  return useMutation<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
+}
+
+export function useMutationMakeUserInactive(options: MutationHookOptions<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>) {
+  return useMutation<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
+}
+
+export function useMutationMakeUserActive(options: MutationHookOptions<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>) {
+  return useMutation<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
+}
+
+export function useMutationMakeUserAnAdmin(options: MutationHookOptions<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>) {
+  return useMutation<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
+}
+
+export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>) {
+  return useMutation<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
+}
+
+export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>) {
+  return useMutation<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
+}
+
+export function useMutationCreateTask(options: MutationHookOptions<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>) {
+  return useMutation<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>(CREATE_TASK, options);
+}
+
+export function useMutationUpdateTask(options: MutationHookOptions<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>) {
+  return useMutation<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>(UPDATE_TASK, options);
+}
+
+export function useMutationDeleteTask(options: MutationHookOptions<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>) {
+  return useMutation<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>(DELETE_TASK, options);
+}
+
+export function useMutationCreateTaskTemplate(options: MutationHookOptions<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>) {
+  return useMutation<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
+}
+
+export function useMutationUpdateTaskTemplate(options: MutationHookOptions<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>) {
+  return useMutation<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
+}
+
+export function useMutationDeleteTaskTemplate(options: MutationHookOptions<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>) {
+  return useMutation<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
+}
+
+export function useMutationConfirmAsDone(options: MutationHookOptions<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>) {
+  return useMutation<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
+}
+
+export function useMutationDenyAsDone(options: MutationHookOptions<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>) {
+  return useMutation<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
 }

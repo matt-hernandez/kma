@@ -7,7 +7,7 @@ function camelToUpperSnakeCase(str: string) {
   }).toLocaleUpperCase();
 }
 
-function generateHooks(type: 'Query' | 'Mutation', nameArray: string[], source: string) {
+function generateHooks(type: 'Query' | 'Mutation' | 'LazyQuery', nameArray: string[], source: string) {
   const imports: string[] = [];
   const documentNodes: string[] = [];
   nameArray = nameArray.map(name => name.replace(':', ''));
@@ -22,12 +22,20 @@ function generateHooks(type: 'Query' | 'Mutation', nameArray: string[], source: 
     if (argType !== 'null') {
       imports.push(argType);
     }
-    const returnType = `${type}['${name}']`;
+    const returnType = `{ ${name}: ${type.indexOf('Query') > -1 ? 'Query' : type}['${name}'] }`;
     const staticQuery = camelToUpperSnakeCase(name);
     documentNodes.push(staticQuery);
     return acc + '\n' +
       `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>) {\n` +
-      `  return use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      (type === 'Query' ?
+      `  const { loading, error, data } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      `  return { loading, error, data: data ? data.${name} : data };\n`
+      : type === 'Mutation' ?
+      `  return use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n`
+      : type === 'LazyQuery' ?
+      `  const [ queryFetch, { loading, error, data } ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      `  return [ queryFetch, { loading, error, data: data ? data.${name} : data } ];\n`
+      : '') +
       `}\n`;
   }, '');
   return {
@@ -50,6 +58,7 @@ function generate() {
   }
   queryNames = queryNames.map(name => name.replace(':', ''));
   const { hooks: queryHooks, imports: queryImports, documentNodes: queryNodes } = generateHooks('Query', queryNames, types);
+  const { hooks: lazyQueryHooks } = generateHooks('LazyQuery', queryNames, types);
   const mutationMatch = types.match(/export type Mutation = (\{[\S\s]*?\});/);
   if (!mutationMatch) {
     return;
@@ -61,7 +70,7 @@ function generate() {
   }
   const { hooks: mutationHooks, imports: mutationImports, documentNodes: mutationNodes } = generateHooks('Mutation', mutationNames, types);
   const hooks = '' +
-  `import { useQuery, useMutation, QueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';\n` +
+  `import { useQuery, useMutation, useLazyQuery, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';\n` +
   `import {\n` +
   `  Query,\n` +
   `  Mutation,\n` +
@@ -74,6 +83,7 @@ function generate() {
   `  ${mutationNodes.join(',\n  ')}\n` +
   `} from './mutations';\n\n` +
   `${queryHooks}\n` +
+  `${lazyQueryHooks}\n` +
   `${mutationHooks}`;
   writeFileSync(resolve(__dirname, '../src/apollo-client/hooks.ts'), hooks, 'utf8');
 }
