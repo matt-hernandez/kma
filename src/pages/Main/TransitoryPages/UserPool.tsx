@@ -51,7 +51,8 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   const taskCid = (match.params as RouteParams)['cid'];
   const { loading: loadingMyTasks, error: errorMyTasks, data: myTasks } = useQueryHelper<TaskInterface[]>(MY_TASKS, 'myTasks');
   const { loading: loadingUserPool, error: errorUserPool, data: userPool } = useQueryHelper<PossiblePartner[]>(USER_POOL, 'userPool', {
-    variables: { taskCid }
+    variables: { taskCid },
+    fetchPolicy: 'network-only'
   });
   if (loadingMyTasks || !myTasks) {
     return <LoadingScreen />;

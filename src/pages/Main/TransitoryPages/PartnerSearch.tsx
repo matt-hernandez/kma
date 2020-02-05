@@ -45,7 +45,8 @@ const PartnerSearch: React.FunctionComponent<RouteComponentProps> = ({
   const isQueryBlank = query.trim() === '';
   const { loading, error, data: possiblePartnersForTask } = useQueryHelper<PossiblePartner[]>(POSSIBLE_PARTNERS_FOR_TASK, 'possiblePartnersForTask', {
     variables: { query, taskCid },
-    skip: isQueryBlank
+    skip: isQueryBlank,
+    fetchPolicy: 'network-only'
   });
   useEffect(() => {
     const intervalId = setInterval(() => {
