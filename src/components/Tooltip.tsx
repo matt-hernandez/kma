@@ -24,7 +24,7 @@ const TooltipWrapper = styled.div`
   position: absolute;
   left: calc(100% + 10px);
   top: 50%;
-  z-index: 1;
+  z-index: 2;
   width: 200px;
   padding: 10px;
   border: 1px solid ${colors.gray4};

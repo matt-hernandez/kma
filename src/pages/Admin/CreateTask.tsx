@@ -33,7 +33,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'currentTasks',
           query: CURRENT_TASKS,
-          sort: (d1, d2) => d1.publishDate - d2.publishDate
+          sort: (d1, d2) => d2.publishDate - d1.publishDate
         },
         'createTask'
       );
@@ -42,7 +42,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
         {
           name: 'upcomingTasks',
           query: UPCOMING_TASKS,
-          sort: (d1, d2) => d1.publishDate - d2.publishDate
+          sort: (d1, d2) => d2.publishDate - d1.publishDate
         },
         'createTask'
       );
@@ -71,7 +71,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     showLoadingScreen();
     let taskTemplateCreationHasError = false;
     let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data);
+    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data.createTask);
     if (taskData.repeatFrequency) {
       createTaskPromise.then(({ cid }) => createTaskTemplate({
           variables: {
@@ -79,7 +79,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
             repeatFrequency: taskData.repeatFrequency
           }
         }).then(({ data }) => {
-          if (createdTask && data) {
+          if (createdTask && data && data['createTaskTemplate']) {
             client.writeFragment({
               id: createdTask.cid,
               fragment: gql`
@@ -88,8 +88,8 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
                 }
               `,
               data: {
-                ...data,
-                templateCid: data.cid
+                ...createdTask,
+                templateCid: data['createTaskTemplate'].cid
               }
             });
           }

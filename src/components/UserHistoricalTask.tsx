@@ -40,7 +40,7 @@ const Status = styled.span<StatusProps>`
   font-size: 14px;
   color: ${({ status }) => status === 'FULFILLED'
     ? `green`
-    : `red`
+    : `black`
   };
 `;
 
@@ -68,7 +68,7 @@ const UserHistoricalTask: React.FunctionComponent<Props> = function ({ title, du
           </div>
           <Status status={status}>
             <InlineBold>
-              {status}
+              {status.indexOf('BROKEN') > -1 ? 'Better luck next time' : status}
             </InlineBold>
           </Status>
         </TitleAndStatus>
