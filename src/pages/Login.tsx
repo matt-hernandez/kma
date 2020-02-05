@@ -11,6 +11,7 @@ import { useFakeLogin } from '../util/etc-network-util';
 import useLazyQueryHelper from '../util/use-lazy-query-helper';
 import { LoadingContext } from '../contexts/LoadingContext';
 import { ToastContext } from '../contexts/ToastContext';
+import { useLazyQueryMe } from '../apollo-client/hooks';
 
 const Half = styled(FlexCell)`
   position: relative;
@@ -27,7 +28,7 @@ const PageDoesNotExist: React.FunctionComponent<RouteComponentProps> = ({
     history
   }) => {
   const [ query ] = useFakeLogin();
-  const [ getMe, { loading: loadingMe, error: errorMe, data: me } ] = useLazyQueryHelper(ME, 'me', {
+  const [ getMe, { loading: loadingMe, error: errorMe, data: me } ] = useLazyQueryMe({
     fetchPolicy: 'network-only'
   });
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);

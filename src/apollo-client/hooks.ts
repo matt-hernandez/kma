@@ -1,4 +1,5 @@
-import { useQuery, useMutation, useLazyQuery, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery, QueryLazyOptions, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';
+import { ApolloError } from 'apollo-boost';
 import {
   Query,
   Mutation,
@@ -73,7 +74,6 @@ import {
   CONFIRM_AS_DONE,
   DENY_AS_DONE
 } from './mutations';
-
 
 export function useQueryMe(options?: QueryHookOptions<{ me: Query['me'] }, null>) {
   const { loading, error, data } = useQuery<{ me: Query['me'] }, null>(ME, options);
@@ -155,83 +155,86 @@ export function useQueryUserScore(options: QueryHookOptions<{ userScore: Query['
   return { loading, error, data: data ? data.userScore : data };
 }
 
+type LazyQuery<T> = (options?: QueryLazyOptions<T>) => void;
+type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };
 
-export function useLazyQueryMe(options?: LazyQueryHookOptions<{ me: Query['me'] }, null>) {
+
+export function useLazyQueryMe(options?: LazyQueryHookOptions<{ me: Query['me'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['me']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ me: Query['me'] }, null>(ME, options);
   return [ queryFetch, { loading, error, data: data ? data.me : data } ];
 }
 
-export function useLazyQueryScoreDetails(options?: LazyQueryHookOptions<{ scoreDetails: Query['scoreDetails'] }, null>) {
+export function useLazyQueryScoreDetails(options?: LazyQueryHookOptions<{ scoreDetails: Query['scoreDetails'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['scoreDetails']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ scoreDetails: Query['scoreDetails'] }, null>(SCORE_DETAILS, options);
   return [ queryFetch, { loading, error, data: data ? data.scoreDetails : data } ];
 }
 
-export function useLazyQueryPartnerSearch(options?: LazyQueryHookOptions<{ partnerSearch: Query['partnerSearch'] }, null>) {
+export function useLazyQueryPartnerSearch(options?: LazyQueryHookOptions<{ partnerSearch: Query['partnerSearch'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['partnerSearch']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ partnerSearch: Query['partnerSearch'] }, null>(PARTNER_SEARCH, options);
   return [ queryFetch, { loading, error, data: data ? data.partnerSearch : data } ];
 }
 
-export function useLazyQueryUserPool(options?: LazyQueryHookOptions<{ userPool: Query['userPool'] }, null>) {
+export function useLazyQueryUserPool(options?: LazyQueryHookOptions<{ userPool: Query['userPool'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['userPool']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ userPool: Query['userPool'] }, null>(USER_POOL, options);
   return [ queryFetch, { loading, error, data: data ? data.userPool : data } ];
 }
 
-export function useLazyQueryGetPartnerDetails(options?: LazyQueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, null>) {
+export function useLazyQueryGetPartnerDetails(options?: LazyQueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['getPartnerDetails']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ getPartnerDetails: Query['getPartnerDetails'] }, null>(GET_PARTNER_DETAILS, options);
   return [ queryFetch, { loading, error, data: data ? data.getPartnerDetails : data } ];
 }
 
-export function useLazyQueryOpenTasks(options?: LazyQueryHookOptions<{ openTasks: Query['openTasks'] }, null>) {
+export function useLazyQueryOpenTasks(options?: LazyQueryHookOptions<{ openTasks: Query['openTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['openTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ openTasks: Query['openTasks'] }, null>(OPEN_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.openTasks : data } ];
 }
 
-export function useLazyQueryMyTasks(options?: LazyQueryHookOptions<{ myTasks: Query['myTasks'] }, null>) {
+export function useLazyQueryMyTasks(options?: LazyQueryHookOptions<{ myTasks: Query['myTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['myTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ myTasks: Query['myTasks'] }, null>(MY_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.myTasks : data } ];
 }
 
-export function useLazyQueryRequestedPartnerTasks(options?: LazyQueryHookOptions<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>) {
+export function useLazyQueryRequestedPartnerTasks(options?: LazyQueryHookOptions<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['requestedPartnerTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>(REQUESTED_PARTNER_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.requestedPartnerTasks : data } ];
 }
 
-export function useLazyQueryMyPastTasks(options?: LazyQueryHookOptions<{ myPastTasks: Query['myPastTasks'] }, null>) {
+export function useLazyQueryMyPastTasks(options?: LazyQueryHookOptions<{ myPastTasks: Query['myPastTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['myPastTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ myPastTasks: Query['myPastTasks'] }, null>(MY_PAST_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.myPastTasks : data } ];
 }
 
-export function useLazyQueryUsers(options?: LazyQueryHookOptions<{ users: Query['users'] }, null>) {
+export function useLazyQueryUsers(options?: LazyQueryHookOptions<{ users: Query['users'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['users']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ users: Query['users'] }, null>(USERS, options);
   return [ queryFetch, { loading, error, data: data ? data.users : data } ];
 }
 
-export function useLazyQueryCurrentTasks(options?: LazyQueryHookOptions<{ currentTasks: Query['currentTasks'] }, null>) {
+export function useLazyQueryCurrentTasks(options?: LazyQueryHookOptions<{ currentTasks: Query['currentTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['currentTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ currentTasks: Query['currentTasks'] }, null>(CURRENT_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.currentTasks : data } ];
 }
 
-export function useLazyQueryPastTasks(options?: LazyQueryHookOptions<{ pastTasks: Query['pastTasks'] }, null>) {
+export function useLazyQueryPastTasks(options?: LazyQueryHookOptions<{ pastTasks: Query['pastTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['pastTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ pastTasks: Query['pastTasks'] }, null>(PAST_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.pastTasks : data } ];
 }
 
-export function useLazyQueryUpcomingTasks(options?: LazyQueryHookOptions<{ upcomingTasks: Query['upcomingTasks'] }, null>) {
+export function useLazyQueryUpcomingTasks(options?: LazyQueryHookOptions<{ upcomingTasks: Query['upcomingTasks'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['upcomingTasks']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ upcomingTasks: Query['upcomingTasks'] }, null>(UPCOMING_TASKS, options);
   return [ queryFetch, { loading, error, data: data ? data.upcomingTasks : data } ];
 }
 
-export function useLazyQueryTaskTemplates(options?: LazyQueryHookOptions<{ taskTemplates: Query['taskTemplates'] }, null>) {
+export function useLazyQueryTaskTemplates(options?: LazyQueryHookOptions<{ taskTemplates: Query['taskTemplates'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['taskTemplates']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ taskTemplates: Query['taskTemplates'] }, null>(TASK_TEMPLATES, options);
   return [ queryFetch, { loading, error, data: data ? data.taskTemplates : data } ];
 }
 
-export function useLazyQueryClaims(options?: LazyQueryHookOptions<{ claims: Query['claims'] }, null>) {
+export function useLazyQueryClaims(options?: LazyQueryHookOptions<{ claims: Query['claims'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['claims']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ claims: Query['claims'] }, null>(CLAIMS, options);
   return [ queryFetch, { loading, error, data: data ? data.claims : data } ];
 }
 
-export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore: Query['userScore'] }, null>) {
+export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore: Query['userScore'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['userScore']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ userScore: Query['userScore'] }, null>(USER_SCORE, options);
   return [ queryFetch, { loading, error, data: data ? data.userScore : data } ];
 }

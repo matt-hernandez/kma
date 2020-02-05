@@ -22,11 +22,12 @@ function generateHooks(type: 'Query' | 'Mutation' | 'LazyQuery', nameArray: stri
     if (argType !== 'null') {
       imports.push(argType);
     }
-    const returnType = `{ ${name}: ${type.indexOf('Query') > -1 ? 'Query' : type}['${name}'] }`;
+    const innerReturn = `${type.indexOf('Query') > -1 ? 'Query' : type}['${name}']`;
+    const returnType = `{ ${name}: ${innerReturn} }`;
     const staticQuery = camelToUpperSnakeCase(name);
     documentNodes.push(staticQuery);
     return acc + '\n' +
-      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>) {\n` +
+      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>)${type === 'LazyQuery' ? `: [LazyQuery<${argType}>, LazyQueryStatus<${innerReturn}>]` : ''} {\n` +
       (type === 'Query' ?
       `  const { loading, error, data } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
       `  return { loading, error, data: data ? data.${name} : data };\n`
@@ -70,7 +71,8 @@ function generate() {
   }
   const { hooks: mutationHooks, imports: mutationImports, documentNodes: mutationNodes } = generateHooks('Mutation', mutationNames, types);
   const hooks = '' +
-  `import { useQuery, useMutation, useLazyQuery, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';\n` +
+  `import { useQuery, useMutation, useLazyQuery, QueryLazyOptions, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';\n` +
+  `import { ApolloError } from 'apollo-boost';\n` +
   `import {\n` +
   `  Query,\n` +
   `  Mutation,\n` +
@@ -81,8 +83,10 @@ function generate() {
   `} from './queries';\n` +
   `import {\n` +
   `  ${mutationNodes.join(',\n  ')}\n` +
-  `} from './mutations';\n\n` +
+  `} from './mutations';\n` +
   `${queryHooks}\n` +
+  `type LazyQuery<T> = (options?: QueryLazyOptions<T>) => void;\n` +
+  `type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };\n\n` +
   `${lazyQueryHooks}\n` +
   `${mutationHooks}`;
   writeFileSync(resolve(__dirname, '../src/apollo-client/hooks.ts'), hooks, 'utf8');
