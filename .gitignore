@@ -24,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # Generated GraphQL Types
-/__generated
+/__generated__
