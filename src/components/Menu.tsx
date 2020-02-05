@@ -117,7 +117,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
           )}
         </InflateContent>
       </IonMenu>
-      <DevToolsModal isOpen={isDevToolsModalOpen} onDismiss={() => {}} />
+      <DevToolsModal isOpen={isDevToolsModalOpen} onDismiss={() => {setIsDevToolsModalOpen(false)}} />
     </>
   );
 };

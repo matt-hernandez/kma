@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { withRouter } from 'react-router';
 import { IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import { addPageData } from '../../util/add-page-data';
-import { USERS, USER_SCORE, PAST_TASKS } from '../../apollo-client/query/admin';
+import { USERS, USER_SCORE, PAST_TASKS, CURRENT_TASKS } from '../../apollo-client/query/admin';
 import { MAKE_USER_INACTIVE, MAKE_USER_ACTIVE, MAKE_USER_AN_ADMIN, REMOVE_USER_AS_ADMIN, CHANGE_TASK_STATUS_FOR_USER } from '../../apollo-client/mutation/admin';
 import { User as UserInterface, ScoreDetails, User, OutcomeType } from '../../apollo-client/types/user';
 import useQueryHelper from '../../util/use-query-helper';
@@ -54,6 +54,7 @@ export default addPageData(withRouter(({ history, match }) => {
     }
   });
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
+  const { loading: loadingCurrentTasks, error: errorCurrentTasks, data: currentTasks } = useQueryHelper<TaskForAdmin[]>(CURRENT_TASKS, 'currentTasks');
   const { showToast } = useContext(ToastContext);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const [ makeUserInactive ] = useMutation(MAKE_USER_INACTIVE, {
@@ -112,7 +113,7 @@ export default addPageData(withRouter(({ history, match }) => {
   const [ shouldShowChangeStatusModal, toggleChangeStatusModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   const [ shouldShowUserActiveModal, toggleUserActiveModal ] = useStateHelper(false, listenerTypes.TOGGLE);
   const [ shouldShowUserAdminModal, toggleUserAdminModal ] = useStateHelper(false, listenerTypes.TOGGLE);
-  if (loadingMe || loadingUsers || loadingUserScore) {
+  if (loadingMe || loadingUsers || loadingUserScore || loadingPastTasks || loadingCurrentTasks) {
     return UserPageLoading;
   }
   const user = users.find(({ cid: userCid }) => cid === userCid);
@@ -120,7 +121,7 @@ export default addPageData(withRouter(({ history, match }) => {
     history.replace('/admin/tasks/current');
     return UserPageLoading;
   }
-  const userPastTasks = pastTasks && pastTasks.filter(({ outcomes }) => outcomes.some(({ userCid }) => user.cid === userCid));
+  const userPastTasks = [ ...pastTasks, ...currentTasks ].filter(({ outcomes }) => outcomes.some(({ userCid }) => user.cid === userCid));
   return (
     <>
       <H1 centered marginBottom marginTop>{user.name}</H1>
@@ -146,17 +147,17 @@ export default addPageData(withRouter(({ history, match }) => {
           </IonLabel>
         </IonItem>
       </IonList>
-      <MarginWrapper marginRight marginLeft>
+      <MarginWrapper marginRight marginLeft marginBottom>
         <LargeCopy>Task history</LargeCopy>
       </MarginWrapper>
       {(!!userPastTasks && userPastTasks.length > 0) && (
         <IonList>
-          {userPastTasks.map(({ cid, title, outcomes, connections }) => {
+          {userPastTasks.map(({ cid, title, outcomes, connections, due }) => {
             const outcome = outcomes.find(({ userCid }) => user.cid === userCid);
             const connectionsForAgreement = connections.filter(({ fromCid, toCid, type }) => (user.cid === fromCid || user.cid === toCid) && type === 'CONFIRMED');
             if (outcome) {
               return (
-                <UserHistoricalTask key={`${user.cid}-${cid}`} title={title} status={outcome.type} onChangeStatus={() => {
+                <UserHistoricalTask key={`${user.cid}-${cid}`} title={title} due={due} status={outcome.type} onChangeStatus={() => {
                   toggleChangeStatusModal();
                   setConnectionsForChangeStatus(connectionsForAgreement);
                   setOutcomeForChangeStatus(outcome);

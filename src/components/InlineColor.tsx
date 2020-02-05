@@ -1,13 +1,20 @@
 import styled, { css } from 'styled-components/macro';
+import { colors } from '../styles/colors';
 
 type ExtraProps = {
-  color: string;
+  color?: string;
+  grayLevel?: number;
 };
 
 export default styled.span<ExtraProps>`
-  ${({color}) => typeof color === 'string' &&
-    css`
+  ${({ color, grayLevel }) => typeof color === 'string'
+    ? css`
       color: ${color};
     `
+    : typeof grayLevel === 'number'
+    ? css`
+      color: ${(colors as any)[`gray${grayLevel}`]};
+    `
+    : ''
   }
 `;

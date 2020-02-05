@@ -14,6 +14,7 @@ import { User, ConnectionType } from '../apollo-client/types/user';
 import { ReactComponent as UserPic } from '../assets/user-pic.svg';
 import { colors } from '../styles/colors';
 import { Optional } from '../util/interface-overrides';
+import { hexToRgba } from '../styles/mixins';
 
 const ConnectionContainer = styled.div`
   display: flex;
@@ -32,14 +33,16 @@ const ConnectionPerson = styled.div<ConnectionPersonProps>`
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: auto;
-  width: 85px;
+  width: 95px;
+  padding: 5px;
   margin-right: 20px;
+  border-radius: 4px;
 
   &:last-child {
     margin-right: 0;
   }
 
-  background-color: ${({type}) => type === 'BROKE_WITH'
+  background-color: ${({type}) => hexToRgba((type === 'BROKE_WITH'
     ? colors.danger
     : type === 'CONFIRMED'
     ? colors.success
@@ -49,7 +52,7 @@ const ConnectionPerson = styled.div<ConnectionPersonProps>`
     ? colors.tertiary
     : type === 'PENDING'
     ? colors.warn
-    : 'transparent'};
+    : 'transparent'), .25)};
 `;
 
 const ConnectionPersonName = styled.div`

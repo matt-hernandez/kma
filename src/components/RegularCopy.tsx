@@ -14,9 +14,9 @@ export default styled.p<ExtraProps>`
   margin-top: 10px;
   margin-bottom: 10px;
   ${systemFontFamily}
-  ${({grayLevel}) => typeof grayLevel !== undefined &&
+  ${({grayLevel}) => typeof grayLevel !== undefined ?
     css`
       color: ${(colors as any)[`gray${grayLevel}`]};
-    `
+    ` : ''
   }
 `;
