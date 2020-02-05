@@ -75,159 +75,159 @@ import {
 } from './mutations';
 
 
-export function useQueryMe(options?: QueryHookOptions<Query['me'], null>){
+export function useQueryMe(options?: QueryHookOptions<Query['me'], null>) {
   return useQuery<Query['me'], null>(ME, options);
 }
 
-export function useQueryScoreDetails(options?: QueryHookOptions<Query['scoreDetails'], null>){
+export function useQueryScoreDetails(options?: QueryHookOptions<Query['scoreDetails'], null>) {
   return useQuery<Query['scoreDetails'], null>(SCORE_DETAILS, options);
 }
 
-export function useQueryPartnerSearch(options: QueryHookOptions<Query['partnerSearch'], QueryPartnerSearchArgs>){
+export function useQueryPartnerSearch(options: QueryHookOptions<Query['partnerSearch'], QueryPartnerSearchArgs>) {
   return useQuery<Query['partnerSearch'], QueryPartnerSearchArgs>(PARTNER_SEARCH, options);
 }
 
-export function useQueryUserPool(options: QueryHookOptions<Query['userPool'], QueryUserPoolArgs>){
+export function useQueryUserPool(options: QueryHookOptions<Query['userPool'], QueryUserPoolArgs>) {
   return useQuery<Query['userPool'], QueryUserPoolArgs>(USER_POOL, options);
 }
 
-export function useQueryGetPartnerDetails(options: QueryHookOptions<Query['getPartnerDetails'], QueryGetPartnerDetailsArgs>){
+export function useQueryGetPartnerDetails(options: QueryHookOptions<Query['getPartnerDetails'], QueryGetPartnerDetailsArgs>) {
   return useQuery<Query['getPartnerDetails'], QueryGetPartnerDetailsArgs>(GET_PARTNER_DETAILS, options);
 }
 
-export function useQueryOpenTasks(options?: QueryHookOptions<Query['openTasks'], null>){
+export function useQueryOpenTasks(options?: QueryHookOptions<Query['openTasks'], null>) {
   return useQuery<Query['openTasks'], null>(OPEN_TASKS, options);
 }
 
-export function useQueryMyTasks(options?: QueryHookOptions<Query['myTasks'], null>){
+export function useQueryMyTasks(options?: QueryHookOptions<Query['myTasks'], null>) {
   return useQuery<Query['myTasks'], null>(MY_TASKS, options);
 }
 
-export function useQueryRequestedPartnerTasks(options?: QueryHookOptions<Query['requestedPartnerTasks'], null>){
+export function useQueryRequestedPartnerTasks(options?: QueryHookOptions<Query['requestedPartnerTasks'], null>) {
   return useQuery<Query['requestedPartnerTasks'], null>(REQUESTED_PARTNER_TASKS, options);
 }
 
-export function useQueryMyPastTasks(options?: QueryHookOptions<Query['myPastTasks'], null>){
+export function useQueryMyPastTasks(options?: QueryHookOptions<Query['myPastTasks'], null>) {
   return useQuery<Query['myPastTasks'], null>(MY_PAST_TASKS, options);
 }
 
-export function useQueryUsers(options?: QueryHookOptions<Query['users'], null>){
+export function useQueryUsers(options?: QueryHookOptions<Query['users'], null>) {
   return useQuery<Query['users'], null>(USERS, options);
 }
 
-export function useQueryCurrentTasks(options?: QueryHookOptions<Query['currentTasks'], null>){
+export function useQueryCurrentTasks(options?: QueryHookOptions<Query['currentTasks'], null>) {
   return useQuery<Query['currentTasks'], null>(CURRENT_TASKS, options);
 }
 
-export function useQueryPastTasks(options?: QueryHookOptions<Query['pastTasks'], null>){
+export function useQueryPastTasks(options?: QueryHookOptions<Query['pastTasks'], null>) {
   return useQuery<Query['pastTasks'], null>(PAST_TASKS, options);
 }
 
-export function useQueryUpcomingTasks(options?: QueryHookOptions<Query['upcomingTasks'], null>){
+export function useQueryUpcomingTasks(options?: QueryHookOptions<Query['upcomingTasks'], null>) {
   return useQuery<Query['upcomingTasks'], null>(UPCOMING_TASKS, options);
 }
 
-export function useQueryTaskTemplates(options?: QueryHookOptions<Query['taskTemplates'], null>){
+export function useQueryTaskTemplates(options?: QueryHookOptions<Query['taskTemplates'], null>) {
   return useQuery<Query['taskTemplates'], null>(TASK_TEMPLATES, options);
 }
 
-export function useQueryClaims(options?: QueryHookOptions<Query['claims'], null>){
+export function useQueryClaims(options?: QueryHookOptions<Query['claims'], null>) {
   return useQuery<Query['claims'], null>(CLAIMS, options);
 }
 
-export function useQueryUserScore(options: QueryHookOptions<Query['userScore'], QueryUserScoreArgs>){
+export function useQueryUserScore(options: QueryHookOptions<Query['userScore'], QueryUserScoreArgs>) {
   return useQuery<Query['userScore'], QueryUserScoreArgs>(USER_SCORE, options);
 }
 
 
-export function useMutationCommitToTask(options: MutationHookOptions<Mutation['commitToTask'], MutationCommitToTaskArgs>){
+export function useMutationCommitToTask(options: MutationHookOptions<Mutation['commitToTask'], MutationCommitToTaskArgs>) {
   return useMutation<Mutation['commitToTask'], MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
 }
 
-export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>){
+export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
   return useMutation<Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
 }
 
-export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>){
+export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
   return useMutation<Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
 }
 
-export function useMutationRequestPartnerForTask(options: MutationHookOptions<Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>){
+export function useMutationRequestPartnerForTask(options: MutationHookOptions<Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>) {
   return useMutation<Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
 }
 
-export function useMutationConfirmPartnerRequest(options: MutationHookOptions<Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>){
+export function useMutationConfirmPartnerRequest(options: MutationHookOptions<Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>) {
   return useMutation<Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
 }
 
-export function useMutationCancelPartnerRequest(options: MutationHookOptions<Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>){
+export function useMutationCancelPartnerRequest(options: MutationHookOptions<Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>) {
   return useMutation<Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
 }
 
-export function useMutationDenyPartnerRequest(options: MutationHookOptions<Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>){
+export function useMutationDenyPartnerRequest(options: MutationHookOptions<Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>) {
   return useMutation<Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
 }
 
-export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>){
+export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>) {
   return useMutation<Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
 }
 
-export function useMutationBreakCommitment(options: MutationHookOptions<Mutation['breakCommitment'], MutationBreakCommitmentArgs>){
+export function useMutationBreakCommitment(options: MutationHookOptions<Mutation['breakCommitment'], MutationBreakCommitmentArgs>) {
   return useMutation<Mutation['breakCommitment'], MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
 }
 
-export function useMutationMarkTaskAsDone(options: MutationHookOptions<Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>){
+export function useMutationMarkTaskAsDone(options: MutationHookOptions<Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>) {
   return useMutation<Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
 }
 
-export function useMutationMakeUserInactive(options: MutationHookOptions<Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>){
+export function useMutationMakeUserInactive(options: MutationHookOptions<Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>) {
   return useMutation<Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
 }
 
-export function useMutationMakeUserActive(options: MutationHookOptions<Mutation['makeUserActive'], MutationMakeUserActiveArgs>){
+export function useMutationMakeUserActive(options: MutationHookOptions<Mutation['makeUserActive'], MutationMakeUserActiveArgs>) {
   return useMutation<Mutation['makeUserActive'], MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
 }
 
-export function useMutationMakeUserAnAdmin(options: MutationHookOptions<Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>){
+export function useMutationMakeUserAnAdmin(options: MutationHookOptions<Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>) {
   return useMutation<Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
 }
 
-export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>){
+export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>) {
   return useMutation<Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
 }
 
-export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>){
+export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>) {
   return useMutation<Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
 }
 
-export function useMutationCreateTask(options: MutationHookOptions<Mutation['createTask'], MutationCreateTaskArgs>){
+export function useMutationCreateTask(options: MutationHookOptions<Mutation['createTask'], MutationCreateTaskArgs>) {
   return useMutation<Mutation['createTask'], MutationCreateTaskArgs>(CREATE_TASK, options);
 }
 
-export function useMutationUpdateTask(options: MutationHookOptions<Mutation['updateTask'], MutationUpdateTaskArgs>){
+export function useMutationUpdateTask(options: MutationHookOptions<Mutation['updateTask'], MutationUpdateTaskArgs>) {
   return useMutation<Mutation['updateTask'], MutationUpdateTaskArgs>(UPDATE_TASK, options);
 }
 
-export function useMutationDeleteTask(options: MutationHookOptions<Mutation['deleteTask'], MutationDeleteTaskArgs>){
+export function useMutationDeleteTask(options: MutationHookOptions<Mutation['deleteTask'], MutationDeleteTaskArgs>) {
   return useMutation<Mutation['deleteTask'], MutationDeleteTaskArgs>(DELETE_TASK, options);
 }
 
-export function useMutationCreateTaskTemplate(options: MutationHookOptions<Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>){
+export function useMutationCreateTaskTemplate(options: MutationHookOptions<Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>) {
   return useMutation<Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
 }
 
-export function useMutationUpdateTaskTemplate(options: MutationHookOptions<Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>){
+export function useMutationUpdateTaskTemplate(options: MutationHookOptions<Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>) {
   return useMutation<Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
 }
 
-export function useMutationDeleteTaskTemplate(options: MutationHookOptions<Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>){
+export function useMutationDeleteTaskTemplate(options: MutationHookOptions<Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>) {
   return useMutation<Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
 }
 
-export function useMutationConfirmAsDone(options: MutationHookOptions<Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>){
+export function useMutationConfirmAsDone(options: MutationHookOptions<Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>) {
   return useMutation<Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
 }
 
-export function useMutationDenyAsDone(options: MutationHookOptions<Mutation['denyAsDone'], MutationDenyAsDoneArgs>){
+export function useMutationDenyAsDone(options: MutationHookOptions<Mutation['denyAsDone'], MutationDenyAsDoneArgs>) {
   return useMutation<Mutation['denyAsDone'], MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
 }

@@ -26,7 +26,7 @@ function generateHooks(type: 'Query' | 'Mutation', nameArray: string[], source: 
     const staticQuery = camelToUpperSnakeCase(name);
     documentNodes.push(staticQuery);
     return acc + '\n' +
-      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>){\n` +
+      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>) {\n` +
       `  return use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
       `}\n`;
   }, '');
