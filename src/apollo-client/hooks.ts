@@ -5,6 +5,7 @@ import {
   Mutation,
   QueryPartnerSearchArgs,
   QueryUserPoolArgs,
+  QueryOnePossiblePartnerForTaskArgs,
   QueryGetPartnerDetailsArgs,
   QueryUserScoreArgs,
   MutationCommitToTaskArgs,
@@ -36,6 +37,7 @@ import {
   SCORE_DETAILS,
   PARTNER_SEARCH,
   USER_POOL,
+  ONE_POSSIBLE_PARTNER_FOR_TASK,
   GET_PARTNER_DETAILS,
   OPEN_TASKS,
   MY_TASKS,
@@ -93,6 +95,11 @@ export function useQueryPartnerSearch(options: QueryHookOptions<{ partnerSearch:
 export function useQueryUserPool(options: QueryHookOptions<{ userPool: Query['userPool'] }, QueryUserPoolArgs>) {
   const { loading, error, data } = useQuery<{ userPool: Query['userPool'] }, QueryUserPoolArgs>(USER_POOL, options);
   return { loading, error, data: data ? data.userPool : data };
+}
+
+export function useQueryOnePossiblePartnerForTask(options: QueryHookOptions<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, QueryOnePossiblePartnerForTaskArgs>) {
+  const { loading, error, data } = useQuery<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, QueryOnePossiblePartnerForTaskArgs>(ONE_POSSIBLE_PARTNER_FOR_TASK, options);
+  return { loading, error, data: data ? data.onePossiblePartnerForTask : data };
 }
 
 export function useQueryGetPartnerDetails(options: QueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>) {
@@ -177,6 +184,11 @@ export function useLazyQueryPartnerSearch(options?: LazyQueryHookOptions<{ partn
 export function useLazyQueryUserPool(options?: LazyQueryHookOptions<{ userPool: Query['userPool'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['userPool']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ userPool: Query['userPool'] }, null>(USER_POOL, options);
   return [ queryFetch, { loading, error, data: data ? data.userPool : data } ];
+}
+
+export function useLazyQueryOnePossiblePartnerForTask(options?: LazyQueryHookOptions<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['onePossiblePartnerForTask']>] {
+  const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, null>(ONE_POSSIBLE_PARTNER_FOR_TASK, options);
+  return [ queryFetch, { loading, error, data: data ? data.onePossiblePartnerForTask : data } ];
 }
 
 export function useLazyQueryGetPartnerDetails(options?: LazyQueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['getPartnerDetails']>] {

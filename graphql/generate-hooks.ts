@@ -53,11 +53,11 @@ function generate() {
     return;
   }
   const queryObject = queryMatch[1].replace(/__typename\?: 'Query',\n/, '');
-  let queryNames = queryObject.match(/([a-zA-Z]+?):/g);
+  let queryNames = queryObject.match(/([a-zA-Z]+?)\??:/g);
   if (!queryNames) {
     return;
   }
-  queryNames = queryNames.map(name => name.replace(':', ''));
+  queryNames = queryNames.map(name => name.replace(/\??:/, ''));
   const { hooks: queryHooks, imports: queryImports, documentNodes: queryNodes } = generateHooks('Query', queryNames, types);
   const { hooks: lazyQueryHooks } = generateHooks('LazyQuery', queryNames, types);
   const mutationMatch = types.match(/export type Mutation = (\{[\S\s]*?\});/);
