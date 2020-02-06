@@ -27,8 +27,7 @@ interface TransferItemConfig<T> {
 
 export default function <T extends { cid: string, [key: string]: any }>(
   operation: OperationTypes,
-  config: OverwriteItemConfig | TransferItemConfig<T> | InsertItemConfig<T>,
-  resultName: string): (cache: Parameters<MutationUpdaterFn<{ [key: string]: T }>>[0], data: { data: T }) => void {
+  config: OverwriteItemConfig | TransferItemConfig<T> | InsertItemConfig<T>): (cache: Parameters<MutationUpdaterFn<{ [key: string]: T }>>[0], data: { data: T }) => void {
   const {
     name,
     query,

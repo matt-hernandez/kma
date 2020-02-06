@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
-import { TaskTemplate } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
 import H1 from '../../components/H1';
@@ -16,8 +15,8 @@ import MarginWrapper from '../../components/MarginWrapper';
 import InlineItalic from '../../components/InlineItalic';
 import HorizontalRule from '../../components/HorizontalRule';
 import InlineBold from '../../components/InlineBold';
-import { useMutationCreateTask } from '../../apollo-client/hooks';
-import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/queries';
+import { useMutationCreateTask, useMutationCreateTaskTemplate } from '../../apollo-client/hooks';
+import { CURRENT_TASKS, UPCOMING_TASKS, TASK_TEMPLATES } from '../../apollo-client/queries';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -27,97 +26,78 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     match
   }) => {
   const createTask = useMutationCreateTask({
-    update: (cache, { data }) => {
-      type Cache = typeof cache;
-      type Data = NonNullable<typeof data>;
-      const update = (cache: Cache, { data }: { data: Data }) => {
-        const updateCurrentTasks = generateCacheUpdate(
-          'INSERT_ITEM',
-          {
-            name: 'currentTasks',
-            query: CURRENT_TASKS,
-            sort: (d1, d2) => d2.publishDate - d1.publishDate
-          },
-          'createTask'
-        );
-        const updateUpcomingTasks = generateCacheUpdate(
-          'INSERT_ITEM',
-          {
-            name: 'upcomingTasks',
-            query: UPCOMING_TASKS,
-            sort: (d1, d2) => d2.publishDate - d1.publishDate
-          },
-          'createTask'
-        );
-        const item = data.createTask;
-        if (item.publishDate > Date.now()) {
-          updateUpcomingTasks(cache, { data: item });
-        } else {
-          updateCurrentTasks(cache, { data: item });
-        }
-      };
-      if (data !== null && data !== undefined) {
-        update(cache, { data });
+    update: (cache, { data: createdTask }) => {
+      const updateCurrentTasks = generateCacheUpdate(
+        'INSERT_ITEM',
+        {
+          name: 'currentTasks',
+          query: CURRENT_TASKS,
+          sort: (d1, d2) => d2.publishDate - d1.publishDate
+        },
+      );
+      const updateUpcomingTasks = generateCacheUpdate(
+        'INSERT_ITEM',
+        {
+          name: 'upcomingTasks',
+          query: UPCOMING_TASKS,
+          sort: (d1, d2) => d2.publishDate - d1.publishDate
+        },
+      );
+      const item = createdTask;
+      if (item.publishDate > Date.now()) {
+        updateUpcomingTasks(cache, { data: createdTask });
+      } else {
+        updateCurrentTasks(cache, { data: createdTask });
       }
     }
   });
-  const [ createTaskTemplate ] = useMutation(CREATE_TASK_TEMPLATE, {
-    update: generateCacheUpdate<TaskTemplate>(
+  const createTaskTemplate = useMutationCreateTaskTemplate({
+    update: generateCacheUpdate(
       'INSERT_ITEM',
       {
         name: 'taskTemplates',
         query: TASK_TEMPLATES,
         sort: (d1, d2) => d1.publishDate - d2.publishDate
-      },
-      'createTaskTemplate'
+      }
     )
   });
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const createTaskListener = (taskData: TaskFormData) => {
     showLoadingScreen();
-    let taskTemplateCreationHasError = false;
-    let createdTask: TaskForAdmin | null = null;
-    const createTaskPromise = createTask({ variables: taskData }).then(({ data }) => createdTask = data.createTask);
-    if (taskData.repeatFrequency) {
-      createTaskPromise.then(({ cid }) => createTaskTemplate({
-          variables: {
-            taskCid: cid,
-            repeatFrequency: taskData.repeatFrequency
-          }
-        }).then(({ data }) => {
-          if (createdTask && data && data['createTaskTemplate']) {
-            client.writeFragment({
-              id: createdTask.cid,
-              fragment: gql`
-                fragment task on TaskForAdmin {
-                  templateCid
-                }
-              `,
-              data: {
-                ...createdTask,
-                templateCid: data['createTaskTemplate'].cid
+    createTask({ variables: taskData })
+      .then(({ data: createdTask }) => {
+        if (taskData.repeatFrequency) {
+          return createTaskTemplate({
+              variables: {
+                taskCid: createdTask.cid,
+                repeatFrequency: taskData.repeatFrequency
               }
-            });
-          }
-        }).catch(() => {
-          taskTemplateCreationHasError = true;
-        })
-      );
-    }
-    createTaskPromise.then(() => {
-      hideLoadingScreen();
-      if (!createdTask) {
-        showToast({
-          color: 'danger',
-          message: 'There was an error creating your task!'
-        });
-      } else if (taskTemplateCreationHasError) {
-        showToast({
-          color: 'warning',
-          message: 'Your task was created, but there was a problem setting up recurring tasks.'
-        });
-      } else {
+            })
+            .then(({ data }) => {
+              client.writeFragment({
+                id: createdTask.cid,
+                fragment: gql`
+                  fragment task on TaskForAdmin {
+                    templateCid
+                  }
+                `,
+                data: {
+                  templateCid: data.cid
+                }
+              });
+            })
+            .catch(() => {
+              showToast({
+                color: 'warning',
+                message: 'Your task was created, but there was a problem setting up recurring tasks.'
+              });
+            })
+            .then(() => ({ data: createdTask }));
+        }
+        return { data: createdTask };
+      })
+      .then(({ data: createdTask }) => {
         let url: string;
         if (createdTask.publishDate > Date.now()) {
           url = '/admin/tasks/upcoming';
@@ -134,8 +114,14 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
             }
           }]
         });
-      }
-    });
+      })
+      .catch(() => {
+        showToast({
+          color: 'danger',
+          message: 'There was an error creating your task!'
+        });
+      })
+      .finally(hideLoadingScreen);
   };
   const { loading: loadingCurrentTasks } = useQuery(CURRENT_TASKS);
   const { loading: loadingUpcomingTasks } = useQuery(UPCOMING_TASKS);

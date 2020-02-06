@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useLazyQuery, QueryLazyOptions, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';
-import { ApolloError } from 'apollo-boost';
+import { ApolloError, MutationUpdaterFn } from 'apollo-boost';
 import {
   Query,
   Mutation,
@@ -165,7 +165,6 @@ export function useQueryUserScore(options: QueryHookOptions<{ userScore: Query['
 type LazyQuery<T> = (options?: QueryLazyOptions<T>) => void;
 type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };
 
-
 export function useLazyQueryMe(options?: LazyQueryHookOptions<{ me: Query['me'] }, null>): [LazyQuery<null>, LazyQueryStatus<Query['me']>] {
   const [ queryFetch, { loading, error, data } ] = useLazyQuery<{ me: Query['me'] }, null>(ME, options);
   return [ queryFetch, { loading, error, data: data ? data.me : data } ];
@@ -251,9 +250,22 @@ export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore
   return [ queryFetch, { loading, error, data: data ? data.userScore : data } ];
 }
 
+type MutationUpdaterFnParams<R> = Parameters<MutationUpdaterFn<R>>;
+type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }) => void;
+type MutationHookOptionsWrap<R, T, A> = Omit<MutationHookOptions<R, A>, 'update'> & { update: SimpleUpdate<R, T> };
 
-export function useMutationCommitToTask(options: MutationHookOptions<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>) {
-  const [ mutationFn ] = useMutation<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
+function generateSimpleUpdate<R extends { [key: string]: T }, T>(name: string, update: SimpleUpdate<R, T>): MutationUpdaterFn<R> {
+  return (cache, { data }) => {
+    if (data === undefined || data === null) {
+      throw new Error('Mutation result cannot be `undefined` or `null`');
+    }
+    update(cache, { data: data[name] });
+  };
+}
+
+export function useMutationCommitToTask(options: MutationHookOptionsWrap<{ commitToTask: Mutation['commitToTask'] }, Mutation['commitToTask'], MutationCommitToTaskArgs>) {
+  const updater: MutationUpdaterFn<{ commitToTask: Mutation['commitToTask'] }> = generateSimpleUpdate('commitToTask', options.update);
+  const [ mutationFn ] = useMutation<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>(COMMIT_TO_TASK, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -263,8 +275,9 @@ export function useMutationCommitToTask(options: MutationHookOptions<{ commitToT
   });
 }
 
-export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
-  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
+export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptionsWrap<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, Mutation['addTaskTemplateToSkipCommitConfirm'], MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
+  const updater: MutationUpdaterFn<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }> = generateSimpleUpdate('addTaskTemplateToSkipCommitConfirm', options.update);
+  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -274,8 +287,9 @@ export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationH
   });
 }
 
-export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
-  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
+export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptionsWrap<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, Mutation['addTaskTemplateToSkipDoneConfirm'], MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
+  const updater: MutationUpdaterFn<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }> = generateSimpleUpdate('addTaskTemplateToSkipDoneConfirm', options.update);
+  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -285,8 +299,9 @@ export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHoo
   });
 }
 
-export function useMutationRequestPartnerForTask(options: MutationHookOptions<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>) {
-  const [ mutationFn ] = useMutation<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
+export function useMutationRequestPartnerForTask(options: MutationHookOptionsWrap<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, Mutation['requestPartnerForTask'], MutationRequestPartnerForTaskArgs>) {
+  const updater: MutationUpdaterFn<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }> = generateSimpleUpdate('requestPartnerForTask', options.update);
+  const [ mutationFn ] = useMutation<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -296,8 +311,9 @@ export function useMutationRequestPartnerForTask(options: MutationHookOptions<{ 
   });
 }
 
-export function useMutationConfirmPartnerRequest(options: MutationHookOptions<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>) {
-  const [ mutationFn ] = useMutation<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
+export function useMutationConfirmPartnerRequest(options: MutationHookOptionsWrap<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, Mutation['confirmPartnerRequest'], MutationConfirmPartnerRequestArgs>) {
+  const updater: MutationUpdaterFn<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }> = generateSimpleUpdate('confirmPartnerRequest', options.update);
+  const [ mutationFn ] = useMutation<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -307,8 +323,9 @@ export function useMutationConfirmPartnerRequest(options: MutationHookOptions<{ 
   });
 }
 
-export function useMutationCancelPartnerRequest(options: MutationHookOptions<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>) {
-  const [ mutationFn ] = useMutation<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
+export function useMutationCancelPartnerRequest(options: MutationHookOptionsWrap<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, Mutation['cancelPartnerRequest'], MutationCancelPartnerRequestArgs>) {
+  const updater: MutationUpdaterFn<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }> = generateSimpleUpdate('cancelPartnerRequest', options.update);
+  const [ mutationFn ] = useMutation<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -318,8 +335,9 @@ export function useMutationCancelPartnerRequest(options: MutationHookOptions<{ c
   });
 }
 
-export function useMutationDenyPartnerRequest(options: MutationHookOptions<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>) {
-  const [ mutationFn ] = useMutation<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
+export function useMutationDenyPartnerRequest(options: MutationHookOptionsWrap<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, Mutation['denyPartnerRequest'], MutationDenyPartnerRequestArgs>) {
+  const updater: MutationUpdaterFn<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }> = generateSimpleUpdate('denyPartnerRequest', options.update);
+  const [ mutationFn ] = useMutation<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -329,8 +347,9 @@ export function useMutationDenyPartnerRequest(options: MutationHookOptions<{ den
   });
 }
 
-export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>) {
-  const [ mutationFn ] = useMutation<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
+export function useMutationRemoveBrokenPartnership(options: MutationHookOptionsWrap<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, Mutation['removeBrokenPartnership'], MutationRemoveBrokenPartnershipArgs>) {
+  const updater: MutationUpdaterFn<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }> = generateSimpleUpdate('removeBrokenPartnership', options.update);
+  const [ mutationFn ] = useMutation<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -340,8 +359,9 @@ export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<
   });
 }
 
-export function useMutationBreakCommitment(options: MutationHookOptions<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>) {
-  const [ mutationFn ] = useMutation<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
+export function useMutationBreakCommitment(options: MutationHookOptionsWrap<{ breakCommitment: Mutation['breakCommitment'] }, Mutation['breakCommitment'], MutationBreakCommitmentArgs>) {
+  const updater: MutationUpdaterFn<{ breakCommitment: Mutation['breakCommitment'] }> = generateSimpleUpdate('breakCommitment', options.update);
+  const [ mutationFn ] = useMutation<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>(BREAK_COMMITMENT, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -351,8 +371,9 @@ export function useMutationBreakCommitment(options: MutationHookOptions<{ breakC
   });
 }
 
-export function useMutationMarkTaskAsDone(options: MutationHookOptions<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>) {
-  const [ mutationFn ] = useMutation<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
+export function useMutationMarkTaskAsDone(options: MutationHookOptionsWrap<{ markTaskAsDone: Mutation['markTaskAsDone'] }, Mutation['markTaskAsDone'], MutationMarkTaskAsDoneArgs>) {
+  const updater: MutationUpdaterFn<{ markTaskAsDone: Mutation['markTaskAsDone'] }> = generateSimpleUpdate('markTaskAsDone', options.update);
+  const [ mutationFn ] = useMutation<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -362,8 +383,9 @@ export function useMutationMarkTaskAsDone(options: MutationHookOptions<{ markTas
   });
 }
 
-export function useMutationMakeUserInactive(options: MutationHookOptions<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>) {
-  const [ mutationFn ] = useMutation<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
+export function useMutationMakeUserInactive(options: MutationHookOptionsWrap<{ makeUserInactive: Mutation['makeUserInactive'] }, Mutation['makeUserInactive'], MutationMakeUserInactiveArgs>) {
+  const updater: MutationUpdaterFn<{ makeUserInactive: Mutation['makeUserInactive'] }> = generateSimpleUpdate('makeUserInactive', options.update);
+  const [ mutationFn ] = useMutation<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -373,8 +395,9 @@ export function useMutationMakeUserInactive(options: MutationHookOptions<{ makeU
   });
 }
 
-export function useMutationMakeUserActive(options: MutationHookOptions<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>) {
-  const [ mutationFn ] = useMutation<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
+export function useMutationMakeUserActive(options: MutationHookOptionsWrap<{ makeUserActive: Mutation['makeUserActive'] }, Mutation['makeUserActive'], MutationMakeUserActiveArgs>) {
+  const updater: MutationUpdaterFn<{ makeUserActive: Mutation['makeUserActive'] }> = generateSimpleUpdate('makeUserActive', options.update);
+  const [ mutationFn ] = useMutation<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -384,8 +407,9 @@ export function useMutationMakeUserActive(options: MutationHookOptions<{ makeUse
   });
 }
 
-export function useMutationMakeUserAnAdmin(options: MutationHookOptions<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>) {
-  const [ mutationFn ] = useMutation<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
+export function useMutationMakeUserAnAdmin(options: MutationHookOptionsWrap<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, Mutation['makeUserAnAdmin'], MutationMakeUserAnAdminArgs>) {
+  const updater: MutationUpdaterFn<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }> = generateSimpleUpdate('makeUserAnAdmin', options.update);
+  const [ mutationFn ] = useMutation<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -395,8 +419,9 @@ export function useMutationMakeUserAnAdmin(options: MutationHookOptions<{ makeUs
   });
 }
 
-export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>) {
-  const [ mutationFn ] = useMutation<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
+export function useMutationRemoveUserAsAdmin(options: MutationHookOptionsWrap<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, Mutation['removeUserAsAdmin'], MutationRemoveUserAsAdminArgs>) {
+  const updater: MutationUpdaterFn<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }> = generateSimpleUpdate('removeUserAsAdmin', options.update);
+  const [ mutationFn ] = useMutation<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -406,8 +431,9 @@ export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<{ remo
   });
 }
 
-export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>) {
-  const [ mutationFn ] = useMutation<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
+export function useMutationChangeTaskStatusForUser(options: MutationHookOptionsWrap<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, Mutation['changeTaskStatusForUser'], MutationChangeTaskStatusForUserArgs>) {
+  const updater: MutationUpdaterFn<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }> = generateSimpleUpdate('changeTaskStatusForUser', options.update);
+  const [ mutationFn ] = useMutation<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -417,8 +443,9 @@ export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<
   });
 }
 
-export function useMutationCreateTask(options: MutationHookOptions<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>) {
-  const [ mutationFn ] = useMutation<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>(CREATE_TASK, options);
+export function useMutationCreateTask(options: MutationHookOptionsWrap<{ createTask: Mutation['createTask'] }, Mutation['createTask'], MutationCreateTaskArgs>) {
+  const updater: MutationUpdaterFn<{ createTask: Mutation['createTask'] }> = generateSimpleUpdate('createTask', options.update);
+  const [ mutationFn ] = useMutation<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>(CREATE_TASK, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -428,8 +455,9 @@ export function useMutationCreateTask(options: MutationHookOptions<{ createTask:
   });
 }
 
-export function useMutationUpdateTask(options: MutationHookOptions<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>) {
-  const [ mutationFn ] = useMutation<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>(UPDATE_TASK, options);
+export function useMutationUpdateTask(options: MutationHookOptionsWrap<{ updateTask: Mutation['updateTask'] }, Mutation['updateTask'], MutationUpdateTaskArgs>) {
+  const updater: MutationUpdaterFn<{ updateTask: Mutation['updateTask'] }> = generateSimpleUpdate('updateTask', options.update);
+  const [ mutationFn ] = useMutation<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>(UPDATE_TASK, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -439,8 +467,9 @@ export function useMutationUpdateTask(options: MutationHookOptions<{ updateTask:
   });
 }
 
-export function useMutationDeleteTask(options: MutationHookOptions<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>) {
-  const [ mutationFn ] = useMutation<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>(DELETE_TASK, options);
+export function useMutationDeleteTask(options: MutationHookOptionsWrap<{ deleteTask: Mutation['deleteTask'] }, Mutation['deleteTask'], MutationDeleteTaskArgs>) {
+  const updater: MutationUpdaterFn<{ deleteTask: Mutation['deleteTask'] }> = generateSimpleUpdate('deleteTask', options.update);
+  const [ mutationFn ] = useMutation<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>(DELETE_TASK, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -450,8 +479,9 @@ export function useMutationDeleteTask(options: MutationHookOptions<{ deleteTask:
   });
 }
 
-export function useMutationCreateTaskTemplate(options: MutationHookOptions<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>) {
-  const [ mutationFn ] = useMutation<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
+export function useMutationCreateTaskTemplate(options: MutationHookOptionsWrap<{ createTaskTemplate: Mutation['createTaskTemplate'] }, Mutation['createTaskTemplate'], MutationCreateTaskTemplateArgs>) {
+  const updater: MutationUpdaterFn<{ createTaskTemplate: Mutation['createTaskTemplate'] }> = generateSimpleUpdate('createTaskTemplate', options.update);
+  const [ mutationFn ] = useMutation<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -461,8 +491,9 @@ export function useMutationCreateTaskTemplate(options: MutationHookOptions<{ cre
   });
 }
 
-export function useMutationUpdateTaskTemplate(options: MutationHookOptions<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>) {
-  const [ mutationFn ] = useMutation<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
+export function useMutationUpdateTaskTemplate(options: MutationHookOptionsWrap<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, Mutation['updateTaskTemplate'], MutationUpdateTaskTemplateArgs>) {
+  const updater: MutationUpdaterFn<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }> = generateSimpleUpdate('updateTaskTemplate', options.update);
+  const [ mutationFn ] = useMutation<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -472,8 +503,9 @@ export function useMutationUpdateTaskTemplate(options: MutationHookOptions<{ upd
   });
 }
 
-export function useMutationDeleteTaskTemplate(options: MutationHookOptions<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>) {
-  const [ mutationFn ] = useMutation<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
+export function useMutationDeleteTaskTemplate(options: MutationHookOptionsWrap<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, Mutation['deleteTaskTemplate'], MutationDeleteTaskTemplateArgs>) {
+  const updater: MutationUpdaterFn<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }> = generateSimpleUpdate('deleteTaskTemplate', options.update);
+  const [ mutationFn ] = useMutation<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -483,8 +515,9 @@ export function useMutationDeleteTaskTemplate(options: MutationHookOptions<{ del
   });
 }
 
-export function useMutationConfirmAsDone(options: MutationHookOptions<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>) {
-  const [ mutationFn ] = useMutation<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
+export function useMutationConfirmAsDone(options: MutationHookOptionsWrap<{ confirmAsDone: Mutation['confirmAsDone'] }, Mutation['confirmAsDone'], MutationConfirmAsDoneArgs>) {
+  const updater: MutationUpdaterFn<{ confirmAsDone: Mutation['confirmAsDone'] }> = generateSimpleUpdate('confirmAsDone', options.update);
+  const [ mutationFn ] = useMutation<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {
@@ -494,8 +527,9 @@ export function useMutationConfirmAsDone(options: MutationHookOptions<{ confirmA
   });
 }
 
-export function useMutationDenyAsDone(options: MutationHookOptions<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>) {
-  const [ mutationFn ] = useMutation<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
+export function useMutationDenyAsDone(options: MutationHookOptionsWrap<{ denyAsDone: Mutation['denyAsDone'] }, Mutation['denyAsDone'], MutationDenyAsDoneArgs>) {
+  const updater: MutationUpdaterFn<{ denyAsDone: Mutation['denyAsDone'] }> = generateSimpleUpdate('denyAsDone', options.update);
+  const [ mutationFn ] = useMutation<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>(DENY_AS_DONE, { ...options, update: updater });
   type Options = Parameters<typeof mutationFn>[0];
   return (options: Options) => mutationFn(options).then(({ data }) => {
     if (data === undefined) {

@@ -27,12 +27,13 @@ function generateHooks(type: 'Query' | 'Mutation' | 'LazyQuery', nameArray: stri
     const staticQuery = camelToUpperSnakeCase(name);
     documentNodes.push(staticQuery);
     return acc + '\n' +
-      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type}HookOptions<${returnType}, ${argType}>)${type === 'LazyQuery' ? `: [LazyQuery<${argType}>, LazyQueryStatus<${innerReturn}>]` : ''} {\n` +
+      `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type !== 'Mutation' ? `${type}HookOptions`: `MutationHookOptionsWrap`}<${returnType},${type !== 'Mutation' ? '' : ` ${innerReturn},`} ${argType}>)${type === 'LazyQuery' ? `: [LazyQuery<${argType}>, LazyQueryStatus<${innerReturn}>]` : ''} {\n` +
       (type === 'Query' ?
       `  const { loading, error, data } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
       `  return { loading, error, data: data ? data.${name} : data };\n`
       : type === 'Mutation' ?
-      `  const [ mutationFn ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      `  const updater: MutationUpdaterFn<${returnType}> = generateSimpleUpdate('${name}', options.update);\n` +
+      `  const [ mutationFn ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, { ...options, update: updater });\n` +
       `  type Options = Parameters<typeof mutationFn>[0];\n` +
       `  return (options: Options) => mutationFn(options).then(({ data }) => {\n` +
       `    if (data === undefined) {\n` +
@@ -79,7 +80,7 @@ function generate() {
   const { hooks: mutationHooks, imports: mutationImports, documentNodes: mutationNodes } = generateHooks('Mutation', mutationNames, types);
   const hooks = '' +
   `import { useQuery, useMutation, useLazyQuery, QueryLazyOptions, QueryHookOptions, LazyQueryHookOptions, MutationHookOptions } from '@apollo/react-hooks';\n` +
-  `import { ApolloError } from 'apollo-boost';\n` +
+  `import { ApolloError, MutationUpdaterFn } from 'apollo-boost';\n` +
   `import {\n` +
   `  Query,\n` +
   `  Mutation,\n` +
@@ -93,8 +94,19 @@ function generate() {
   `} from './mutations';\n` +
   `${queryHooks}\n` +
   `type LazyQuery<T> = (options?: QueryLazyOptions<T>) => void;\n` +
-  `type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };\n\n` +
+  `type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };\n` +
   `${lazyQueryHooks}\n` +
+  `type MutationUpdaterFnParams<R> = Parameters<MutationUpdaterFn<R>>;\n` +
+  `type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }) => void;\n` +
+  `type MutationHookOptionsWrap<R, T, A> = Omit<MutationHookOptions<R, A>, 'update'> & { update: SimpleUpdate<R, T> };\n\n` +
+  `function generateSimpleUpdate<R extends { [key: string]: T }, T>(name: string, update: SimpleUpdate<R, T>): MutationUpdaterFn<R> {\n` +
+  `  return (cache, { data }) => {\n` +
+  `    if (data === undefined || data === null) {\n` +
+  `      throw new Error('Mutation result cannot be \`undefined\` or \`null\`');\n` +
+  `    }\n` +
+  `    update(cache, { data: data[name] });\n` +
+  `  };\n` +
+  `}\n` +
   `${mutationHooks}`;
   writeFileSync(resolve(__dirname, '../src/apollo-client/hooks.ts'), hooks, 'utf8');
 }
