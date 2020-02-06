@@ -97,14 +97,14 @@ function generate() {
   `type LazyQueryStatus<T> = { loading: boolean, error: ApolloError | undefined, data: T | undefined };\n` +
   `${lazyQueryHooks}\n` +
   `type MutationUpdaterFnParams<R> = Parameters<MutationUpdaterFn<R>>;\n` +
-  `type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }) => void;\n` +
+  `type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }, context?: MutationUpdaterFnParams<R>[1]['context']) => void;\n` +
   `type MutationHookOptionsWrap<R, T, A> = Omit<MutationHookOptions<R, A>, 'update'> & { update: SimpleUpdate<R, T> };\n\n` +
   `function generateSimpleUpdate<R extends { [key: string]: T }, T>(name: string, update: SimpleUpdate<R, T>): MutationUpdaterFn<R> {\n` +
-  `  return (cache, { data }) => {\n` +
+  `  return (cache, { data, context }) => {\n` +
   `    if (data === undefined || data === null) {\n` +
   `      throw new Error('Mutation result cannot be \`undefined\` or \`null\`');\n` +
   `    }\n` +
-  `    update(cache, { data: data[name] });\n` +
+  `    update(cache, { data: data[name] }, context);\n` +
   `  };\n` +
   `}\n` +
   `${mutationHooks}`;

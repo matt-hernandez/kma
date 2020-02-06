@@ -1,17 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { IonList, IonItem, IonLabel } from '@ionic/react';
+import { IonList } from '@ionic/react';
 import H1 from '../../components/H1';
 import Spacer from '../../components/Spacer';
 import PageWrapper from '../../components/PageWrapper';
 import LoadingBlock from '../../components/LoadingBlock';
 import { UserItemLoading } from '../../components/UserItem';
 import { addPageData } from '../../util/add-page-data';
-import { MY_PAST_TASKS } from '../../apollo-client/query/user';
-import { Task } from '../../apollo-client/types/user';
-import useQueryHelper from '../../util/use-query-helper';
 import UserHistoricalTask from '../../components/UserHistoricalTask';
+import { useQueryMyPastTasks } from '../../apollo-client/hooks';
 
 const slug = '/my-past-tasks';
 const title = 'My Past Tasks';
@@ -37,9 +35,12 @@ const MyPastTasks: React.FunctionComponent<RouteComponentProps> = ({
     match,
     history
   }) => {
-  const { loading: loadingMyPastTasks, data: myPastTasks } = useQueryHelper<Task[]>(MY_PAST_TASKS, 'myPastTasks');
+  const { loading: loadingMyPastTasks, error: errorMyPastTasks, data: myPastTasks } = useQueryMyPastTasks();
   if (loadingMyPastTasks) {
     return <></>;
+  }
+  if (errorMyPastTasks || !myPastTasks) {
+    return <>Error encountered!</>;
   }
   return (
     <PageWrapper>
@@ -52,7 +53,7 @@ const MyPastTasks: React.FunctionComponent<RouteComponentProps> = ({
             key={cid}
             title={title}
             due={due}
-            status={outcomeType === null ? 'BROKEN' : outcomeType}
+            status={outcomeType}
           />
         ))}
       </IonList>

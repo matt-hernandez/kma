@@ -18,14 +18,14 @@ import Tooltip from './Tooltip';
 import { ReactComponent as Question } from '../assets/question.svg';
 import { formatDueDate, formatCommitAndPartnerDate, getPartnerUpDeadlineEpochFromDue } from '../util/date-time';
 import { colors } from '../styles/colors';
-import { Connection, PartnerUpDeadline, OutcomeType } from '../apollo-client/types/user';
+import { Connection, PartnerUpDeadline, OutcomeType } from '../../__generated__/types';
 
 type PropTypes = {
   title: string;
   due: number;
   partnerUpDeadline: PartnerUpDeadline;
   pointValue: number;
-  outcomeType: OutcomeType | null;
+  outcomeType: OutcomeType;
   description?: string;
   isCommitted: boolean;
   showTooltips?: boolean;
@@ -133,8 +133,8 @@ const Task: React.FunctionComponent<PropTypes> = ({
         {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this task</IonButton>}
         {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
         {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
-        {(isCommitted && isPastDue) && <IonButton expand="block" color="primary" disabled={outcomeType !== null && outcomeType === 'PENDING'} onClick={onMarkAsDone}>{outcomeType !== null && outcomeType === 'PENDING' ? 'Awaiting confirmation from gym' : 'Mark as Done'}</IonButton>}
-        {(isCommitted && outcomeType === null) && <IonButton expand="block" color="danger" onClick={onBreak}>Break commitment</IonButton>}
+        {(isCommitted && isPastDue) && <IonButton expand="block" color="primary" disabled={outcomeType !== 'NO_OUTCOME' && outcomeType === 'PENDING'} onClick={onMarkAsDone}>{outcomeType !== null && outcomeType === 'PENDING' ? 'Awaiting confirmation from gym' : 'Mark as Done'}</IonButton>}
+        {(isCommitted && outcomeType === 'NO_OUTCOME') && <IonButton expand="block" color="danger" onClick={onBreak}>Break commitment</IonButton>}
       </IonCardContent>
     </IonCard>
   );

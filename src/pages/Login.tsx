@@ -8,7 +8,6 @@ import FlexCell from '../components/FlexCell';
 import LargeCopy from '../components/LargeCopy';
 import SmallCopy from '../components/SmallCopy';
 import { useFakeLogin } from '../util/etc-network-util';
-import useLazyQueryHelper from '../util/use-lazy-query-helper';
 import { LoadingContext } from '../contexts/LoadingContext';
 import { ToastContext } from '../contexts/ToastContext';
 import { useLazyQueryMe } from '../apollo-client/hooks';

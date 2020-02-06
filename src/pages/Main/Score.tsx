@@ -8,9 +8,7 @@ import PageWrapper from '../../components/PageWrapper';
 import LoadingBlock from '../../components/LoadingBlock';
 import { UserItemLoading } from '../../components/UserItem';
 import { addPageData } from '../../util/add-page-data';
-import { SCORE_DETAILS } from '../../apollo-client/query/user';
-import { ScoreDetails } from '../../apollo-client/types/user';
-import useQueryHelper from '../../util/use-query-helper';
+import { useQueryScoreDetails } from '../../apollo-client/hooks';
 
 const slug = '/score';
 const title = 'Score';
@@ -36,7 +34,7 @@ const Score: React.FunctionComponent<RouteComponentProps> = ({
     match,
     history
   }) => {
-  const { loading: loadingScoreDetails, data: scoreDetails } = useQueryHelper<ScoreDetails>(SCORE_DETAILS, 'scoreDetails');
+  const { loading: loadingScoreDetails, data: scoreDetails } = useQueryScoreDetails();
   return (
     <PageWrapper>
       <Spacer height="12px" />

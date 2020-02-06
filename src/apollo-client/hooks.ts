@@ -251,15 +251,15 @@ export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore
 }
 
 type MutationUpdaterFnParams<R> = Parameters<MutationUpdaterFn<R>>;
-type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }) => void;
+type SimpleUpdate<R, T> = (cache: MutationUpdaterFnParams<R>[0], result: { data: T }, context?: MutationUpdaterFnParams<R>[1]['context']) => void;
 type MutationHookOptionsWrap<R, T, A> = Omit<MutationHookOptions<R, A>, 'update'> & { update: SimpleUpdate<R, T> };
 
 function generateSimpleUpdate<R extends { [key: string]: T }, T>(name: string, update: SimpleUpdate<R, T>): MutationUpdaterFn<R> {
-  return (cache, { data }) => {
+  return (cache, { data, context }) => {
     if (data === undefined || data === null) {
       throw new Error('Mutation result cannot be `undefined` or `null`');
     }
-    update(cache, { data: data[name] });
+    update(cache, { data: data[name] }, context);
   };
 }
 

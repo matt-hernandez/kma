@@ -26,7 +26,8 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     match
   }) => {
   const createTask = useMutationCreateTask({
-    update: (cache, { data: createdTask }) => {
+    update: (cache, { data: createdTask }, context) => {
+      debugger;
       const updateCurrentTasks = generateCacheUpdate(
         'INSERT_ITEM',
         {
@@ -74,7 +75,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
                 repeatFrequency: taskData.repeatFrequency
               }
             })
-            .then(({ data }) => {
+            .then(({ data: createdTaskTemplate }) => {
               client.writeFragment({
                 id: createdTask.cid,
                 fragment: gql`
@@ -83,7 +84,7 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
                   }
                 `,
                 data: {
-                  templateCid: data.cid
+                  templateCid: createdTaskTemplate.cid
                 }
               });
             })
