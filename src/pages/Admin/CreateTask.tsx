@@ -3,11 +3,9 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { addPageData } from '../../util/add-page-data';
-import { CURRENT_TASKS, UPCOMING_TASKS, TASK_TEMPLATES } from '../../apollo-client/query/admin';
-import { CREATE_TASK, CREATE_TASK_TEMPLATE } from '../../apollo-client/mutation/admin';
 import { LoadingContext } from '../../contexts/LoadingContext';
 import generateCacheUpdate from '../../util/generate-cache-update';
-import { TaskForAdmin, TaskTemplate } from '../../apollo-client/types/admin';
+import { TaskTemplate } from '../../apollo-client/types/admin';
 import { ToastContext } from '../../contexts/ToastContext';
 import TaskForm, { TaskFormData, TaskFormLoading } from '../../components/TaskForm';
 import H1 from '../../components/H1';
@@ -18,6 +16,8 @@ import MarginWrapper from '../../components/MarginWrapper';
 import InlineItalic from '../../components/InlineItalic';
 import HorizontalRule from '../../components/HorizontalRule';
 import InlineBold from '../../components/InlineBold';
+import { useMutationCreateTask } from '../../apollo-client/hooks';
+import { CURRENT_TASKS, UPCOMING_TASKS } from '../../apollo-client/queries';
 
 const slug = '/tasks/create/:cid?';
 const title = 'Create Task';
@@ -26,31 +26,38 @@ const CreateTask: React.FunctionComponent<RouteComponentProps> = ({
     history,
     match
   }) => {
-  const [ createTask ] = useMutation(CREATE_TASK, {
+  const createTask = useMutationCreateTask({
     update: (cache, { data }) => {
-      const updateCurrentTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
-        {
-          name: 'currentTasks',
-          query: CURRENT_TASKS,
-          sort: (d1, d2) => d2.publishDate - d1.publishDate
-        },
-        'createTask'
-      );
-      const updateUpcomingTasks = generateCacheUpdate<TaskForAdmin>(
-        'INSERT_ITEM',
-        {
-          name: 'upcomingTasks',
-          query: UPCOMING_TASKS,
-          sort: (d1, d2) => d2.publishDate - d1.publishDate
-        },
-        'createTask'
-      );
-      const item: TaskForAdmin = data.createTask;
-      if (item.publishDate > Date.now()) {
-        updateUpcomingTasks(cache, { data });
-      } else {
-        updateCurrentTasks(cache, { data });
+      type Cache = typeof cache;
+      type Data = NonNullable<typeof data>;
+      const update = (cache: Cache, { data }: { data: Data }) => {
+        const updateCurrentTasks = generateCacheUpdate(
+          'INSERT_ITEM',
+          {
+            name: 'currentTasks',
+            query: CURRENT_TASKS,
+            sort: (d1, d2) => d2.publishDate - d1.publishDate
+          },
+          'createTask'
+        );
+        const updateUpcomingTasks = generateCacheUpdate(
+          'INSERT_ITEM',
+          {
+            name: 'upcomingTasks',
+            query: UPCOMING_TASKS,
+            sort: (d1, d2) => d2.publishDate - d1.publishDate
+          },
+          'createTask'
+        );
+        const item = data.createTask;
+        if (item.publishDate > Date.now()) {
+          updateUpcomingTasks(cache, { data: item });
+        } else {
+          updateCurrentTasks(cache, { data: item });
+        }
+      };
+      if (data !== null && data !== undefined) {
+        update(cache, { data });
       }
     }
   });

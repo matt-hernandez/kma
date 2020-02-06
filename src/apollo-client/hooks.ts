@@ -253,93 +253,254 @@ export function useLazyQueryUserScore(options?: LazyQueryHookOptions<{ userScore
 
 
 export function useMutationCommitToTask(options: MutationHookOptions<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>) {
-  return useMutation<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
+  const [ mutationFn ] = useMutation<{ commitToTask: Mutation['commitToTask'] }, MutationCommitToTaskArgs>(COMMIT_TO_TASK, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.commitToTask };
+  });
 }
 
 export function useMutationAddTaskTemplateToSkipCommitConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>) {
-  return useMutation<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
+  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipCommitConfirm: Mutation['addTaskTemplateToSkipCommitConfirm'] }, MutationAddTaskTemplateToSkipCommitConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_COMMIT_CONFIRM, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.addTaskTemplateToSkipCommitConfirm };
+  });
 }
 
 export function useMutationAddTaskTemplateToSkipDoneConfirm(options: MutationHookOptions<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>) {
-  return useMutation<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
+  const [ mutationFn ] = useMutation<{ addTaskTemplateToSkipDoneConfirm: Mutation['addTaskTemplateToSkipDoneConfirm'] }, MutationAddTaskTemplateToSkipDoneConfirmArgs>(ADD_TASK_TEMPLATE_TO_SKIP_DONE_CONFIRM, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.addTaskTemplateToSkipDoneConfirm };
+  });
 }
 
 export function useMutationRequestPartnerForTask(options: MutationHookOptions<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>) {
-  return useMutation<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
+  const [ mutationFn ] = useMutation<{ requestPartnerForTask: Mutation['requestPartnerForTask'] }, MutationRequestPartnerForTaskArgs>(REQUEST_PARTNER_FOR_TASK, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.requestPartnerForTask };
+  });
 }
 
 export function useMutationConfirmPartnerRequest(options: MutationHookOptions<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>) {
-  return useMutation<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
+  const [ mutationFn ] = useMutation<{ confirmPartnerRequest: Mutation['confirmPartnerRequest'] }, MutationConfirmPartnerRequestArgs>(CONFIRM_PARTNER_REQUEST, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.confirmPartnerRequest };
+  });
 }
 
 export function useMutationCancelPartnerRequest(options: MutationHookOptions<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>) {
-  return useMutation<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
+  const [ mutationFn ] = useMutation<{ cancelPartnerRequest: Mutation['cancelPartnerRequest'] }, MutationCancelPartnerRequestArgs>(CANCEL_PARTNER_REQUEST, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.cancelPartnerRequest };
+  });
 }
 
 export function useMutationDenyPartnerRequest(options: MutationHookOptions<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>) {
-  return useMutation<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
+  const [ mutationFn ] = useMutation<{ denyPartnerRequest: Mutation['denyPartnerRequest'] }, MutationDenyPartnerRequestArgs>(DENY_PARTNER_REQUEST, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.denyPartnerRequest };
+  });
 }
 
 export function useMutationRemoveBrokenPartnership(options: MutationHookOptions<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>) {
-  return useMutation<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
+  const [ mutationFn ] = useMutation<{ removeBrokenPartnership: Mutation['removeBrokenPartnership'] }, MutationRemoveBrokenPartnershipArgs>(REMOVE_BROKEN_PARTNERSHIP, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.removeBrokenPartnership };
+  });
 }
 
 export function useMutationBreakCommitment(options: MutationHookOptions<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>) {
-  return useMutation<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
+  const [ mutationFn ] = useMutation<{ breakCommitment: Mutation['breakCommitment'] }, MutationBreakCommitmentArgs>(BREAK_COMMITMENT, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.breakCommitment };
+  });
 }
 
 export function useMutationMarkTaskAsDone(options: MutationHookOptions<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>) {
-  return useMutation<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
+  const [ mutationFn ] = useMutation<{ markTaskAsDone: Mutation['markTaskAsDone'] }, MutationMarkTaskAsDoneArgs>(MARK_TASK_AS_DONE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.markTaskAsDone };
+  });
 }
 
 export function useMutationMakeUserInactive(options: MutationHookOptions<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>) {
-  return useMutation<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
+  const [ mutationFn ] = useMutation<{ makeUserInactive: Mutation['makeUserInactive'] }, MutationMakeUserInactiveArgs>(MAKE_USER_INACTIVE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.makeUserInactive };
+  });
 }
 
 export function useMutationMakeUserActive(options: MutationHookOptions<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>) {
-  return useMutation<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
+  const [ mutationFn ] = useMutation<{ makeUserActive: Mutation['makeUserActive'] }, MutationMakeUserActiveArgs>(MAKE_USER_ACTIVE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.makeUserActive };
+  });
 }
 
 export function useMutationMakeUserAnAdmin(options: MutationHookOptions<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>) {
-  return useMutation<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
+  const [ mutationFn ] = useMutation<{ makeUserAnAdmin: Mutation['makeUserAnAdmin'] }, MutationMakeUserAnAdminArgs>(MAKE_USER_AN_ADMIN, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.makeUserAnAdmin };
+  });
 }
 
 export function useMutationRemoveUserAsAdmin(options: MutationHookOptions<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>) {
-  return useMutation<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
+  const [ mutationFn ] = useMutation<{ removeUserAsAdmin: Mutation['removeUserAsAdmin'] }, MutationRemoveUserAsAdminArgs>(REMOVE_USER_AS_ADMIN, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.removeUserAsAdmin };
+  });
 }
 
 export function useMutationChangeTaskStatusForUser(options: MutationHookOptions<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>) {
-  return useMutation<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
+  const [ mutationFn ] = useMutation<{ changeTaskStatusForUser: Mutation['changeTaskStatusForUser'] }, MutationChangeTaskStatusForUserArgs>(CHANGE_TASK_STATUS_FOR_USER, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.changeTaskStatusForUser };
+  });
 }
 
 export function useMutationCreateTask(options: MutationHookOptions<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>) {
-  return useMutation<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>(CREATE_TASK, options);
+  const [ mutationFn ] = useMutation<{ createTask: Mutation['createTask'] }, MutationCreateTaskArgs>(CREATE_TASK, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.createTask };
+  });
 }
 
 export function useMutationUpdateTask(options: MutationHookOptions<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>) {
-  return useMutation<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>(UPDATE_TASK, options);
+  const [ mutationFn ] = useMutation<{ updateTask: Mutation['updateTask'] }, MutationUpdateTaskArgs>(UPDATE_TASK, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.updateTask };
+  });
 }
 
 export function useMutationDeleteTask(options: MutationHookOptions<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>) {
-  return useMutation<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>(DELETE_TASK, options);
+  const [ mutationFn ] = useMutation<{ deleteTask: Mutation['deleteTask'] }, MutationDeleteTaskArgs>(DELETE_TASK, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.deleteTask };
+  });
 }
 
 export function useMutationCreateTaskTemplate(options: MutationHookOptions<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>) {
-  return useMutation<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
+  const [ mutationFn ] = useMutation<{ createTaskTemplate: Mutation['createTaskTemplate'] }, MutationCreateTaskTemplateArgs>(CREATE_TASK_TEMPLATE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.createTaskTemplate };
+  });
 }
 
 export function useMutationUpdateTaskTemplate(options: MutationHookOptions<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>) {
-  return useMutation<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
+  const [ mutationFn ] = useMutation<{ updateTaskTemplate: Mutation['updateTaskTemplate'] }, MutationUpdateTaskTemplateArgs>(UPDATE_TASK_TEMPLATE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.updateTaskTemplate };
+  });
 }
 
 export function useMutationDeleteTaskTemplate(options: MutationHookOptions<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>) {
-  return useMutation<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
+  const [ mutationFn ] = useMutation<{ deleteTaskTemplate: Mutation['deleteTaskTemplate'] }, MutationDeleteTaskTemplateArgs>(DELETE_TASK_TEMPLATE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.deleteTaskTemplate };
+  });
 }
 
 export function useMutationConfirmAsDone(options: MutationHookOptions<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>) {
-  return useMutation<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
+  const [ mutationFn ] = useMutation<{ confirmAsDone: Mutation['confirmAsDone'] }, MutationConfirmAsDoneArgs>(CONFIRM_AS_DONE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.confirmAsDone };
+  });
 }
 
 export function useMutationDenyAsDone(options: MutationHookOptions<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>) {
-  return useMutation<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
+  const [ mutationFn ] = useMutation<{ denyAsDone: Mutation['denyAsDone'] }, MutationDenyAsDoneArgs>(DENY_AS_DONE, options);
+  type Options = Parameters<typeof mutationFn>[0];
+  return (options: Options) => mutationFn(options).then(({ data }) => {
+    if (data === undefined) {
+      throw new Error('Value of `data` from successful mutation cannot be undefined!');
+    }
+    return { data: data.denyAsDone };
+  });
 }

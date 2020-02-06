@@ -1,4 +1,4 @@
-import { MutationUpdaterFn } from 'apollo-boost';
+import { MutationUpdaterFn, FetchResult } from 'apollo-boost';
 import { readCachedQuery } from '../apollo-client/client';
 
 type OperationTypes = 'OVERWRITE_SINGLE_ITEM' | 'OVERWRITE_ITEM_IN_ARRAY' | 'TRANSFER_ITEM' | 'INSERT_ITEM' | 'REMOVE_ITEM';
@@ -28,7 +28,7 @@ interface TransferItemConfig<T> {
 export default function <T extends { cid: string, [key: string]: any }>(
   operation: OperationTypes,
   config: OverwriteItemConfig | TransferItemConfig<T> | InsertItemConfig<T>,
-  resultName: string): MutationUpdaterFn<{ [key: string]: T }> {
+  resultName: string): (cache: Parameters<MutationUpdaterFn<{ [key: string]: T }>>[0], data: { data: T }) => void {
   const {
     name,
     query,
@@ -45,7 +45,7 @@ export default function <T extends { cid: string, [key: string]: any }>(
     if (!data) {
       return;
     }
-    const item: T = data[resultName];
+    const item: T = data;
     if (operation === 'OVERWRITE_SINGLE_ITEM') {
       cache.writeQuery({
         query: query,

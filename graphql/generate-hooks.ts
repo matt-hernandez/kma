@@ -32,7 +32,14 @@ function generateHooks(type: 'Query' | 'Mutation' | 'LazyQuery', nameArray: stri
       `  const { loading, error, data } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
       `  return { loading, error, data: data ? data.${name} : data };\n`
       : type === 'Mutation' ?
-      `  return use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n`
+      `  const [ mutationFn ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      `  type Options = Parameters<typeof mutationFn>[0];\n` +
+      `  return (options: Options) => mutationFn(options).then(({ data }) => {\n` +
+      `    if (data === undefined) {\n` +
+      `      throw new Error('Value of \`data\` from successful mutation cannot be undefined!');\n` +
+      `    }\n` +
+      `    return { data: data.${name} };\n` +
+      `  });\n`
       : type === 'LazyQuery' ?
       `  const [ queryFetch, { loading, error, data } ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
       `  return [ queryFetch, { loading, error, data: data ? data.${name} : data } ];\n`
