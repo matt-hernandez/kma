@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components/macro';
-import { useStateHelper, listenerTypes } from '../util/use-state-helper';
+import { useToggle } from 'react-common-state-hooks';
 import { colors } from '../styles/colors';
 
 const Container = styled.div`
@@ -75,7 +75,7 @@ let tooltipKey = 0;
 const Tooltip: React.FunctionComponent<ExtraProps> = ({ children, text = [] }) => {
   const keyRef = useRef(tooltipKey);
   useEffect(() => {tooltipKey++}, []);
-  const [ isVisible, setVisibleTrue, setVisibleFalse ] = useStateHelper(false, listenerTypes.TOGGLE_MANUALLY);
+  const [ isVisible, , setVisibleTrue, setVisibleFalse ] = useToggle(false);
   return (
     <Container tabIndex={0} onMouseEnter={setVisibleTrue} onMouseLeave={setVisibleFalse} onFocus={setVisibleTrue} onBlur={setVisibleFalse}>
       <ChildrenWrapper>

@@ -78,88 +78,88 @@ import {
 } from './mutations';
 
 export function useQueryMe(options?: QueryHookOptions<{ me: Query['me'] }, null>) {
-  const { loading, error, data } = useQuery<{ me: Query['me'] }, null>(ME, options);
-  return { loading, error, data: data ? data.me : data };
+  const { loading, error, data, ...query } = useQuery<{ me: Query['me'] }, null>(ME, options);
+  return { loading, error, data: data ? data.me : data, __operationName: 'me', ...query };
 }
 
 export function useQueryScoreDetails(options?: QueryHookOptions<{ scoreDetails: Query['scoreDetails'] }, null>) {
-  const { loading, error, data } = useQuery<{ scoreDetails: Query['scoreDetails'] }, null>(SCORE_DETAILS, options);
-  return { loading, error, data: data ? data.scoreDetails : data };
+  const { loading, error, data, ...query } = useQuery<{ scoreDetails: Query['scoreDetails'] }, null>(SCORE_DETAILS, options);
+  return { loading, error, data: data ? data.scoreDetails : data, __operationName: 'scoreDetails', ...query };
 }
 
 export function useQueryPartnerSearch(options: QueryHookOptions<{ partnerSearch: Query['partnerSearch'] }, QueryPartnerSearchArgs>) {
-  const { loading, error, data } = useQuery<{ partnerSearch: Query['partnerSearch'] }, QueryPartnerSearchArgs>(PARTNER_SEARCH, options);
-  return { loading, error, data: data ? data.partnerSearch : data };
+  const { loading, error, data, ...query } = useQuery<{ partnerSearch: Query['partnerSearch'] }, QueryPartnerSearchArgs>(PARTNER_SEARCH, options);
+  return { loading, error, data: data ? data.partnerSearch : data, __operationName: 'partnerSearch', ...query };
 }
 
 export function useQueryUserPool(options: QueryHookOptions<{ userPool: Query['userPool'] }, QueryUserPoolArgs>) {
-  const { loading, error, data } = useQuery<{ userPool: Query['userPool'] }, QueryUserPoolArgs>(USER_POOL, options);
-  return { loading, error, data: data ? data.userPool : data };
+  const { loading, error, data, ...query } = useQuery<{ userPool: Query['userPool'] }, QueryUserPoolArgs>(USER_POOL, options);
+  return { loading, error, data: data ? data.userPool : data, __operationName: 'userPool', ...query };
 }
 
 export function useQueryOnePossiblePartnerForTask(options: QueryHookOptions<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, QueryOnePossiblePartnerForTaskArgs>) {
-  const { loading, error, data } = useQuery<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, QueryOnePossiblePartnerForTaskArgs>(ONE_POSSIBLE_PARTNER_FOR_TASK, options);
-  return { loading, error, data: data ? data.onePossiblePartnerForTask : data };
+  const { loading, error, data, ...query } = useQuery<{ onePossiblePartnerForTask: Query['onePossiblePartnerForTask'] }, QueryOnePossiblePartnerForTaskArgs>(ONE_POSSIBLE_PARTNER_FOR_TASK, options);
+  return { loading, error, data: data ? data.onePossiblePartnerForTask : data, __operationName: 'onePossiblePartnerForTask', ...query };
 }
 
 export function useQueryGetPartnerDetails(options: QueryHookOptions<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>) {
-  const { loading, error, data } = useQuery<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>(GET_PARTNER_DETAILS, options);
-  return { loading, error, data: data ? data.getPartnerDetails : data };
+  const { loading, error, data, ...query } = useQuery<{ getPartnerDetails: Query['getPartnerDetails'] }, QueryGetPartnerDetailsArgs>(GET_PARTNER_DETAILS, options);
+  return { loading, error, data: data ? data.getPartnerDetails : data, __operationName: 'getPartnerDetails', ...query };
 }
 
 export function useQueryOpenTasks(options?: QueryHookOptions<{ openTasks: Query['openTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ openTasks: Query['openTasks'] }, null>(OPEN_TASKS, options);
-  return { loading, error, data: data ? data.openTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ openTasks: Query['openTasks'] }, null>(OPEN_TASKS, options);
+  return { loading, error, data: data ? data.openTasks : data, __operationName: 'openTasks', ...query };
 }
 
 export function useQueryMyTasks(options?: QueryHookOptions<{ myTasks: Query['myTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ myTasks: Query['myTasks'] }, null>(MY_TASKS, options);
-  return { loading, error, data: data ? data.myTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ myTasks: Query['myTasks'] }, null>(MY_TASKS, options);
+  return { loading, error, data: data ? data.myTasks : data, __operationName: 'myTasks', ...query };
 }
 
 export function useQueryRequestedPartnerTasks(options?: QueryHookOptions<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>(REQUESTED_PARTNER_TASKS, options);
-  return { loading, error, data: data ? data.requestedPartnerTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ requestedPartnerTasks: Query['requestedPartnerTasks'] }, null>(REQUESTED_PARTNER_TASKS, options);
+  return { loading, error, data: data ? data.requestedPartnerTasks : data, __operationName: 'requestedPartnerTasks', ...query };
 }
 
 export function useQueryMyPastTasks(options?: QueryHookOptions<{ myPastTasks: Query['myPastTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ myPastTasks: Query['myPastTasks'] }, null>(MY_PAST_TASKS, options);
-  return { loading, error, data: data ? data.myPastTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ myPastTasks: Query['myPastTasks'] }, null>(MY_PAST_TASKS, options);
+  return { loading, error, data: data ? data.myPastTasks : data, __operationName: 'myPastTasks', ...query };
 }
 
 export function useQueryUsers(options?: QueryHookOptions<{ users: Query['users'] }, null>) {
-  const { loading, error, data } = useQuery<{ users: Query['users'] }, null>(USERS, options);
-  return { loading, error, data: data ? data.users : data };
+  const { loading, error, data, ...query } = useQuery<{ users: Query['users'] }, null>(USERS, options);
+  return { loading, error, data: data ? data.users : data, __operationName: 'users', ...query };
 }
 
 export function useQueryCurrentTasks(options?: QueryHookOptions<{ currentTasks: Query['currentTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ currentTasks: Query['currentTasks'] }, null>(CURRENT_TASKS, options);
-  return { loading, error, data: data ? data.currentTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ currentTasks: Query['currentTasks'] }, null>(CURRENT_TASKS, options);
+  return { loading, error, data: data ? data.currentTasks : data, __operationName: 'currentTasks', ...query };
 }
 
 export function useQueryPastTasks(options?: QueryHookOptions<{ pastTasks: Query['pastTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ pastTasks: Query['pastTasks'] }, null>(PAST_TASKS, options);
-  return { loading, error, data: data ? data.pastTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ pastTasks: Query['pastTasks'] }, null>(PAST_TASKS, options);
+  return { loading, error, data: data ? data.pastTasks : data, __operationName: 'pastTasks', ...query };
 }
 
 export function useQueryUpcomingTasks(options?: QueryHookOptions<{ upcomingTasks: Query['upcomingTasks'] }, null>) {
-  const { loading, error, data } = useQuery<{ upcomingTasks: Query['upcomingTasks'] }, null>(UPCOMING_TASKS, options);
-  return { loading, error, data: data ? data.upcomingTasks : data };
+  const { loading, error, data, ...query } = useQuery<{ upcomingTasks: Query['upcomingTasks'] }, null>(UPCOMING_TASKS, options);
+  return { loading, error, data: data ? data.upcomingTasks : data, __operationName: 'upcomingTasks', ...query };
 }
 
 export function useQueryTaskTemplates(options?: QueryHookOptions<{ taskTemplates: Query['taskTemplates'] }, null>) {
-  const { loading, error, data } = useQuery<{ taskTemplates: Query['taskTemplates'] }, null>(TASK_TEMPLATES, options);
-  return { loading, error, data: data ? data.taskTemplates : data };
+  const { loading, error, data, ...query } = useQuery<{ taskTemplates: Query['taskTemplates'] }, null>(TASK_TEMPLATES, options);
+  return { loading, error, data: data ? data.taskTemplates : data, __operationName: 'taskTemplates', ...query };
 }
 
 export function useQueryClaims(options?: QueryHookOptions<{ claims: Query['claims'] }, null>) {
-  const { loading, error, data } = useQuery<{ claims: Query['claims'] }, null>(CLAIMS, options);
-  return { loading, error, data: data ? data.claims : data };
+  const { loading, error, data, ...query } = useQuery<{ claims: Query['claims'] }, null>(CLAIMS, options);
+  return { loading, error, data: data ? data.claims : data, __operationName: 'claims', ...query };
 }
 
 export function useQueryUserScore(options: QueryHookOptions<{ userScore: Query['userScore'] }, QueryUserScoreArgs>) {
-  const { loading, error, data } = useQuery<{ userScore: Query['userScore'] }, QueryUserScoreArgs>(USER_SCORE, options);
-  return { loading, error, data: data ? data.userScore : data };
+  const { loading, error, data, ...query } = useQuery<{ userScore: Query['userScore'] }, QueryUserScoreArgs>(USER_SCORE, options);
+  return { loading, error, data: data ? data.userScore : data, __operationName: 'userScore', ...query };
 }
 
 type LazyQuery<T> = (options?: QueryLazyOptions<T>) => void;

@@ -29,8 +29,8 @@ function generateHooks(type: 'Query' | 'Mutation' | 'LazyQuery', nameArray: stri
     return acc + '\n' +
       `export function use${type}${capitalized}(options${hasArgs ? '' : '?'}: ${type !== 'Mutation' ? `${type}HookOptions`: `MutationHookOptionsWrap`}<${returnType},${type !== 'Mutation' ? '' : ` ${innerReturn},`} ${argType}>)${type === 'LazyQuery' ? `: [LazyQuery<${argType}>, LazyQueryStatus<${innerReturn}>]` : ''} {\n` +
       (type === 'Query' ?
-      `  const { loading, error, data } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
-      `  return { loading, error, data: data ? data.${name} : data };\n`
+      `  const { loading, error, data, ...query } = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, options);\n` +
+      `  return { loading, error, data: data ? data.${name} : data, __operationName: '${name}', ...query };\n`
       : type === 'Mutation' ?
       `  const updater: MutationUpdaterFn<${returnType}> = generateSimpleUpdate('${name}', options.update);\n` +
       `  const [ mutationFn ] = use${type}<${returnType}, ${argType}>(${camelToUpperSnakeCase(name)}, { ...options, update: updater });\n` +
