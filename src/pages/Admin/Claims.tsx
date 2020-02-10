@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { addPageData } from '../../util/add-page-data';
 import { CLAIMS, CURRENT_TASKS, PAST_TASKS, USERS } from '../../apollo-client/query/admin';
-import { ME } from '../../apollo-client/query/user';
 import { User as UserInterface } from '../../apollo-client/types/user';
 import { TaskForAdmin } from '../../apollo-client/types/admin';
-import { Outcome } from '../../apollo-client/types/admin';
+import { Outcome, ConfirmTaskAsDoneResult } from '../../apollo-client/types/admin';
 import { UserLoading } from '../../components/User';
 import useQueryHelper from '../../util/use-query-helper';
 import Claim from '../../components/Claim';
@@ -14,14 +13,14 @@ import client from '../../apollo-client/client';
 import { gql, ApolloError } from 'apollo-boost';
 import { ToastContext } from '../../contexts/ToastContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
+import generateCacheUpdate from '../../util/generate-cache-update';
 
 const slug = '/claims';
 const title = 'Claims';
 
-function updateCacheForTaskClaims(cache: any, { data }: any) {
-  const confirmedTask = data['confirmAsDone'] as TaskForAdmin;
+function updateTaskAndOutcome(task: TaskForAdmin) {
   client.writeFragment<TaskForAdmin>({
-    id: confirmedTask.cid,
+    id: task.cid,
     fragment: gql`
       fragment task on TaskForAdmin {
         connections
@@ -29,9 +28,7 @@ function updateCacheForTaskClaims(cache: any, { data }: any) {
       }
     `,
     data: {
-      ...confirmedTask,
-      connections: confirmedTask.connections,
-      outcomes: confirmedTask.outcomes
+      ...task
     }
   });
 }
@@ -42,10 +39,34 @@ export default addPageData(() => {
   const { loading: loadingPastTasks, error: errorPastTasks, data: pastTasks } = useQueryHelper<TaskForAdmin[]>(PAST_TASKS, 'pastTasks');
   const { loading: loadingClaims, error: errorClaims, data: claims } = useQueryHelper<Outcome[]>(CLAIMS, 'claims');
   const [ confirmAsDone ] = useMutation(CONFIRM_AS_DONE, {
-    update: updateCacheForTaskClaims
+    update: (cache, { data }) => {
+      const confirmedTask = data['confirmAsDone'] as ConfirmTaskAsDoneResult;
+      updateTaskAndOutcome(confirmedTask.task);
+      const outcome = confirmedTask.outcome;
+      generateCacheUpdate(
+        'REMOVE_ITEM',
+        {
+          name: 'claims',
+          query: CLAIMS
+        },
+        'confirmedTask'
+      )(cache, { data: { confirmedTask: outcome } });
+    }
   });
   const [ denyAsDone ] = useMutation(DENY_AS_DONE, {
-    update: updateCacheForTaskClaims
+    update: (cache, { data }) => {
+      const confirmedTask = data['denyAsDone'] as ConfirmTaskAsDoneResult;
+      updateTaskAndOutcome(confirmedTask.task);
+      const outcome = confirmedTask.outcome;
+      generateCacheUpdate(
+        'REMOVE_ITEM',
+        {
+          name: 'claims',
+          query: CLAIMS
+        },
+        'confirmedTask'
+      )(cache, { data: { confirmedTask: outcome } });
+    }
   });
   const { showToast } = useContext(ToastContext);
   const { showLoadingScreen, hideLoadingScreen } = useContext(LoadingContext);

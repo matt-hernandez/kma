@@ -44,3 +44,8 @@ export interface TaskTemplate {
   repeatFrequency: RepeatFrequency;
   partnerUpDeadline: PartnerUpDeadline;
 }
+
+export interface ConfirmTaskAsDoneResult {
+  task: TaskForAdmin
+  outcome: Outcome
+}

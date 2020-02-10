@@ -57,7 +57,7 @@ const Menu: React.FunctionComponent<MenuProps & RouteComponentProps> = ({
       <IonMenu contentId="main">
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Menu</IonTitle>
+            <IonTitle>{me ? me.name : ''}</IonTitle>
           </IonToolbar>
         </IonHeader>
         <InflateContent top={56}>

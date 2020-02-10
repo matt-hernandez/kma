@@ -229,29 +229,37 @@ export const DELETE_TASK_TEMPLATE = gql`
 `;
 
 export const CONFIRM_AS_DONE = gql`
-  mutation ConfirmAsDone($cid: String!) {
-    confirmAsDone(cid: $cid) {
-      cid
-      templateCid
-      title
-      due
-      publishDate
-      partnerUpDeadline
-      description
-      committedUsers {
+  mutation ConfirmAsDone($taskCid: String!, $userCid: String!) {
+    confirmAsDone(taskCid: $taskCid, userCid: $userCid) {
+      task {
         cid
-        name
-        email
+        templateCid
+        title
+        due
+        publishDate
+        partnerUpDeadline
+        description
+        committedUsers {
+          cid
+          name
+          email
+        }
+        connections {
+          cid
+          fromCid
+          fromName
+          type
+          toCid
+          toName
+        }
+        outcomes {
+          cid
+          taskCid
+          userCid
+          type
+        }
       }
-      connections {
-        cid
-        fromCid
-        fromName
-        type
-        toCid
-        toName
-      }
-      outcomes {
+      outcome {
         cid
         taskCid
         userCid
@@ -262,29 +270,37 @@ export const CONFIRM_AS_DONE = gql`
 `;
 
 export const DENY_AS_DONE = gql`
-  mutation DenyAsDone($cid: String!) {
-    DenyAsDone(cid: $cid) {
-      cid
-      templateCid
-      title
-      due
-      publishDate
-      partnerUpDeadline
-      description
-      committedUsers {
+  mutation DenyAsDone($taskCid: String!, $userCid: String!) {
+    denyAsDone(taskCid: $taskCid, userCid: $userCid) {
+      task {
         cid
-        name
-        email
+        templateCid
+        title
+        due
+        publishDate
+        partnerUpDeadline
+        description
+        committedUsers {
+          cid
+          name
+          email
+        }
+        connections {
+          cid
+          fromCid
+          fromName
+          type
+          toCid
+          toName
+        }
+        outcomes {
+          cid
+          taskCid
+          userCid
+          type
+        }
       }
-      connections {
-        cid
-        fromCid
-        fromName
-        type
-        toCid
-        toName
-      }
-      outcomes {
+      outcome {
         cid
         taskCid
         userCid

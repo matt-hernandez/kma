@@ -241,7 +241,6 @@ const PartnerRequests: React.FunctionComponent<RouteComponentProps> = ({
                   ];
                   writeCachedQuery(OPEN_TASKS, 'openTasks', items);
                 }
-                throw e;
               });
               doCommit()
                 .then(() => skipConfirm ? skipFutureConfirm() : Promise.resolve(null))

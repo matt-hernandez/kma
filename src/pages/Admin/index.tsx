@@ -118,7 +118,7 @@ const Admin: React.FunctionComponent<RouteComponentProps> = ({
             <IonButtons slot="start">
               <IonMenuButton />
             </IonButtons>
-            <IonTitle>KMA</IonTitle>
+            <IonTitle>KMA - Admin</IonTitle>
           </IonToolbar>
         </IonHeader>
         <InflateContent top={56} as="main">

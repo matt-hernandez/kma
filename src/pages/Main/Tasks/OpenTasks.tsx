@@ -106,34 +106,34 @@ const OpenTasks: React.FunctionComponent<RouteComponentProps> = ({
                     message: 'We got you committed to the task, but we couldn\'t save it as one to skip confirmation.'
                   });
                 });
-              const doCommit = () => commit(taskToCommitTo.cid).catch((e: ApolloError) => {
-                if (e.networkError) {
-                  showToast({
-                    color: 'danger',
-                    message: 'We couldn\'t connect to the internet. Please try again.'
-                  });
-                } else if (e.graphQLErrors.some((e) => e.message.includes('Task is past deadline'))) {
-                  hideModal();
-                  showToast({
-                    color: 'danger',
-                    message: 'That task is no longer available.'
-                  });
-                  let items = readCachedQuery<TaskInterface[]>({
-                    query: OPEN_TASKS
-                  }, 'openTasks');
-                  const index = items.findIndex(({ cid }) => taskToCommitTo.cid === cid);
-                  items = [
-                    ...items.slice(0, index),
-                    ...items.slice(index + 1),
-                  ];
-                  writeCachedQuery(OPEN_TASKS, 'openTasks', items);
-                }
-                throw e;
-              });
+              const doCommit = () => commit(taskToCommitTo.cid);
               doCommit()
                 .then(() => skipConfirm ? skipFutureConfirm() : Promise.resolve(null))
                 .then(() => {
                   navigate();
+                })
+                .catch((e: ApolloError) => {
+                  if (e.networkError) {
+                    showToast({
+                      color: 'danger',
+                      message: 'We couldn\'t connect to the internet. Please try again.'
+                    });
+                  } else if (e.graphQLErrors.some((e) => e.message.includes('Task is past deadline'))) {
+                    hideModal();
+                    showToast({
+                      color: 'danger',
+                      message: 'That task is no longer available.'
+                    });
+                    let items = readCachedQuery<TaskInterface[]>({
+                      query: OPEN_TASKS
+                    }, 'openTasks');
+                    const index = items.findIndex(({ cid }) => taskToCommitTo.cid === cid);
+                    items = [
+                      ...items.slice(0, index),
+                      ...items.slice(index + 1),
+                    ];
+                    writeCachedQuery(OPEN_TASKS, 'openTasks', items);
+                  }
                 })
                 .finally(() => hideLoadingScreen());
             }

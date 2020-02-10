@@ -1,7 +1,7 @@
 import { MutationUpdaterFn } from 'apollo-boost';
 import { readCachedQuery } from '../apollo-client/client';
 
-type OperationTypes = 'OVERWRITE_SINGLE_ITEM' | 'OVERWRITE_ITEM_IN_ARRAY' | 'TRANSFER_ITEM' | 'INSERT_ITEM';
+type OperationTypes = 'OVERWRITE_SINGLE_ITEM' | 'OVERWRITE_ITEM_IN_ARRAY' | 'TRANSFER_ITEM' | 'INSERT_ITEM' | 'REMOVE_ITEM';
 interface OverwriteItemConfig {
   name: string;
   query: any;
@@ -28,7 +28,7 @@ interface TransferItemConfig<T> {
 export default function <T extends { cid: string, [key: string]: any }>(
   operation: OperationTypes,
   config: OverwriteItemConfig | TransferItemConfig<T> | InsertItemConfig<T>,
-  resultName: string): MutationUpdaterFn<T> {
+  resultName: string): MutationUpdaterFn<{ [key: string]: T }> {
   const {
     name,
     query,
@@ -99,6 +99,17 @@ export default function <T extends { cid: string, [key: string]: any }>(
       if (sort) {
         items.sort(sort);
       }
+      cache.writeQuery({
+        query: query,
+        variables,
+        data: { [name]: items }
+      });
+    } else if (operation === 'REMOVE_ITEM') {
+      let items = readCachedQuery<T[]>({
+        query,
+        variables
+      }, name);
+      items = items.filter(({ cid }) => cid !== item.cid);
       cache.writeQuery({
         query: query,
         variables,

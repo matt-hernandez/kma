@@ -104,7 +104,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
           <InlineItalic> - <CustomLink onClick={() => onCancelRequest(connection)}>Cancel request</CustomLink></InlineItalic>
         </IonCardContent>
       ))}
-      {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0) && (
+      {(!isPastPartnerUpDeadline && isCommitted && pendingPartners.length === 0 && confirmedPartners.length === 0 && partnerRequestsToMe.length === 0) && (
         <IonCardContent key={`${title} ${due} no-requests`}>
           <IonChip color="danger" className="partner-request">
             <IonLabel>
@@ -133,7 +133,7 @@ const Task: React.FunctionComponent<PropTypes> = ({
         {(!isCommitted && partnerRequestsToMe.length === 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this task</IonButton>}
         {(!isCommitted && partnerRequestsToMe.length > 0) && <IonButton expand="block" color="primary" onClick={onCommit}>Commit to this, separately</IonButton>}
         {(isCommitted && !isPastPartnerUpDeadline && pendingPartners.length + confirmedPartners.length < 2) && <IonButton expand="block" color="primary" onClick={onFindPartner}>Find a partner</IonButton>}
-        {(isCommitted && confirmedPartners.length > 0 && isPastDue) && <IonButton expand="block" color="primary" disabled={outcomeType !== null && outcomeType === 'PENDING'} onClick={onMarkAsDone}>{outcomeType !== null && outcomeType === 'PENDING' ? 'Awaiting confirmation from gym' : 'Mark as Done'}</IonButton>}
+        {(isCommitted && isPastDue) && <IonButton expand="block" color="primary" disabled={outcomeType !== null && outcomeType === 'PENDING'} onClick={onMarkAsDone}>{outcomeType !== null && outcomeType === 'PENDING' ? 'Awaiting confirmation from gym' : 'Mark as Done'}</IonButton>}
         {(isCommitted && outcomeType === null) && <IonButton expand="block" color="danger" onClick={onBreak}>Break commitment</IonButton>}
       </IonCardContent>
     </IonCard>
