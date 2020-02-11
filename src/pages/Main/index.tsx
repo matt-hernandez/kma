@@ -10,7 +10,7 @@ import {
   } from '@ionic/react';
 import { Redirect, Route, Switch, RouteComponentProps } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
-import { checkmark, list, stats, settings, personAdd } from 'ionicons/icons';
+import { checkmark, list, stats, settings, personAdd, hourglass } from 'ionicons/icons';
 import Menu from '../../components/Menu';
 import InflateContent from '../../components/InflateContent';
 import Tasks from './Tasks';
@@ -18,6 +18,7 @@ import Score from './Score';
 import PartnerSearch from './TransitoryPages/PartnerSearch';
 import ConfirmPartnerRequest from './TransitoryPages/ConfirmPartnerRequest';
 import RequestSent from './TransitoryPages/RequestSent';
+import MyPastTasks from './MyPastTasks';
 import FindAPartner from './TransitoryPages/FindAPartner';
 import UserPool from './TransitoryPages/UserPool';
 import { AppPage } from '../../declarations';
@@ -41,6 +42,11 @@ const mainPages: AppPage[] = [
     title: 'Partner Requests',
     url: '/main/tasks/requests',
     icon: personAdd
+  },
+  {
+    title: 'My Past Tasks',
+    url: '/main/my-past-tasks',
+    icon: hourglass
   },
   {
     title: 'Score',
@@ -109,6 +115,7 @@ const Main: React.FunctionComponent<RouteComponentProps> = ({
             <Route path={`/main${ConfirmPartnerRequest.pageData.slug}`} component={ConfirmPartnerRequest} strict exact />
             <Route path={`/main${RequestSent.pageData.slug}`} component={RequestSent} strict exact />
             <Route path={`/main${FindAPartner.pageData.slug}`} component={FindAPartner} strict exact />
+            <Route path={`/main${MyPastTasks.pageData.slug}`} component={MyPastTasks} strict exact />
             <Route path={`/main${UserPool.pageData.slug}`} component={UserPool} strict exact />
             <Route path={`/main${Score.pageData.slug}`} component={Score} strict exact />
             <Route path="/main" exact render={() => <Redirect to="/main/tasks/open" />} />

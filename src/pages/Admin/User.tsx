@@ -147,7 +147,7 @@ export default addPageData(withRouter(({ history, match }) => {
           </IonLabel>
         </IonItem>
       </IonList>
-      <MarginWrapper marginRight marginLeft marginBottom>
+      <MarginWrapper marginRight marginLeft marginBottom marginTop>
         <LargeCopy>Task history</LargeCopy>
       </MarginWrapper>
       {(!!userPastTasks && userPastTasks.length > 0) && (
@@ -157,11 +157,18 @@ export default addPageData(withRouter(({ history, match }) => {
             const connectionsForAgreement = connections.filter(({ fromCid, toCid, type }) => (user.cid === fromCid || user.cid === toCid) && type === 'CONFIRMED');
             if (outcome) {
               return (
-                <UserHistoricalTask key={`${user.cid}-${cid}`} title={title} due={due} status={outcome.type} onChangeStatus={() => {
-                  toggleChangeStatusModal();
-                  setConnectionsForChangeStatus(connectionsForAgreement);
-                  setOutcomeForChangeStatus(outcome);
-                }} />
+                <UserHistoricalTask
+                  key={`${user.cid}-${cid}`}
+                  title={title}
+                  due={due}
+                  status={outcome.type}
+                  shouldShowChangeStatus
+                  onChangeStatus={() => {
+                    toggleChangeStatusModal();
+                    setConnectionsForChangeStatus(connectionsForAgreement);
+                    setOutcomeForChangeStatus(outcome);
+                  }}
+                />
               );
             }
             return (

@@ -6,6 +6,8 @@ import FlexRow from './FlexRow';
 import InlineBold from './InlineBold';
 import InlineColor from './InlineColor';
 import { formatDueDate } from '../util/date-time';
+import Spacer from './Spacer';
+import SmallCopy from './SmallCopy';
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,7 +28,7 @@ const TitleAndStatus = styled.div`
 `;
 
 const Title = styled.span`
-  font-size: 14px;
+  font-size: 16px;
 `;
 
 type StatusProps = {
@@ -34,6 +36,7 @@ type StatusProps = {
 };
 
 const Status = styled.span<StatusProps>`
+  padding-left: 12px;
   font-size: 14px;
   color: ${({ status }) => status === 'FULFILLED'
     ? `green`
@@ -45,22 +48,31 @@ type Props = {
   title: string;
   status: string;
   due: number;
-  onChangeStatus: (...args: any[]) => void;
+  shouldShowChangeStatus?: boolean;
+  onChangeStatus?: (...args: any[]) => void;
 };
 
-const UserHistoricalTask: React.FunctionComponent<Props> = function ({ title, due, status, onChangeStatus }) {
+const UserHistoricalTask: React.FunctionComponent<Props> = function ({ title, due, status, shouldShowChangeStatus = false, onChangeStatus }) {
   return (
     <IonItem button={true}>
       <Wrapper>
         <TitleAndStatus>
-          <Title>{title}</Title> - <InlineBold><InlineColor grayLevel={4}>{formatDueDate(due)}</InlineColor></InlineBold>
+          <div>
+            <Title>{title}</Title>
+            <Spacer height="4px"/>
+            <div>
+              <SmallCopy>
+                <InlineBold><InlineColor grayLevel={8}>{formatDueDate(due)}</InlineColor></InlineBold>
+              </SmallCopy>
+            </div>
+          </div>
           <Status status={status}>
             <InlineBold>
               {status}
             </InlineBold>
           </Status>
         </TitleAndStatus>
-        <IonButton onClick={onChangeStatus}>Change status</IonButton>
+        {shouldShowChangeStatus && <IonButton onClick={onChangeStatus}>Change status</IonButton>}
       </Wrapper>
     </IonItem>
   );
